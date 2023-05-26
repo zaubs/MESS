@@ -9,7 +9,9 @@
  - scipy
  - imageio
  - sklearn
+
+ Installation in a virtualenv or a Conda environment is recommended.
  
- Input data types: VID files, ev* txt files, PNG images
- Output data types: CSV and PNG images
+ **Input data types:** VID files, ev* txt files, PNG images<br>
+ **Output data types:** CSV and PNG images
  

@@ -1,0 +1,1713 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1605</width>
+    <height>991</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>280</y>
+      <width>59</width>
+      <height>15</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="Commands_box">
+    <property name="geometry">
+     <rect>
+      <x>1320</x>
+      <y>520</y>
+      <width>291</width>
+      <height>261</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>7</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>Commands</string>
+    </property>
+    <widget class="QLineEdit" name="AtExtinct_linedit">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>20</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="Roll_linedit">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>40</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="Lmm_linedit">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>60</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="Sigma_linedit">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>120</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="HighTemp_linedit">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>80</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="plusAtExtinct_button">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>20</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>+</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="plusRoll_button">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>40</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>+</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="plusLmm_button">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>60</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>+</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="plusSigma_button">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>120</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>+</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="plusHighTemp_button">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>80</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>+</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="minusAE_button">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>20</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="minusRoll_button">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>40</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="minusLmm_button">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>60</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="minusSigma_button">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>120</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="minusHighTemp_button">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>80</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="WarmTempOn_button">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>170</y>
+       <width>131</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Warm</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="HotTempOn_button">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>170</y>
+       <width>131</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Hot</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="Neutral_button">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>200</y>
+       <width>131</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Neutral</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="Ions_button">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>200</y>
+       <width>131</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Ions</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="Respon_button">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>230</y>
+       <width>131</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Responsivity</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="Extinction_button">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>230</y>
+       <width>131</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Extinction</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="AtExtinct_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Exctinction Coefficient</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Roll_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Roll</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Lmm_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>L/mm</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Sigma_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>120</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Sigma</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="HighTemp_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>81</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Temp, high (K)</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="LowTemp_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>100</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Temp, low (K)</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="minusLowTemp_button">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>100</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="LowTemp_linedit">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>100</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="plusLowTemp_button">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>100</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>+</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="ScaleAll_check">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>140</y>
+       <width>85</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Scale all flux</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="minusScaleAll_button">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>140</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="ScaleAll_linedit">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>140</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="plusSigma_button_2">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>140</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>+</string>
+     </property>
+    </widget>
+    <zorder>LowTemp_linedit</zorder>
+    <zorder>AtExtinct_linedit</zorder>
+    <zorder>Roll_linedit</zorder>
+    <zorder>Lmm_linedit</zorder>
+    <zorder>Sigma_linedit</zorder>
+    <zorder>HighTemp_linedit</zorder>
+    <zorder>plusAtExtinct_button</zorder>
+    <zorder>plusRoll_button</zorder>
+    <zorder>plusLmm_button</zorder>
+    <zorder>plusSigma_button</zorder>
+    <zorder>plusHighTemp_button</zorder>
+    <zorder>minusAE_button</zorder>
+    <zorder>minusRoll_button</zorder>
+    <zorder>minusLmm_button</zorder>
+    <zorder>minusSigma_button</zorder>
+    <zorder>minusHighTemp_button</zorder>
+    <zorder>WarmTempOn_button</zorder>
+    <zorder>HotTempOn_button</zorder>
+    <zorder>Neutral_button</zorder>
+    <zorder>Ions_button</zorder>
+    <zorder>Respon_button</zorder>
+    <zorder>Extinction_button</zorder>
+    <zorder>AtExtinct_label</zorder>
+    <zorder>Roll_label</zorder>
+    <zorder>Lmm_label</zorder>
+    <zorder>Sigma_label</zorder>
+    <zorder>HighTemp_label</zorder>
+    <zorder>LowTemp_label</zorder>
+    <zorder>minusLowTemp_button</zorder>
+    <zorder>plusLowTemp_button</zorder>
+    <zorder>ScaleAll_check</zorder>
+    <zorder>minusScaleAll_button</zorder>
+    <zorder>ScaleAll_linedit</zorder>
+    <zorder>plusSigma_button_2</zorder>
+   </widget>
+   <widget class="QGroupBox" name="ElementalAbundances_box">
+    <property name="geometry">
+     <rect>
+      <x>1310</x>
+      <y>370</y>
+      <width>291</width>
+      <height>141</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>7</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>Elemental Abundances</string>
+    </property>
+    <widget class="QPushButton" name="Na_button">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Na</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="Mg_button">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>50</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Mg</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="Fe_button">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>50</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Fe</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="Ca_button">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>50</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Ca</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="O_button">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>50</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>O</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="N_button">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>50</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>N</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="SelectElement_combo">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>271</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Select Other Element</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Carbon (C)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Silicon (S)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Aluminium (Al)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Phosphorus (P)</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QPushButton" name="N2_button">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>50</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>N2</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="O2_button">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>50</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>O2</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="K_button">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>50</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>K</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ColDens_label">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>20</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Column Density</string>
+     </property>
+    </widget>
+    <widget class="QSlider" name="ColDense_slider">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>271</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="ColDense_linedit">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>20</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="LockElementFit_button">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>110</y>
+       <width>271</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Lock Element Fit</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="FittedSpec_button">
+    <property name="geometry">
+     <rect>
+      <x>1460</x>
+      <y>790</y>
+      <width>141</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Show Fitted Spectrum</string>
+    </property>
+   </widget>
+   <widget class="PlotWidget" name="Plot">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>1591</width>
+      <height>351</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Clear_button">
+    <property name="geometry">
+     <rect>
+      <x>1540</x>
+      <y>10</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Clear</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="Direct_box">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>370</y>
+      <width>641</width>
+      <height>481</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="title">
+     <string>Direct |</string>
+    </property>
+    <widget class="QPushButton" name="LastDirect_button">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>40</y>
+       <width>31</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>7</pointsize>
+      </font>
+     </property>
+     <property name="statusTip">
+      <string>Last frame</string>
+     </property>
+     <property name="text">
+      <string>&lt;</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="NextDirect_button">
+     <property name="geometry">
+      <rect>
+       <x>610</x>
+       <y>40</y>
+       <width>31</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="statusTip">
+      <string>Next frame</string>
+     </property>
+     <property name="text">
+      <string>&gt;</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="DirectFileName_linedit">
+     <property name="geometry">
+      <rect>
+       <x>320</x>
+       <y>20</y>
+       <width>321</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="statusTip">
+      <string>Enter direct file name</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="DirectFrame_label">
+     <property name="geometry">
+      <rect>
+       <x>590</x>
+       <y>40</y>
+       <width>21</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Direct_label">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>0</y>
+       <width>281</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Timestamp (YYYY, M, DD, H, MM, SS, MiS.XXX):</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Direct_label_2">
+     <property name="geometry">
+      <rect>
+       <x>530</x>
+       <y>40</y>
+       <width>59</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Frame #:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="DirectTime_label">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>0</y>
+       <width>211</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="gridLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>70</y>
+       <width>641</width>
+       <height>381</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="Direct_layout">
+      <property name="spacing">
+       <number>1</number>
+      </property>
+     </layout>
+    </widget>
+    <widget class="QLineEdit" name="DirectFilePath_linedit">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>20</y>
+       <width>321</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="statusTip">
+      <string extracomment="DirectFile path">Enter direct file path</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="UploadDirect_button">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>40</y>
+       <width>61</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="statusTip">
+      <string>Upload direct file</string>
+     </property>
+     <property name="text">
+      <string>Upload</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="DirectXYCoordsDisplay_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>460</y>
+       <width>131</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="Affine_button">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>40</y>
+       <width>71</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="statusTip">
+      <string>Upload direct file</string>
+     </property>
+     <property name="text">
+      <string>Run Affine</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="LastFrame_button">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>460</y>
+       <width>41</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="AdjustAllFrames_label">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>460</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Adjust both frames</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="NextFrame_button">
+     <property name="geometry">
+      <rect>
+       <x>590</x>
+       <y>460</y>
+       <width>41</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&gt;</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="NextTimeFrame_button">
+     <property name="geometry">
+      <rect>
+       <x>370</x>
+       <y>460</y>
+       <width>41</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&gt;</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="LastTimeFrame_button">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>460</y>
+       <width>41</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>460</y>
+       <width>151</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Move frames with time lock</string>
+     </property>
+    </widget>
+    <zorder>LastTimeFrame_button</zorder>
+    <zorder>NextTimeFrame_button</zorder>
+    <zorder>NextFrame_button</zorder>
+    <zorder>LastFrame_button</zorder>
+    <zorder>Affine_button</zorder>
+    <zorder>UploadDirect_button</zorder>
+    <zorder>DirectTime_label</zorder>
+    <zorder>LastDirect_button</zorder>
+    <zorder>NextDirect_button</zorder>
+    <zorder>DirectFileName_linedit</zorder>
+    <zorder>DirectFrame_label</zorder>
+    <zorder>Direct_label</zorder>
+    <zorder>Direct_label_2</zorder>
+    <zorder>gridLayoutWidget</zorder>
+    <zorder>DirectFilePath_linedit</zorder>
+    <zorder>DirectXYCoordsDisplay_label</zorder>
+    <zorder>AdjustAllFrames_label</zorder>
+    <zorder>label</zorder>
+   </widget>
+   <widget class="QPushButton" name="MeasuredSpec_button">
+    <property name="geometry">
+     <rect>
+      <x>1310</x>
+      <y>790</y>
+      <width>141</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>7</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Show Measured Spectrum</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="FileUpload">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>370</y>
+      <width>641</width>
+      <height>481</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>Spectral |</string>
+    </property>
+    <widget class="QPushButton" name="NextSpectral_button">
+     <property name="geometry">
+      <rect>
+       <x>610</x>
+       <y>40</y>
+       <width>31</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="statusTip">
+      <string>Next frame</string>
+     </property>
+     <property name="text">
+      <string>&gt;</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="LastSpectral_button">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>40</y>
+       <width>31</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>7</pointsize>
+      </font>
+     </property>
+     <property name="statusTip">
+      <string>Last frame</string>
+     </property>
+     <property name="text">
+      <string>&lt;</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="SelectSpectralRegion_button">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>40</y>
+       <width>71</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Select ROI</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="SpectralFileName_linedit">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>20</y>
+       <width>341</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="statusTip">
+      <string>Enter spectral file name</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="SpectralFrame_label">
+     <property name="geometry">
+      <rect>
+       <x>590</x>
+       <y>40</y>
+       <width>21</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Spectral_label">
+     <property name="geometry">
+      <rect>
+       <x>530</x>
+       <y>40</y>
+       <width>59</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Frame #:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Spectral_label_2">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>0</y>
+       <width>261</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Timestamp (YYYY, M, DD, H, MM, SS, MiS.XXX):</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="SpectralFilePath_linedit">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>20</y>
+       <width>301</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="statusTip">
+      <string>Enter spectral file path</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="SpectralTime_label">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>0</y>
+       <width>211</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="gridLayoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>68</y>
+       <width>639</width>
+       <height>381</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="Spectral_layout"/>
+    </widget>
+    <widget class="QPushButton" name="UploadSpectral_button">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>40</y>
+       <width>61</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="statusTip">
+      <string>Upload spectral file</string>
+     </property>
+     <property name="text">
+      <string>Upload</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="ClearSpectralRegion_button">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>40</y>
+       <width>71</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Clear ROI</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="CheckSpectralBackground_button">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>40</y>
+       <width>111</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Check Background</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="CheckSpectralRegion_button">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>40</y>
+       <width>91</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Check Region</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Frame1Start_label">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>450</y>
+       <width>111</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Frame set 1 start:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Frame1End_label">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>450</y>
+       <width>101</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Frame set 1 end:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="Frame1SpectralEnd_linedit">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>460</y>
+       <width>21</width>
+       <height>16</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Frame1Start_label_2">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>450</y>
+       <width>111</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Frame set 2 start:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="Frame2SpectralStart_linedit">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>460</y>
+       <width>21</width>
+       <height>16</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Frame1End_label_2">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>450</y>
+       <width>101</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Frame set 2 end:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="Frame2SpectralEnd_linedit">
+     <property name="geometry">
+      <rect>
+       <x>510</x>
+       <y>460</y>
+       <width>21</width>
+       <height>16</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="Frame1SpectralStart_linedit">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>460</y>
+       <width>21</width>
+       <height>16</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="ClearAffine_button">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>40</y>
+       <width>81</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Clear Affine</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="RemoveFlat_button">
+     <property name="geometry">
+      <rect>
+       <x>560</x>
+       <y>460</y>
+       <width>80</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Remove flat</string>
+     </property>
+    </widget>
+    <zorder>ClearAffine_button</zorder>
+    <zorder>Frame1SpectralStart_linedit</zorder>
+    <zorder>Frame1SpectralEnd_linedit</zorder>
+    <zorder>CheckSpectralRegion_button</zorder>
+    <zorder>CheckSpectralBackground_button</zorder>
+    <zorder>ClearSpectralRegion_button</zorder>
+    <zorder>UploadSpectral_button</zorder>
+    <zorder>SelectSpectralRegion_button</zorder>
+    <zorder>NextSpectral_button</zorder>
+    <zorder>LastSpectral_button</zorder>
+    <zorder>SpectralFileName_linedit</zorder>
+    <zorder>SpectralFrame_label</zorder>
+    <zorder>Spectral_label</zorder>
+    <zorder>Spectral_label_2</zorder>
+    <zorder>SpectralFilePath_linedit</zorder>
+    <zorder>SpectralTime_label</zorder>
+    <zorder>gridLayoutWidget_2</zorder>
+    <zorder>Frame1Start_label</zorder>
+    <zorder>Frame1End_label</zorder>
+    <zorder>Frame1Start_label_2</zorder>
+    <zorder>Frame2SpectralStart_linedit</zorder>
+    <zorder>Frame1End_label_2</zorder>
+    <zorder>Frame2SpectralEnd_linedit</zorder>
+    <zorder>RemoveFlat_button</zorder>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>840</y>
+      <width>1291</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QLabel" name="TextFilePath_label">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>20</y>
+       <width>171</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Associated text file path:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ConfFilePath_label">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>40</y>
+       <width>131</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Configuration file path:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="TrajFilePath_label">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>60</y>
+       <width>131</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Trajectory file path:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="TextFilePath_linedit">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>20</y>
+       <width>491</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="statusTip">
+      <string>Enter the event text file path </string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="ConfigFilePath_linedit">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>40</y>
+       <width>491</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="statusTip">
+      <string>Enter the relevant configuration file path</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="TrajFilePath_linedit">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>60</y>
+       <width>491</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="statusTip">
+      <string>Enter trajectory file path for the event</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="TextFileName_label">
+     <property name="geometry">
+      <rect>
+       <x>660</x>
+       <y>20</y>
+       <width>151</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Associated text file name:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ConfigFileName_label">
+     <property name="geometry">
+      <rect>
+       <x>660</x>
+       <y>40</y>
+       <width>161</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Configuration file name:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="TrajFileName_label">
+     <property name="geometry">
+      <rect>
+       <x>660</x>
+       <y>60</y>
+       <width>141</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Trajectory file name:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="TextFileName_linedit">
+     <property name="geometry">
+      <rect>
+       <x>810</x>
+       <y>20</y>
+       <width>481</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="statusTip">
+      <string>Enter the event text file name</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="ConfigFileName_linedit">
+     <property name="geometry">
+      <rect>
+       <x>810</x>
+       <y>40</y>
+       <width>481</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="statusTip">
+      <string>Enter relevant configuration file name</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="TrajFileName_linedit">
+     <property name="geometry">
+      <rect>
+       <x>810</x>
+       <y>60</y>
+       <width>481</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="statusTip">
+      <string>Enter trajectory file name for the event</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="FlatPath_label">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>80</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Flat file path:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="FlatPath_linedit">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>80</y>
+       <width>491</width>
+       <height>16</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="FlatName_label">
+     <property name="geometry">
+      <rect>
+       <x>660</x>
+       <y>80</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Flat file name:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="FlatName_linedit">
+     <property name="geometry">
+      <rect>
+       <x>810</x>
+       <y>80</y>
+       <width>491</width>
+       <height>16</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <zorder>label_8</zorder>
+   <zorder>Commands_box</zorder>
+   <zorder>ElementalAbundances_box</zorder>
+   <zorder>FittedSpec_button</zorder>
+   <zorder>Plot</zorder>
+   <zorder>Clear_button</zorder>
+   <zorder>MeasuredSpec_button</zorder>
+   <zorder>FileUpload</zorder>
+   <zorder>Direct_box</zorder>
+   <zorder>groupBox</zorder>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1605</width>
+     <height>19</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionSave_graph"/>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionSave_graph">
+   <property name="text">
+    <string>Save graph</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PlotWidget</class>
+   <extends>QGraphicsView</extends>
+   <header location="global">pyqtgraph</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

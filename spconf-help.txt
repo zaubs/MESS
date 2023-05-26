@@ -1,0 +1,35 @@
+Version                             =    1.00		spectral.spconfig.version
+Spectral Order m for Resp/Extn      =      +1		spectral.spconfig.order4spcalib
+Plus/Minus # Integration Rows       =       4		spectral.spconfig.rowdelta
+Min Calib Wavelength (nm)           =   350.0  		spectral.spconfig.min_cal_wavelength_nm
+Max Calib Wavelength (nm)           =   650.0		spectral.spconfig.max_cal_wavelength_nm
+Step Wavelength (nm)                =     0.6		spectral.spconfig.del_wavelength_nm
+Min Fitting Wavelength (nm)         =   350.0  		spectral.spconfig.min_fit_wavelength_nm
+Max Fitting Wavelength (nm)         =   650.0		spectral.spconfig.max_fit_wavelength_nm
+Min Bandwidth to use Spectrum (nm)  =   200.0		spectral.spconfig.minspac_wavelength_nm
+Gauss Smoothing Kernel sigma (nm)   =    20.0		spectral.spconfig.smooth_bandwidth_nm
+Faintest Star to process (mV)       =     4.5		spectral.spconfig.faintest_star_vmag
+Airmass Break Pt Respons/Extinct    =     1.5		airmass_limit
+Fading memory coef                  =    16.0		fading_coef
+Coincidence time tolerance (sec)    =    60.0		coin_time_tolerance
+Min low excitation temperature (K)  =  3000.0		min_lo_exc_temp
+Max low excitation temperature (K)  =  6500.0		max_lo_exc_temp
+Step low excitation temperature (K) =    10.0		step_lo_exc_temp
+Nominal low excitation temp (K)     =  4500.0		nominal_lo_exc_temp
+Nominal high excitation temp (K)    = 10000.0		nominal_hi_exc_temp
+Nominal broadening sigma (nm)       =     1.5		nominal_sigma0
+Grating normal to look angle (deg)  =     8.0		grating_offnormal
+Default grating roll (deg)          =     0.0		default_roll_angle
+Default grating pitch (deg)         =     0.0		default_pitch_angle
+Default grating yaw (deg)           =     0.0		default_yaw_deg
+Default electron density (m^-3)     = 1.0e+13		default_ne
+Default hot to warm plasma ratio    = 1.0e-04		default_hot2warm
+Number of Grating Cameras           =       1		ncams_grating
+----  --------
+Cam#  Lines/mm
+----  --------
+101    600.00
+
+
+
+Step (nm) ~ pixel_resolution(arcmin) / 60 / 57.296 / 1.0e-6 / lines_per_mm

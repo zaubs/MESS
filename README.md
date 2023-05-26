@@ -3,6 +3,7 @@
  
  # Installation
  To successfully run the software, Python and QT are required along with the following Python modules...
+ - Cython
  - Numpy
  - Matplotlib
  - pyqtgraph
@@ -15,3 +16,4 @@
  **Input data types:** VID files, ev* txt files, PNG images<br>
  **Output data types:** CSV and PNG images
  
+# Using MESS

@@ -13,6 +13,9 @@
 
  Installation in a virtualenv or a Conda environment is recommended.
  
+ SpectralTest.so.0 in spectral_library should be soft-linked to SpectralTest.so
+ ln -s SpectralTest.so.0 SpectralTest.so
+ 
  **Input data types:** VID files, ev* txt files, PNG images<br>
  **Output data types:** CSV and PNG images
  

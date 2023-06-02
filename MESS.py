@@ -908,6 +908,7 @@ class Ui(QtWidgets.QMainWindow):
 
         try:
             self.responsivityDefault = np.genfromtxt('DefaultResponsivity.csv', delimiter=',', skip_header=2)
+            # self.responsivityDefault = np.genfromtxt('FS9910.csv', delimiter=',', skip_header=2)
             print('Loaded default responsivity curve.')
         except:
             print('Unable to load default responsivity curve!')
@@ -1393,7 +1394,7 @@ class Ui(QtWidgets.QMainWindow):
 
 
         if self.HotTempOn_button.isChecked() and (self.WarmTempOn_button.isChecked() == False):
-            print('Hot is on. Warm is not.')
+            # print('Hot is on. Warm is not.')
             
             self.element_array = np.zeros((self.spectral.spcalib.nwavelengths,4))
             for i in range(self.spectral.spcalib.nwavelengths):
@@ -1403,7 +1404,7 @@ class Ui(QtWidgets.QMainWindow):
                 self.element_array[i][3] = self.element_array[i][2]
 
         elif (self.HotTempOn_button.isChecked() == False) and self.WarmTempOn_button.isChecked():
-            print('Warm is on. Hot is not.')
+            # print('Warm is on. Hot is not.')
             # spectral_library.GuralSpectral.computeWarmPlasmaSpectrum(self.spectral)
             self.element_array = np.zeros((self.spectral.spcalib.nwavelengths,4))
             for i in range(self.spectral.spcalib.nwavelengths):
@@ -1413,7 +1414,7 @@ class Ui(QtWidgets.QMainWindow):
                 self.element_array[i][3] = self.element_array[i][1]
 
         else:
-            print('Warm and Hot are both on.')
+            # print('Warm and Hot are both on.')
             # spectral_library.GuralSpectral.computeWarmPlasmaSpectrum(self.spectral)
             # spectral_library.GuralSpectral.computeHotPlasmaSpectrum(self.spectral)
             self.element_array = np.zeros((self.spectral.spcalib.nwavelengths,4))
@@ -1466,7 +1467,7 @@ class Ui(QtWidgets.QMainWindow):
 
         self.plotFullSpectrum()
 
-        spectral_library.GuralSpectral.writeFullSpectrum2(self.spectral, '/home/mmazur/Camo-S/Camo-S/testout.txt')
+        spectral_library.GuralSpectral.writeFullSpectrum2(self.spectral, './FullSpectrumTest.txt')
 
         # print(self.spectral.elemdata.els[17].N_warm)
         print(self.spectral.ne)
@@ -1488,7 +1489,7 @@ class Ui(QtWidgets.QMainWindow):
             globals()[plotName] = self.Plot.plot(self.fullspec_array[:,0], self.fullspec_array[:,1]*self.fullSpecScaler, pen=pg.mkPen('w', width=4), name='Full')
         else:
             globals()[plotName].setData(self.fullspec_array[:,0], self.fullspec_array[:,1])
-        d
+        
     def calculateElementSpectrum(self):
         self.spectral.spconfig.default_hot2warm = self.Hot2WarmRatio_rollbox.value()
         self.spectral.elemdata.hot2warm = self.Hot2WarmRatio_rollbox.value()
@@ -3028,7 +3029,7 @@ class Ui(QtWidgets.QMainWindow):
         # print(len(yMnew))
         # print(np.min(scaled_spectral_profile), np.max(scaled_spectral_profile), len(scaled_spectral_profile))
 
-        # self.plotMax = np.max(np.divide(spectral_profile,yMnew))
+        self.plotMax = np.max(np.divide(spectral_profile_short,yMnew))
 
         # Set axis titles 
         self.Plot.setLabel('left', 'Intensity')
@@ -3038,8 +3039,8 @@ class Ui(QtWidgets.QMainWindow):
         self.Plot.plot(scaled_spectral_profile_short, np.divide(spectral_profile_short,yMnew), pen = pen) # Uncomment for responsivity
         self.Plot.plot(scaled_spectral_profile_short, spectral_profile_short, pen = pg.mkPen(pg.intColor(2)), width = 1)
         self.Plot.setXRange(np.min(scaled_spectral_profile_short),np.max(scaled_spectral_profile_short))
-        # self.Plot.setYRange(0,self.plotMax)
-        self.Plot.setYRange(0,8000)
+        self.Plot.setYRange(0,self.plotMax)
+        # self.Plot.setYRange(0,8000)
         self.CalibrateSpectrum_button.setEnabled(True)
         self.SetReference_button.setEnabled(True)
 

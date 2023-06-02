@@ -487,9 +487,8 @@ class Ui(QtWidgets.QMainWindow):
         super(Ui, self).__init__(*args, **kwargs)    
         
         # Load the .ui file
-        # uic.loadUi('Camo-S.ui', self)
-        uic.loadUi('camo-s-new.ui', self)                
-        self.title = "CAMO-S ANALYSIS"
+        uic.loadUi('MESS.ui', self)                
+        self.title = "Meteor Elemental Spectra Software"
         self.statusBar = QStatusBar()
         self.setStatusBar(self.statusBar)
 
@@ -556,42 +555,42 @@ class Ui(QtWidgets.QMainWindow):
 
         self.Plot.scene().sigMouseClicked.connect(self.mouse_clicked)
 
-        #################### SPECTRAL FILE IMAGE VIEW ####################
+        # #################### SPECTRAL FILE IMAGE VIEW ####################
 
-        # Create the image widget with graphics view
-        self.spectral_imagewidget = pg.GraphicsView()        
-        # Set Graphics View to ViewBox                               
-        self.spectral_imageframe = pg.ViewBox()                  
-        # Set Graphics view as ventral widget                           
-        self.spectral_imagewidget.setCentralWidget(self.spectral_imageframe)  
-        # Lock aspect ratio               
-        self.spectral_imageframe.setAspectLocked()     
-        # Disable menu                         
-        self.spectral_imageframe.setMenuEnabled(False)
-        # Invert image frame along the y axis
-        self.spectral_imageframe.invertY()
-        # Add image item to ViewBox
-        self.spectral_image = pg.ImageItem()           
-        # Add item to image frame (ViewBox)                                     
-        self.spectral_imageframe.addItem(self.spectral_image)                               
+        # # Create the image widget with graphics view
+        # self.spectral_imagewidget = pg.GraphicsView()        
+        # # Set Graphics View to ViewBox                               
+        # self.spectral_imageframe = pg.ViewBox()                  
+        # # Set Graphics view as ventral widget                           
+        # self.spectral_imagewidget.setCentralWidget(self.spectral_imageframe)  
+        # # Lock aspect ratio               
+        # self.spectral_imageframe.setAspectLocked()     
+        # # Disable menu                         
+        # self.spectral_imageframe.setMenuEnabled(False)
+        # # Invert image frame along the y axis
+        # self.spectral_imageframe.invertY()
+        # # Add image item to ViewBox
+        # self.spectral_image = pg.ImageItem()           
+        # # Add item to image frame (ViewBox)                                     
+        # self.spectral_imageframe.addItem(self.spectral_image)                               
         # Location of widget in layout
-        self.Spectral_layout.addWidget(self.spectral_imagewidget, 0, 0)              
+        # self.Spectral_layout.addWidget(self.spectral_imagewidget, 0, 0)              
 
-        #################### SPECTRAL IMAGE HISTOGRAM ####################
+        # #################### SPECTRAL IMAGE HISTOGRAM ####################
 
-        # Create histogram widget
-        self.spectral_hist = pg.HistogramLUTWidget()     
-        # Connect histogram to image in ViewBox                                   
-        self.spectral_hist.setImageItem(self.spectral_image)       
-        # Location of widget in layout
-        self.Spectral_layout.addWidget(self.spectral_hist, 0, 50)                           
+        # # Create histogram widget
+        # self.spectral_hist = pg.HistogramLUTWidget()     
+        # # Connect histogram to image in ViewBox                                   
+        # self.spectral_hist.setImageItem(self.spectral_image)       
+        # # Location of widget in layout
+        # self.Spectral_layout.addWidget(self.spectral_hist, 0, 50)                           
 
-        ################# INITIALIZE SPECTRAL ROI/MOUSE #################
+        # ################# INITIALIZE SPECTRAL ROI/MOUSE #################
 
-        # Initalize ROI to None
-        self.spectral_roi = None
-        # Change to crosshair cursor in the spectral image widget
-        self.spectral_imagewidget.setCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
+        # # Initalize ROI to None
+        # self.spectral_roi = None
+        # # Change to crosshair cursor in the spectral image widget
+        # self.spectral_imagewidget.setCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
 
         #################### INITIALIZE BACKGROUND SETS ####################
 
@@ -600,21 +599,21 @@ class Ui(QtWidgets.QMainWindow):
         # self.Frame2SpectralStart_linedit.insert("50")
         # self.Frame2SpectralEnd_linedit.insert("60")
 
-        #################### SPECTRAL MARKERS ####################
+        # #################### SPECTRAL MARKERS ####################
 
-        # Init affine marker on spectral image
-        self.affine_markers = pg.ScatterPlotItem()
-        # self.affine_markers.setPen('r')
-        # self.affine_markers.setSymbol('o')
-        self.affine_markers.setData(pxMode=False, symbol='o', size=10, pen='r', brush='r')
-        self.spectral_imageframe.addItem(self.affine_markers)
+        # # Init affine marker on spectral image
+        # self.affine_markers = pg.ScatterPlotItem()
+        # # self.affine_markers.setPen('r')
+        # # self.affine_markers.setSymbol('o')
+        # self.affine_markers.setData(pxMode=False, symbol='o', size=10, pen='r', brush='r')
+        # self.spectral_imageframe.addItem(self.affine_markers)
 
-        # Init projected affine marker  on  spectral  image
-        self.proj_affine_markers = pg.ScatterPlotItem()
-        # self.proj_affine_markers.setPen('b')
-        # self.proj_affine_markers.setSymbol('o')
-        self.affine_markers.setData(pxMode=False, symbol='+', size=10, pen='b', brush='b')
-        self.spectral_imageframe.addItem(self.proj_affine_markers)  
+        # # Init projected affine marker  on  spectral  image
+        # self.proj_affine_markers = pg.ScatterPlotItem()
+        # # self.proj_affine_markers.setPen('b')
+        # # self.proj_affine_markers.setSymbol('o')
+        # self.affine_markers.setData(pxMode=False, symbol='+', size=10, pen='b', brush='b')
+        # self.spectral_imageframe.addItem(self.proj_affine_markers)  
         
         ################# LOAD SPECTRAL FLAT ####################
 
@@ -657,32 +656,37 @@ class Ui(QtWidgets.QMainWindow):
         # Last frame set that is as close in time as possible
         self.LastTimeFrame_button.clicked.connect(self.lastTimeFrame)
 
-        ################# SPECTRAL FILE CONTROL BUTTONS #################
+        # ################# SPECTRAL FILE CONTROL BUTTONS #################
     
         # Load files from event.txt file
         self.LoadEventFile_button.clicked.connect(self.loadEventFile)
-        # Upload spectral file
-        self.UploadSpectral_button.clicked.connect(self.uploadSpectralVid)                  
-        # Next spectral frame        
-        self.NextSpectral_button.clicked.connect(self.nextSpectralFrame)
-        # Jump ahead 5 frames
-        self.ForwardFiveSpectral_button.clicked.connect(self.forwardFiveSpectralFrames)                    
-        # Last spectral frame         
-        self.LastSpectral_button.clicked.connect(self.lastSpectralFrame)
-        # Jump back 5 frames
-        self.BackFiveSpectral_button.clicked.connect(self.backFiveSpectralFrames)              
+ 
+        # # Upload spectral file
+        # self.UploadSpectral_button.clicked.connect(self.uploadSpectralVid)                  
+        # # Next spectral frame        
+        # self.NextSpectral_button.clicked.connect(self.nextSpectralFrame)
+        # # Jump ahead 5 frames
+        # self.ForwardFiveSpectral_button.clicked.connect(self.forwardFiveSpectralFrames)                    
+        # # Last spectral frame         
+        # self.LastSpectral_button.clicked.connect(self.lastSpectralFrame)
+        # # Jump back 5 frames
+        # self.BackFiveSpectral_button.clicked.connect(self.backFiveSpectralFrames)              
+
         # Make ROI box appear        
         self.SelectSpectralRegion_button.clicked.connect(self.spectralROI)                  
-        # Displays image background        
-        self.CheckSpectralBackground_button.clicked.connect(self.showSpectralBackground)   
-        # Displays selected region        
-        self.CheckSpectralRegion_button.clicked.connect(self.showSpectralRegion)           
+
+        # # Displays image background        
+        # # self.CheckSpectralBackground_button.clicked.connect(self.showSpectralBackground)   
+        # # Displays selected region        
+        # # self.CheckSpectralRegion_button.clicked.connect(self.showSpectralRegion)           
+
         # Clear ROI box        
         self.ClearSpectralRegion_button.clicked.connect(self.clearSpectralROI)             
         # Clear the affine transform point
         self.ClearAffine_button.clicked.connect(self.clearAffine)
         # Apply the image flat
         self.RemoveFlat_button.clicked.connect(self.removeSpectralFlat)
+
         # Auto pick ROI
         self.AutoPick_button.clicked.connect(self.autoPickROI)
         # Auto pick meteor
@@ -707,7 +711,6 @@ class Ui(QtWidgets.QMainWindow):
         # Save the plot
         self.SavePlot_button.clicked.connect(self.saveSpec)
         #MJM
-
 
         #################### Elemental Abundance Buttons #################
 
@@ -998,17 +1001,6 @@ class Ui(QtWidgets.QMainWindow):
         except:
             print('Unable to load default responsivity curve!')
 
-    # def mousePressEvent(self, QMouseEvent):
-    #     if QMouseEvent.button() == Qt.LeftButton:
-    #         print("Left Button Clicked")
-    #         self.leftButtonClicked = True
-    #         self.rightButtonClicked = False
-    #     elif QMouseEvent.button() == Qt.RightButton:
-    #         #do what you want here
-    #         print("Right Button Clicked")
-    #         self.rightButtonClicked = True
-    #         self.leftButtonClicked = False
-
     ###############################################################################################
     ###################################### /// FUNCTIONS /// ######################################
     ###############################################################################################
@@ -1209,7 +1201,7 @@ class Ui(QtWidgets.QMainWindow):
         # self.spectral_frame = self.spectral_vid.frames[self.spectral_currentframe]
         # self.spectral_frame_img = self.spectral_frame.img_data
 
-        self.spectral_frame_img = applyFlat(self.spectral_frame_img, self.flat_structure)
+        self.direct_frame_img = applyFlat(self.direct_frame_img, self.flat_structure)
 
         # # Display time
         # self.st = unixTime2Date(self.spectral_frame.ts, self.spectral_frame.tu, dt_obj=False)
@@ -1222,15 +1214,15 @@ class Ui(QtWidgets.QMainWindow):
         # self.update()
 
         # Set image levels
-        minv = np.percentile(self.spectral_frame_img, 0.1)
-        maxv = np.percentile(self.spectral_frame_img, 99.95)
+        minv = np.percentile(self.direct_frame_img, 0.1)
+        maxv = np.percentile(self.direct_frame_img, 99.95)
         gamma = 1
 
         # Create an image with properly adjust levels
-        spectral_frame_img = adjustLevels(self.spectral_frame_img, minv, gamma, maxv, scaleto8bits=True)
+        direct_frame_img = adjustLevels(self.direct_frame_img, minv, gamma, maxv, scaleto8bits=True)
 
         # Set spectral image
-        self.spectral_image.setImage(spectral_frame_img.T)
+        self.direct_image.setImage(direct_frame_img.T)
 
     def updateStarFrames(self):
 
@@ -1853,7 +1845,7 @@ class Ui(QtWidgets.QMainWindow):
                         event_split = event_name.split('_')
                         
                         self.uploadDirectVid(direct_file_name)
-                        self.uploadSpectralVid(spectral_file_name)
+                        # self.uploadSpectralVid(spectral_file_name)
 
                         os.remove(direct_file_name)
                         print('Direct file removed from /tmp ...')
@@ -1920,10 +1912,25 @@ class Ui(QtWidgets.QMainWindow):
 
                     self.updateDirectFrames()
 
+                    ### Enable some buttons ###
                     self.AutoPickDirect_button.setEnabled(True)
                     self.AutoTrackDirect_button.setEnabled(True)
-                    self.ManualPickDirect_button.setEnabled(True)
+                    # self.ManualPickDirect_button.setEnabled(True)
                     self.ClearPicksDirect_button.setEnabled(True)
+                    self.UploadSpectralFlat_button.setEnabled(True)
+                    # self.UploadSpectralBias_button.setEnabled(True)
+                    self.AutoSpectralFlat_button.setEnabled(True)
+                    self.AutoPick_button.setEnabled(True)
+                    self.SelectSpectralRegion_button.setEnabled(True)
+                    self.ClearSpectralRegion_button.setEnabled(True)
+
+                    # self.FlattenSpectral_button.setEnabled(True)
+                    # self.AutoTrackSpectral_button.setEnabled(True)                  
+                    # self.CheckSpectralRegion_button.setEnabled(True)
+                    # self.CheckSpectralBackground_button.setEnabled(True)
+                    
+                    
+                    
                 else:
                     pass
 
@@ -1952,54 +1959,54 @@ class Ui(QtWidgets.QMainWindow):
                 self.ClearPicksDirect_button.setEnabled(True)
 
 
-    # Update direct frame
-    def updateDirectFrames(self):
-        """
-        Updates frame shown in the direct file image view. 
-        Updates time stamp and frame number. 
-        Adjusts image levels.
-        """
+    # # Update direct frame
+    # def updateDirectFrames(self):
+    #     """
+    #     Updates frame shown in the direct file image view. 
+    #     Updates time stamp and frame number. 
+    #     Adjusts image levels.
+    #     """
 
-        # Set frame to be displayed
-        self.direct_frame = self.direct_vid.frames[self.direct_currentframe]
-        self.direct_frame_img = self.direct_frame.img_data
+    #     # Set frame to be displayed
+    #     self.direct_frame = self.direct_vid.frames[self.direct_currentframe]
+    #     self.direct_frame_img = self.direct_frame.img_data
 
-        # Display time
-        self.dt = unixTime2Date(self.direct_frame.ts, self.direct_frame.tu, dt_obj=False)
+    #     # Display time
+    #     self.dt = unixTime2Date(self.direct_frame.ts, self.direct_frame.tu, dt_obj=False)
 
-        # self.dt = str(self.dt)
-        dt_h = str(self.dt[3])
-        dt_m = str(self.dt[4])
-        dt_s = str(self.dt[5])
-        dt_us = str(round(self.dt[6]*1000))
+    #     # self.dt = str(self.dt)
+    #     dt_h = str(self.dt[3])
+    #     dt_m = str(self.dt[4])
+    #     dt_s = str(self.dt[5])
+    #     dt_us = str(round(self.dt[6]*1000))
 
-        if len(dt_us) == 5:
-            dt_us = '0' + dt_us
-        elif len(dt_us) == 4:
-            dt_us = '00' + dt_us
+    #     if len(dt_us) == 5:
+    #         dt_us = '0' + dt_us
+    #     elif len(dt_us) == 4:
+    #         dt_us = '00' + dt_us
 
-        self.DirectTime_label.setText(' at ' + dt_h + ':' + dt_m + \
-         ':' + dt_s + '.' + dt_us + 'UT on ' + str(self.dt[0]) + '/' + \
-         str(self.dt[1]) + '/' + str(self.dt[2]))
-        self.update()
+    #     self.DirectTime_label.setText(' at ' + dt_h + ':' + dt_m + \
+    #      ':' + dt_s + '.' + dt_us + 'UT on ' + str(self.dt[0]) + '/' + \
+    #      str(self.dt[1]) + '/' + str(self.dt[2]))
+    #     self.update()
 
-        # Display frame number
-        # self.DirectFrame_label.setNum(self.direct_currentframe)
+    #     # Display frame number
+    #     # self.DirectFrame_label.setNum(self.direct_currentframe)
 
-        self.DirectFrame_label.setText('Frame # ' + str(self.direct_currentframe))
-        # self.DirectFrame_label.setText('Viewing frame #' + self.direct_currentframe)
-        self.update()
+    #     self.DirectFrame_label.setText('Frame # ' + str(self.direct_currentframe))
+    #     # self.DirectFrame_label.setText('Viewing frame #' + self.direct_currentframe)
+    #     self.update()
 
-        # Set image levels
-        minv = np.percentile(self.direct_frame_img, 0.1)
-        maxv = np.percentile(self.direct_frame_img, 99.95)
-        gamma = 1
+    #     # Set image levels
+    #     minv = np.percentile(self.direct_frame_img, 0.1)
+    #     maxv = np.percentile(self.direct_frame_img, 99.95)
+    #     gamma = 1
 
-        # Create an image with properly adjusted levels
-        self.direct_frame_img = adjustLevels(self.direct_frame_img, minv, gamma, maxv, scaleto8bits=True)
+    #     # Create an image with properly adjusted levels
+    #     self.direct_frame_img = adjustLevels(self.direct_frame_img, minv, gamma, maxv, scaleto8bits=True)
         
-        # Set the image to be displayed
-        self.direct_image.setImage(self.direct_frame_img.T)
+    #     # Set the image to be displayed
+    #     self.direct_image.setImage(self.direct_frame_img.T)
 
     # Move to next Direct frame
     def nextDirectFrame(self):
@@ -2168,25 +2175,25 @@ class Ui(QtWidgets.QMainWindow):
 
     def autoSpectralFlat(self):
 
-        flats = [self.spectral_vid.frames[i].img_data for i in range(len(self.spectral_vid.frames))]
+        flats = [self.direct_vid.frames[i].img_data for i in range(len(self.direct_vid.frames))]
         flat_stack = np.stack(flats)
 
         auto_flat = np.median(flat_stack, axis=0)
 
         self.flat_structure = FlatStruct(auto_flat, dark=None)
 
-        self.spectral_frame_img = applyFlat(self.spectral_frame_img, self.flat_structure)
+        self.direct_frame_img = applyFlat(self.direct_frame_img, self.flat_structure)
 
         # Set image levels
-        self.minv = np.percentile(self.spectral_frame_img, 0.1)
-        self.maxv = np.percentile(self.spectral_frame_img, 99.95)
+        self.minv = np.percentile(self.direct_frame_img, 0.1)
+        self.maxv = np.percentile(self.direct_frame_img, 99.95)
         gamma = 1
 
         # Create an image with properly adjust levels
-        spectral_frame_img = adjustLevels(self.spectral_frame_img, self.minv, gamma, self.maxv, scaleto8bits=True)
+        direct_frame_img = adjustLevels(self.direct_frame_img, self.minv, gamma, self.maxv, scaleto8bits=True)
 
         # Set spectral image
-        self.spectral_image.setImage(spectral_frame_img.T)
+        self.direct_image.setImage(direct_frame_img.T)
         self.spectral_flat_exists = True
 
     def uploadSpectralVid(self, file=None):
@@ -2225,6 +2232,7 @@ class Ui(QtWidgets.QMainWindow):
                     self.UploadSpectralBias_button.setEnabled(True)
                     self.UploadSpectralFlat_button.setEnabled(True)
                     self.AutoSpectralFlat_button.setEnabled(True)
+                    self.Affine_button.setEnabled(True)
                 else:
                     pass
         else:
@@ -2260,7 +2268,7 @@ class Ui(QtWidgets.QMainWindow):
                 self.AutoSpectralFlat_button.setEnabled(True)
 
     # Update spectral frame
-    def updateSpectralFrames(self):
+    def updateDirectFrames(self):
         """
         Updates frame shown in the spectral file image view. 
         Updates time stamp and frame number. 
@@ -2268,30 +2276,30 @@ class Ui(QtWidgets.QMainWindow):
         """
 
         # Set frame 
-        self.spectral_frame = self.spectral_vid.frames[self.spectral_currentframe]
+        self.direct_frame = self.direct_vid.frames[self.direct_currentframe]
 
-        self.spectral_frame_img = self.spectral_frame.img_data
+        self.direct_frame_img = self.direct_frame.img_data
         # self.spectral_frame_img = self.avg_frame_img
 
         try:
             if self.spectral_flat_exists:
-                self.spectral_frame_img = applyFlat(self.spectral_frame_img, self.flat_structure)
+                self.direct_frame_img = applyFlat(self.direct_frame_img, self.flat_structure)
         except:
             self.spectral_flat_exists = False
             pass
 
         # Set image levels
         if self.spectral_flat_exists == False:
-            self.minv = np.percentile(self.spectral_frame_img, 0.1)
-            self.maxv = np.percentile(self.spectral_frame_img, 99.95)
+            self.minv = np.percentile(self.direct_frame_img, 0.1)
+            self.maxv = np.percentile(self.direct_frame_img, 99.95)
         
         gamma = 1
 
         # Create an image with properly adjust levels
-        spectral_frame_img = adjustLevels(self.spectral_frame_img, self.minv, gamma, self.maxv, scaleto8bits=True)
+        direct_frame_img = adjustLevels(self.direct_frame_img, self.minv, gamma, self.maxv, scaleto8bits=True)
 
         # Display time
-        self.st = unixTime2Date(self.spectral_frame.ts, self.spectral_frame.tu, dt_obj=False)
+        self.st = unixTime2Date(self.direct_frame.ts, self.direct_frame.tu, dt_obj=False)
         print('DT-spec')
         print(self.st)
         # self.st = str(self.st)
@@ -2307,14 +2315,13 @@ class Ui(QtWidgets.QMainWindow):
         elif len(st_us) == 4:
             st_us = '00' + st_us
 
-        self.SpectralTime_label.setText(' at ' + st_h + ':' + st_m + \
+        self.DirectTime_label.setText(' at ' + st_h + ':' + st_m + \
          ':' + st_s + '.' + st_us + 'UT on ' + str(self.st[0]) + '/' + \
          str(self.st[1]) + '/' + str(self.st[2]))
         self.update()
 
         # Display frame number
-        # self.SpectralFrame_label.setNum(self.spectral_currentframe)
-        self.SpectralFrame_label.setText('Frame # ' + str(self.spectral_currentframe))
+        self.DirectFrame_label.setText('Frame # ' + str(self.direct_currentframe))
         self.update()
 
         # Call the function to apply the flat
@@ -2322,7 +2329,7 @@ class Ui(QtWidgets.QMainWindow):
         #     self.spectral_frame_img = applyFlat(self.spectral_frame_img, self.flat_structure)
 
         # Set spectral image
-        self.spectral_image.setImage(spectral_frame_img.T) 
+        self.direct_image.setImage(direct_frame_img.T) 
 
     # Click to next Spectral frame
     def nextSpectralFrame(self):
@@ -2382,17 +2389,17 @@ class Ui(QtWidgets.QMainWindow):
         """
 
         # Introduce ROI, provided ROI is None 
-        if self.spectral_roi is None:
-            self.spectral_roi = pg.ROI((0,0), size = (100, 100), angle = 0, invertible = False, \
+        if self.direct_roi is None:
+            self.direct_roi = pg.ROI((0,0), size = (100, 100), angle = 0, invertible = False, \
                 maxBounds = None, snapSize = 1, scaleSnap = False, \
                     translateSnap = False, rotateSnap = False, \
                         parent = self.spectral_image, \
                             pen = None, movable = True, \
                             rotatable = True, resizable = True, removable = True)
-            self.spectral_roi.addRotateHandle([0.5,0.5], [0.25, 0.25])
-            self.spectral_roi.addScaleHandle([1,0.5], [0,0])
-            self.spectral_roi.addTranslateHandle([0,0.5],  [0,0])
-            self.angle = self.spectral_roi.angle()
+            self.direct_roi.addRotateHandle([0.5,0.5], [0.25, 0.25])
+            self.direct_roi.addScaleHandle([1,0.5], [0,0])
+            self.direct_roi.addTranslateHandle([0,0.5],  [0,0])
+            self.angle = self.direct_roi.angle()
 
 
 
@@ -2401,23 +2408,23 @@ class Ui(QtWidgets.QMainWindow):
         Introduces square ROI box on spectral frame. 
         Includes handles to rotate, scale, or translate the ROI. 
         """
-        if self.spectral_roi is not None:
-            self.spectral_roi.deleteLater()
-            self.spectral_roi = None
+        if self.direct_roi is not None:
+            self.direct_roi.deleteLater()
+            self.direct_roi = None
 
 
         # Introduce ROI, provided ROI is None 
-        if self.spectral_roi is None:
-            self.spectral_roi = pg.ROI((0,intercept+1/2*height), size = (width, height), angle = roll, invertible = False, \
+        if self.direct_roi is None:
+            self.direct_roi = pg.ROI((0,intercept-1/2*height), size = (width, height), angle = roll, invertible = False, \
                 maxBounds = None, snapSize = 1, scaleSnap = False, \
                     translateSnap = False, rotateSnap = False, \
-                        parent = self.spectral_image, \
+                        parent = self.direct_image, \
                             pen = None, movable = True, \
                             rotatable = True, resizable = True, removable = True)
-            self.spectral_roi.addRotateHandle([0.5,0.5], [0.25, 0.25])
-            self.spectral_roi.addScaleHandle([1,0.5], [0,0])
-            self.spectral_roi.addTranslateHandle([0,0.5],  [0,0])
-            self.angle = self.spectral_roi.angle()
+            self.direct_roi.addRotateHandle([0.5,0.5], [0.25, 0.25])
+            self.direct_roi.addScaleHandle([1,0.5], [0,0])
+            self.direct_roi.addTranslateHandle([0,0.5],  [0,0])
+            self.angle = self.direct_roi.angle()
     
     def autoTrackDirect(self):
         
@@ -2473,8 +2480,6 @@ class Ui(QtWidgets.QMainWindow):
 
         extractions = np.array(list(zip(x2, y2, amplitude, intensity, sigma_x_fitted, sigma_y_fitted)), dtype=object)
 
-        # np.savetxt('detect.csv', extractions, delimiter=',')
-
         # # Delete the direct ROI
         # self.direct_roi.deleteLater()
 
@@ -2487,45 +2492,16 @@ class Ui(QtWidgets.QMainWindow):
         self.direct_markers.setData(x = [self.dir_x], y = [self.dir_y])
         self.direct_circle.setData(x = [self.dir_x], y = [self.dir_y])
 
-        # if self.direct_roi is None:
-        #     self.direct_roi = pg.CircleROI((extractions[0,0]-30,extractions[0,1]-30), size = (60, 60), angle = 0, \
-        #         maxBounds = None, snapSize = 1, scaleSnap = False, \
-        #             translateSnap = False, rotateSnap = False, \
-        #                 parent = self.direct_image, \
-        #                     pen = None, movable = False, \
-        #                     rotatable = False, resizable = False, removable = True)
-        # else:
-        #     self.direct_roi.deleteLater()
-        #     self.direct_roi = None
-        #     self.direct_roi = pg.CircleROI((extractions[0,0]-30,extractions[0,1]-30), size = (60, 60), angle = 0, \
-        #         maxBounds = None, snapSize = 1, scaleSnap = False, \
-        #             translateSnap = False, rotateSnap = False, \
-        #                 parent = self.direct_image, \
-        #                     pen = None, movable = False, \
-        #                     rotatable = False, resizable = False, removable = True)
-            # self.direct_roi.addRotateHandle([0.5,0.5], [0.25, 0.25])
-            # self.direct_roi.addScaleHandle([1,0.5], [0,0])
-            # self.direct_roi.addTranslateHandle([0,0.5],  [0,0])
-            # self.angle = self.direct_roi.angle()
-
-        # fig = plt.figure(figsize=(8,4))
-        # ax = fig.add_subplot(111)
-        # ax.set_xlim(0,dimage.shape[1])
-        # ax.set_ylim(0,dimage.shape[0])
-        # plt.gca().invert_yaxis()
-
-        # plt.imshow(diff)
-
-        # plt.show()
+        print(self.dir_x, self.dir_y)
 
 
     def autoPickROI(self):
 
        # image = imageio.imread('TestSpectrum1.png', as_gray=True)
-        image = self.spectral_frame_img
+        image = self.direct_frame_img
 
-        # fig = plt.figure(figsize=(10,6))
-        # ax = fig.add_subplot(111)
+        fig = plt.figure(figsize=(10,6))
+        ax = fig.add_subplot(111)
 
         y,x = np.indices(image.shape)
 
@@ -2535,21 +2511,25 @@ class Ui(QtWidgets.QMainWindow):
         m_ransac = []
         b_ransac = []
 
+        # print(np.amax(image))
+
         for i in range(1,np.amax(image),int(np.amax(image)*0.02)):
+            # print(i)
+            axins = ax.inset_axes([-0.1,0.8,0.3,0.3])
+            ax.set_xlim(0,image.shape[1])
+            ax.set_ylim(0,image.shape[0])
+            plt.gca().invert_yaxis()
 
-            # axins = ax.inset_axes([-0.1,0.8,0.3,0.3])
-            # ax.set_xlim(0,image.shape[1])
-            # ax.set_ylim(0,image.shape[0])
-            # plt.gca().invert_yaxis()
-
-            valid_z = (y.ravel()>0) & (image.ravel()>(400+i))
+            valid_z = (y.ravel()>0) & (image.ravel()>(50+i))
             x_valid = x.ravel()[valid_z]
             y_valid = y.ravel()[valid_z]
             z_valid = image.ravel()[valid_z]
 
-            if len(z_valid) > 100:
-                # sc1 = ax.scatter(x_valid,y_valid, color='yellowgreen', marker='.')
-                # sc2 = ax.scatter(x_valid,y_valid, color='gold', marker='.')
+            print(len(z_valid))
+
+            if len(z_valid) > 200:
+                sc1 = ax.scatter(x_valid,y_valid, color='yellowgreen', marker='.')
+                sc2 = ax.scatter(x_valid,y_valid, color='gold', marker='.')
 
                 ransac = RANSACRegressor(residual_threshold=5).fit(x_valid.reshape(-1,1), y_valid.reshape(-1,1), sample_weight=z_valid)
                 # ransac.fit(x_valid.reshape(-1,1), y_valid.reshape(-1,1), sample_weight=z_valid**2)
@@ -2564,22 +2544,24 @@ class Ui(QtWidgets.QMainWindow):
                 mae.append(mean_absolute_error(y_valid,prediction))
                 scores.append(ransac.score(x_valid.reshape(-1,1), y_valid.reshape(-1,1)))
 
-                # sc1.set_offsets(np.c_[x_valid[inlier_mask], y_valid[inlier_mask]])
-                # sc2.set_offsets(np.c_[x_valid[outlier_mask], y_valid[outlier_mask]])
+                sc1.set_offsets(np.c_[x_valid[inlier_mask], y_valid[inlier_mask]])
+                sc2.set_offsets(np.c_[x_valid[outlier_mask], y_valid[outlier_mask]])
 
                 z = np.polyfit(x_valid,y_valid, w=z_valid, deg=1)
+                print("###")
+                print(z)
                 p = np.poly1d(z)
 
                 x_plot = np.linspace(x_valid.min(), x_valid.max(), 100)
                 y_plot = p(x_plot)
 
-                # ax.plot(x_plot, y_plot, '-r', lw=2, label='LR')
-                # ax.plot(line_X, line_y_ransac, label='RANSAC')
+                ax.plot(x_plot, y_plot, '-r', lw=2, label='LR')
+                ax.plot(line_X, line_y_ransac, label='RANSAC')
 
-                # axins.plot(mae, label='MAE')
+                axins.plot(mae, label='MAE')
 
-                # ax.legend(loc='upper right')
-                # axins.legend(loc='upper right')
+                ax.legend(loc='upper right')
+                axins.legend(loc='upper right')
 
                 this_roll = -1*math.degrees(math.atan2((line_y_ransac.max()-line_y_ransac.min()),(line_X.max()-line_X.min())))                
                 roll_ransac.append(this_roll)
@@ -2587,32 +2569,33 @@ class Ui(QtWidgets.QMainWindow):
                 this_b = line_y_ransac.max()-((line_y_ransac.max()-line_y_ransac.min())/(line_X.max()-line_X.min()))*line_X.max()
                 b_ransac.append(this_b)
                 
-                # ax.text(int(image.shape[1]/4),-10,f'This roll = {this_roll:.3} degrees')
+                ax.text(int(image.shape[1]/4),-10,f'This roll = {this_roll:.3} degrees')
 
                 if len(mae) > 1:
                     best_roll = roll_ransac[np.argmin(mae)]
-                    # ax.text(int(image.shape[1]/2),-10,f'Best roll = {best_roll:.3} degrees')
+                    ax.text(int(image.shape[1]/2),-10,f'Best roll = {best_roll:.3} degrees')
 
                     self.Roll_rollbox.setValue(best_roll)
 
                     x_vals = np.linspace(0,image.shape[1],2)
                     y_vals = b_ransac[np.argmin(mae)]+20+ np.tan(math.radians(best_roll))*x_vals
-                    # ax.plot(x_vals, y_vals, '--')
+                    ax.plot(x_vals, y_vals, '--')
 
-                    self.spectralAutoROI(image.shape[1],10,best_roll,b_ransac[np.argmin(mae)])
+                    # self.spectralAutoROI(image.shape[1],30,best_roll,b_ransac[np.argmin(mae)])
+                    self.spectralAutoROI(image.shape[1],30,best_roll,b_ransac[np.argmin(mae)])
 
             else:
                 break
             # print(line_y_ransac.max()-((line_y_ransac.max()-line_y_ransac.min())/(line_X.max()-line_X.min()))*line_X.max())
-            # plt.axis('equal')
+            plt.axis('equal')
 
-        #     fig.canvas.draw_idle()
-        #     plt.pause(0.01)
-        #     ax.cla()
+            fig.canvas.draw_idle()
+            plt.pause(0.01)
+            ax.cla()
 
-        #     # plt.show()
+            # plt.show()
 
-        # plt.waitforbuttonpress()
+        plt.waitforbuttonpress()
 
         # self.spectralAutoROI(image.shape[1],20,best_roll,b_ransac[np.argmin(mae)])
 
@@ -2637,9 +2620,9 @@ class Ui(QtWidgets.QMainWindow):
         # First frame set end
         self.spectral_background_startframe_end = 20
         # Last frame set start
-        self.spectral_background_lastframe_beg = 50
+        self.spectral_background_lastframe_beg = 35
         # Last frame set end
-        self.spectral_background_lastframe_end = 60
+        self.spectral_background_lastframe_end = 45
 
 
         # Define frame range
@@ -2648,11 +2631,11 @@ class Ui(QtWidgets.QMainWindow):
         
         # Build array 
         self.spectral_background = np.zeros(shape=(len(frame_range), \
-            self.spectral_vid.frames[0].img_data.shape[0], self.spectral_vid.frames[0].img_data.shape[1]))
+            self.direct_vid.frames[0].img_data.shape[0], self.direct_vid.frames[0].img_data.shape[1]))
 
         # Fill array
         for k, i in enumerate(frame_range):
-            frame = self.spectral_vid.frames[i].img_data
+            frame = self.direct_vid.frames[i].img_data
             self.spectral_background[k] = frame
 
         # Take median value of each entry, convert to float
@@ -2697,13 +2680,13 @@ class Ui(QtWidgets.QMainWindow):
         self.checkSpectralBackground()
 
         # Re define image data
-        spectral_frame = self.spectral_vid.frames[self.spectral_currentframe]
-        spectral_frame_img = spectral_frame.img_data.astype(np.float64) - self.spectral_background
-        spectral_frame_img[spectral_frame_img < 0] = 0
-        spectral_frame_img = self.spectral_frame_img.astype(np.uint16)
+        direct_frame = self.direct_vid.frames[self.direct_currentframe]
+        direct_frame_img = direct_frame.img_data.astype(np.float64) - self.spectral_background
+        direct_frame_img[direct_frame_img < 0] = 0
+        direct_frame_img = self.direct_frame_img.astype(np.uint16)
 
         # Get array region from ROI
-        self.spectral_array = self.spectral_roi.getArrayRegion(spectral_frame_img.T, self.spectral_image)
+        self.spectral_array = self.direct_roi.getArrayRegion(direct_frame_img.T, self.direct_image)
 
     # Makes ROI appear in a new window
     def showSpectralRegion(self):
@@ -2735,10 +2718,10 @@ class Ui(QtWidgets.QMainWindow):
         """
 
         # Delete the spectral ROI
-        self.spectral_roi.deleteLater()
+        self.direct_roi.deleteLater()
 
         # Re-initialize the spectral ROI
-        self.spectral_roi = None
+        self.direct_roi = None
 
     # Clear the affine marker
     def clearAffine(self):
@@ -2773,29 +2756,29 @@ class Ui(QtWidgets.QMainWindow):
         """
 
         # Set frame 
-        self.spectral_frame = self.spectral_vid.frames[self.spectral_currentframe]
-        self.spectral_frame_img = self.spectral_frame.img_data
+        self.direct_frame = self.direct_vid.frames[self.direct_currentframe]
+        self.direct_frame_img = self.direct_frame.img_data
 
         # Display time
-        self.st = unixTime2Date(self.spectral_frame.ts, self.spectral_frame.tu, dt_obj=False)
+        self.st = unixTime2Date(self.direct_frame.ts, self.direct_frame.tu, dt_obj=False)
         self.st = str(self.st)
-        self.SpectralTime_label.setText(self.st)
+        self.DirectTime_label.setText(self.st)
         self.update()
 
         # Display frame number
-        self.SpectralFrame_label.setNum(self.spectral_currentframe)
+        self.DirectFrame_label.setNum(self.direct_currentframe)
         self.update()
 
         # Set image levels
-        minv = np.percentile(self.spectral_frame_img, 0.1)
-        maxv = np.percentile(self.spectral_frame_img, 99.95)
+        minv = np.percentile(self.direct_frame_img, 0.1)
+        maxv = np.percentile(self.direct_frame_img, 99.95)
         gamma = 1
 
         # Create an image with properly adjust levels
-        spectral_frame_img = adjustLevels(self.spectral_frame_img, minv, gamma, maxv, scaleto8bits=True)
+        direct_frame_img = adjustLevels(self.direct_frame_img, minv, gamma, maxv, scaleto8bits=True)
 
         # Set spectral image
-        self.spectral_image.setImage(spectral_frame_img.T)
+        self.direct_image.setImage(direct_frame_img.T)
 
     ################# JOINT FILE CONTROL FUNCTIONS #################
 
@@ -3001,7 +2984,7 @@ class Ui(QtWidgets.QMainWindow):
         """       
 
         # Obtaion coordinates of ROI handles relative to scene
-        self.handles = self.spectral_roi.getSceneHandlePositions()
+        self.handles = self.direct_roi.getSceneHandlePositions()
 
         # Extract scale and translation  handle information
         scale_handle = list(self.handles[1])
@@ -3033,7 +3016,8 @@ class Ui(QtWidgets.QMainWindow):
         # Check background and set region to be plotted
         self.checkSpectralBackground()
         self.checkSpectralRegion()
-        self.projectAffine()
+        # self.projectAffine()
+        self.x = 400
         
         # Set pen  
         if self.PlottedSpectrumNumber == 0:
@@ -3089,25 +3073,26 @@ class Ui(QtWidgets.QMainWindow):
         scaled_spectral_profile = scaled_spectral_profile[middle_index:]
 
         # Interpolate responsivity curve to match scaled_spectral_profile
-        xM = self.responsivityDefault[:,0]
-        yM = self.responsivityDefault[:,1]
-        fM = interpolate.interp1d(xM,yM)
-        yMnew = fM(scaled_spectral_profile)
+        # xM = self.responsivityDefault[:,0]
+        # yM = self.responsivityDefault[:,1]
+        # fM = interpolate.interp1d(xM,yM)
+        # yMnew = fM(scaled_spectral_profile)
 
-        print(len(yMnew))
-        print(np.min(scaled_spectral_profile), np.max(scaled_spectral_profile), len(scaled_spectral_profile))
+        #
+        # print(len(yMnew))
+        # print(np.min(scaled_spectral_profile), np.max(scaled_spectral_profile), len(scaled_spectral_profile))
 
-        self.plotMax = np.max(np.divide(spectral_profile,yMnew))
+        # self.plotMax = np.max(np.divide(spectral_profile,yMnew))
 
         # Set axis titles 
         self.Plot.setLabel('left', 'Intensity')
         self.Plot.setLabel('bottom', 'Wavelength (nm)')
 
         # Create the plot
-        self.Plot.plot(scaled_spectral_profile, np.divide(spectral_profile,yMnew), pen = pen)
+        # self.Plot.plot(scaled_spectral_profile, np.divide(spectral_profile,yMnew), pen = pen) # Uncomment for responsivity
         self.Plot.plot(scaled_spectral_profile, spectral_profile, pen = pg.mkPen(pg.intColor(2)), width = 1)
         self.Plot.setXRange(np.min(scaled_spectral_profile),np.max(scaled_spectral_profile))
-        self.Plot.setYRange(0,self.plotMax)
+        # self.Plot.setYRange(0,self.plotMax)
         self.CalibrateSpectrum_button.setEnabled(True)
         self.SetReference_button.setEnabled(True)
 

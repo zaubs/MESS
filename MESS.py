@@ -554,37 +554,7 @@ class Ui(QtWidgets.QMainWindow):
         #################### INITIALIZE PLOT MOUSE #####################
 
         self.Plot.scene().sigMouseClicked.connect(self.mouse_clicked)
-
-        # #################### SPECTRAL FILE IMAGE VIEW ####################
-
-        # # Create the image widget with graphics view
-        # self.spectral_imagewidget = pg.GraphicsView()        
-        # # Set Graphics View to ViewBox                               
-        # self.spectral_imageframe = pg.ViewBox()                  
-        # # Set Graphics view as ventral widget                           
-        # self.spectral_imagewidget.setCentralWidget(self.spectral_imageframe)  
-        # # Lock aspect ratio               
-        # self.spectral_imageframe.setAspectLocked()     
-        # # Disable menu                         
-        # self.spectral_imageframe.setMenuEnabled(False)
-        # # Invert image frame along the y axis
-        # self.spectral_imageframe.invertY()
-        # # Add image item to ViewBox
-        # self.spectral_image = pg.ImageItem()           
-        # # Add item to image frame (ViewBox)                                     
-        # self.spectral_imageframe.addItem(self.spectral_image)                               
-        # Location of widget in layout
-        # self.Spectral_layout.addWidget(self.spectral_imagewidget, 0, 0)              
-
-        # #################### SPECTRAL IMAGE HISTOGRAM ####################
-
-        # # Create histogram widget
-        # self.spectral_hist = pg.HistogramLUTWidget()     
-        # # Connect histogram to image in ViewBox                                   
-        # self.spectral_hist.setImageItem(self.spectral_image)       
-        # # Location of widget in layout
-        # self.Spectral_layout.addWidget(self.spectral_hist, 0, 50)                           
-
+                        
         # ################# INITIALIZE SPECTRAL ROI/MOUSE #################
 
         # # Initalize ROI to None
@@ -592,26 +562,15 @@ class Ui(QtWidgets.QMainWindow):
         # # Change to crosshair cursor in the spectral image widget
         # self.spectral_imagewidget.setCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
 
-        #################### INITIALIZE BACKGROUND SETS ####################
-
-        # self.Frame1SpectralStart_linedit.insert("0")
-        # self.Frame1SpectralEnd_linedit.insert("10")
-        # self.Frame2SpectralStart_linedit.insert("50")
-        # self.Frame2SpectralEnd_linedit.insert("60")
-
         #################### SPECTRAL MARKERS ####################
 
         # Init affine marker on spectral image
         self.affine_markers = pg.ScatterPlotItem()
-        # self.affine_markers.setPen('r')
-        # self.affine_markers.setSymbol('o')
         self.affine_markers.setData(pxMode=False, symbol='o', size=10, pen='r', brush='r')
         self.direct_imageframe.addItem(self.affine_markers)
 
         # Init projected affine marker  on  spectral  image
         self.proj_affine_markers = pg.ScatterPlotItem()
-        # self.proj_affine_markers.setPen('b')
-        # self.proj_affine_markers.setSymbol('o')
         self.affine_markers.setData(pxMode=False, symbol='+', size=10, pen='b', brush='b')
         self.direct_imageframe.addItem(self.proj_affine_markers)  
         
@@ -653,25 +612,9 @@ class Ui(QtWidgets.QMainWindow):
     
         # Load files from event.txt file
         self.LoadEventFile_button.clicked.connect(self.loadEventFile)
- 
-        # # Upload spectral file
-        # self.UploadSpectral_button.clicked.connect(self.uploadSpectralVid)                  
-        # # Next spectral frame        
-        # self.NextSpectral_button.clicked.connect(self.nextSpectralFrame)
-        # # Jump ahead 5 frames
-        # self.ForwardFiveSpectral_button.clicked.connect(self.forwardFiveSpectralFrames)                    
-        # # Last spectral frame         
-        # self.LastSpectral_button.clicked.connect(self.lastSpectralFrame)
-        # # Jump back 5 frames
-        # self.BackFiveSpectral_button.clicked.connect(self.backFiveSpectralFrames)              
-
+        
         # Make ROI box appear        
-        self.SelectSpectralRegion_button.clicked.connect(self.spectralROI)                  
-
-        # # Displays image background        
-        # # self.CheckSpectralBackground_button.clicked.connect(self.showSpectralBackground)   
-        # # Displays selected region        
-        # # self.CheckSpectralRegion_button.clicked.connect(self.showSpectralRegion)           
+        self.SelectSpectralRegion_button.clicked.connect(self.spectralROI)                        
 
         # Clear ROI box        
         self.ClearSpectralRegion_button.clicked.connect(self.clearSpectralROI)             
@@ -720,7 +663,6 @@ class Ui(QtWidgets.QMainWindow):
         self.Hot2WarmRatio_rollbox.valueChanged.connect(lambda: self.updateHot2WarmRatio())
 
         # Element buttons
-
         self.Na_button.clicked.connect(self.elementButtonClicked)
         self.Mg_button.clicked.connect(self.elementButtonClicked)
         self.Ca_button.clicked.connect(self.elementButtonClicked)
@@ -736,8 +678,6 @@ class Ui(QtWidgets.QMainWindow):
         self.WarmTempOn_button.setCheckable(True)
         self.Ions_button.setCheckable(True)
         self.Neutral_button.setCheckable(True)
-        # self.Responsivity_check.setCheckable(True)
-        # self.Extinction_check.setCheckable(True)
 
         self.HotTempOn_button.clicked.connect(lambda: self.hotTempToggle())
         self.HotTempOn_button.toggled.connect(self.refreshPlot)
@@ -750,9 +690,6 @@ class Ui(QtWidgets.QMainWindow):
 
         self.RefreshPlot_button.clicked.connect(self.refreshPlot)
         self.CalculateFullSpectrum_button.clicked.connect(self.calculateFullSpectrum)
-
-        # self.HighTemp_rollbox.valueChanged.connect(self.refreshPlot)
-        # self.LowTemp_rollbox.valueChanged.connect(self.refreshPlot)
 
         # initialize the GuralSpectral object
         self.spectral = spectral_library.GuralSpectral(10000, 4500, None, None, None, None)
@@ -902,11 +839,6 @@ class Ui(QtWidgets.QMainWindow):
 
         self.elemIndex = 0
 
-        # i = 0
-        # for i in range(len(self.elementDeets)):
-        #     self.kelem[self.elementDeets[i][0]] = self.elementDeets[i][3]
-
-
         # ============================================================================
         #    At this stage, you should extract an integrated spectrum from the 
         #       imagery (for a frame or aggregated frames) that is to be fit and
@@ -955,26 +887,12 @@ class Ui(QtWidgets.QMainWindow):
         'P-I', 'Rb-II', 'Rb-I', 'Sc-II', 'Sc-I', 'Si-II', 'S-I', 'Sr-II', 'Sr-I', 'Ti-II', 'Ti-I', 'V-II', 'V-I', \
         'Y-II', 'Y-I', 'Zn-II', 'Zn-I', 'Zr-II', 'Zr-I']
         self.ExtraElements_combo.addItems(self.extra_elements)
-        # self.DisplayedExtraElements_combo.addItem('REMOVE')
-        # for i in range(len(self.extra_elements)):
-        # #     item = QtGui.QStandardItem(self.extra_elements[i])
-        # #     item.setForeground(QColor('red'))
-        # #     font = item.font()
-        # #     font.setPointSize(10)
-        # #     item.setFont(font)
-        # #     model.appendRow(item)
-            
-            # self.ExtraElements_combo.addItem(self.extra_elements[i].setFont(QtGui.QFont("Times", 15, QtGui.QFont.Bold)))
-            # if i == 2:
-            #     self.ExtraElements_combo.currentText().setStyleSheet('background-color:#FFFFFF;font:bold')
-        # ExtraElements_layout.addWidget(self.ExtraElements_combo)
-
         self.ExtraElements_combo.currentIndexChanged.connect(self.plotExtraElement)
         self.extraElementsCount = 0
         self.DisplayedExtraElements_combo.currentIndexChanged.connect(self.removeExtraElement)
         # self.PlotExtraElements_button.clicked.connect(self.plotExtraElement)
 
-        ########## Setup Utilities Tab ############
+        ########## Setup Stellar Calibration Tab ############
         spectral_library.readStarSpectra(self.spectral)
         starlist = ['Alderamin', 'Caph', 'Dubhe', 'Kappa Dra', 'Kochab', 'Megrez', 'Merak', 'Polaris', 'Shedir', 'Thuban', 'Yildun']
         self.ChooseStar_combo.addItems(starlist)

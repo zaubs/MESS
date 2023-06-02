@@ -868,7 +868,7 @@ class Ui(QtWidgets.QMainWindow):
         #           of incidence of the light path onto the grating.
         camos_camera_index = 0
         self.spectral.spcalib.gratinfo[camos_camera_index].grating_area_scale = math.cos(self.spectral.spconfig.grating_offnormal_deg * 3.141592654 / 180.0)
-        # print('Grating area scale: %s' % self.spectral.spcalib.gratinfo[camos_camera_index].grating_area_scale)
+        print('Grating area scale: %s' % self.spectral.spcalib.gratinfo[camos_camera_index].grating_area_scale)
 
         #========== Set user adjustable values in the elemdata structure to their starting defaults
         #              such as sigma, temperatures, electron density, hot-to-warm, airmass factor

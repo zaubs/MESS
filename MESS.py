@@ -3091,11 +3091,20 @@ class Ui(QtWidgets.QMainWindow):
         # Reset array
         scaled_spectral_profile = scaled_spectral_profile[middle_index:]
 
+        scaled_spectral_profile_short = []
+        spectral_profile_short = []
+        for i in range(len(scaled_spectral_profile)):
+            if scaled_spectral_profile[i] > 300 and scaled_spectral_profile[i] < 1100:
+                scaled_spectral_profile_short.append(scaled_spectral_profile[i])
+                spectral_profile_short.append(spectral_profile[i])
+
+        # print(min(scaled_spectral_profile))
+
         # Interpolate responsivity curve to match scaled_spectral_profile
-        # xM = self.responsivityDefault[:,0]
-        # yM = self.responsivityDefault[:,1]
-        # fM = interpolate.interp1d(xM,yM)
-        # yMnew = fM(scaled_spectral_profile)
+        xM = self.responsivityDefault[:,0]
+        yM = self.responsivityDefault[:,1]
+        fM = interpolate.interp1d(xM,yM)
+        yMnew = fM(scaled_spectral_profile_short)
 
         #
         # print(len(yMnew))
@@ -3108,10 +3117,11 @@ class Ui(QtWidgets.QMainWindow):
         self.Plot.setLabel('bottom', 'Wavelength (nm)')
 
         # Create the plot
-        # self.Plot.plot(scaled_spectral_profile, np.divide(spectral_profile,yMnew), pen = pen) # Uncomment for responsivity
-        self.Plot.plot(scaled_spectral_profile, spectral_profile, pen = pg.mkPen(pg.intColor(2)), width = 1)
-        self.Plot.setXRange(np.min(scaled_spectral_profile),np.max(scaled_spectral_profile))
+        self.Plot.plot(scaled_spectral_profile_short, np.divide(spectral_profile_short,yMnew), pen = pen) # Uncomment for responsivity
+        self.Plot.plot(scaled_spectral_profile_short, spectral_profile_short, pen = pg.mkPen(pg.intColor(2)), width = 1)
+        self.Plot.setXRange(np.min(scaled_spectral_profile_short),np.max(scaled_spectral_profile_short))
         # self.Plot.setYRange(0,self.plotMax)
+        self.Plot.setYRange(0,8000)
         self.CalibrateSpectrum_button.setEnabled(True)
         self.SetReference_button.setEnabled(True)
 

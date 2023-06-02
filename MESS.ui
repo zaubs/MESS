@@ -43,7 +43,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>Direct Camera</string>
+     <string/>
     </property>
     <property name="flat">
      <bool>false</bool>
@@ -144,13 +144,13 @@
       </rect>
      </property>
      <property name="text">
-      <string>TextLabel</string>
+      <string>.</string>
      </property>
     </widget>
     <widget class="QLabel" name="DirectFileName_label">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>3</x>
        <y>0</y>
        <width>371</width>
        <height>21</height>
@@ -160,7 +160,7 @@
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>....</string>
+      <string>.</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -865,7 +865,10 @@
         </widget>
        </item>
        <item row="10" column="0">
-        <widget class="QPushButton" name="pushButton_7">
+        <widget class="QPushButton" name="PickFeature_button">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Pick Known Feature</string>
          </property>
@@ -1603,6 +1606,9 @@
           <layout class="QHBoxLayout" name="horizontalLayout_31">
            <item>
             <widget class="QPushButton" name="FittedSpec_button">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>Fit Spectrum</string>
              </property>

@@ -601,11 +601,15 @@ class Ui(QtWidgets.QMainWindow):
         # Last direct frame        
         self.LastDirect_button.clicked.connect(self.lastDirectFrame)   
         # Jump back 5 frames
-        self.BackFiveDirect_button.clicked.connect(self.backFiveDirectFrames)                  
+        self.BackFiveDirect_button.clicked.connect(self.backFiveDirectFrames)
+
+
         # Run affine transform        
         self.Affine_button.clicked.connect(self.affineTransform)
         # Update affine transform
-        self.UpdateAffine_button.clicked.connect(self.updateTransform)        
+        self.UpdateAffine_button.clicked.connect(self.updateTransform)
+        # Pick a feature for the transform
+        self.PickFeature_button.clicked.connect(self.pickFeature)        
 
 
         # ################# SPECTRAL FILE CONTROL BUTTONS #################
@@ -1258,6 +1262,9 @@ class Ui(QtWidgets.QMainWindow):
         self.Scale_label.setText(str(self.ui.NewScale_rollbox.value()))
         self.plotMeasuredSpec()
 
+    def pickFeature(self):
+        print("Hello there.")
+
     def mouse_clicked(self, evt):
 
         vb = self.Plot.plotItem.vb
@@ -1453,17 +1460,14 @@ class Ui(QtWidgets.QMainWindow):
         elif len(fittingElems) == 3:
             spectral_library.GuralSpectral.computeFullSpec(self.spectral, fittingElems[0], fittingElems[1], fittingElems[2])
 
-        # print(self.spectral.spcalib.wavelength_nm)
-        # for kwave in range(self.spectral.spcalib.nwavelengths):
-        #     print(self.spectral.spectra.fit_spectrum[kwave])
-
         self.fullspec_array = np.zeros((self.spectral.spcalib.nwavelengths,2))
 
         for i in range(self.spectral.spcalib.nwavelengths):
             self.fullspec_array[i][0] = self.spectral.spcalib.wavelength_nm[i]
             self.fullspec_array[i][1] = self.spectral.spectra.fit_spectrum[i]
 
-        self.fullSpecScaler = self.plotMax / np.max(self.fullspec_array[:,1])
+        # self.fullSpecScaler = self.plotMax / np.max(self.fullspec_array[:,1])
+        self.fullSpecScaler = 1.0
 
         self.plotFullSpectrum()
 
@@ -1820,7 +1824,7 @@ class Ui(QtWidgets.QMainWindow):
                     # self.DirectFilePath_linedit.setText(direct_path)
                     # self.DirectFileName_linedit.setText(direct_name)
 
-                    self.DirectFileName_label.setText('Direct camera file: ' + os.path.split(direct_file_name[0])[1])
+                    self.DirectFileName_label.setText(os.path.split(direct_file_name[0])[1])
 
                     self.direct_vid = readVid(direct_path, direct_name)
                     self.direct_currentframe = int(len(self.direct_vid.frames)/2)
@@ -1840,6 +1844,7 @@ class Ui(QtWidgets.QMainWindow):
                     self.UploadSpectralFlat_button.setEnabled(True)
                     self.AutoSpectralFlat_button.setEnabled(True)
                     self.Affine_button.setEnabled(True)
+                    self.PickFeature_button.setEnabled(True)
                     self.AutoPickDirect_button.setEnabled(True)
                     self.AutoTrackDirect_button.setEnabled(True)
                     # self.ManualPickDirect_button.setEnabled(True)
@@ -1882,6 +1887,7 @@ class Ui(QtWidgets.QMainWindow):
                 self.UploadSpectralFlat_button.setEnabled(True)
                 self.AutoSpectralFlat_button.setEnabled(True)
                 self.Affine_button.setEnabled(True)
+                self.PickFeature_button.setEnabled(True)
                 self.AutoPickDirect_button.setEnabled(True)
                 self.AutoTrackDirect_button.setEnabled(True)
                 # self.ManualPickDirect_button.setEnabled(True)
@@ -1995,11 +2001,20 @@ class Ui(QtWidgets.QMainWindow):
         """
 
         # Set x and y coordinates of click
-        self.dir_x = event.pos().x()
-        self.dir_y = event.pos().y()
+        self.dir_xpos = event.pos().x()
+        self.dir_ypos = event.pos().y()
 
         # Update label with new click coordinates
-        self.DirectXYCoordsDisplay_label.setText('Mouse coords: ( %d : %d )' % (self.dir_x, self.dir_y))
+        self.DirectXYCoordsDisplay_label.setText('Mouse coords: ( %d : %d )' % (self.dir_xpos, self.dir_ypos))
+
+        self.hu = self.dir_xpos
+        self.hv = self.dir_ypos
+
+        self.DeltaX_edit.setText(str(int(self.hu - self.dir_x)))
+        self.DeltaY_edit.setText(str(int(self.hv - self.dir_y)))
+        print(self.hu-self.dir_x)
+
+        self.affine_markers.setData(x = [self.hu], y = [self.hv])
 
     # Run the affine transform, plot point on spectral image
     def affineTransform(self):
@@ -2130,75 +2145,75 @@ class Ui(QtWidgets.QMainWindow):
         self.direct_image.setImage(direct_frame_img.T)
         self.spectral_flat_exists = True
 
-    def uploadSpectralVid(self, file=None):
-        if file == False:
-            dlg = QFileDialog()
-            dlg.setFileMode(QFileDialog.AnyFile)
+    # def uploadSpectralVid(self, file=None):
+    #     if file == False:
+    #         dlg = QFileDialog()
+    #         dlg.setFileMode(QFileDialog.AnyFile)
 
-            if dlg.exec():
-                spectral_file_name = dlg.selectedFiles()
+    #         if dlg.exec():
+    #             spectral_file_name = dlg.selectedFiles()
 
-                if spectral_file_name[0].endswith('.vid'):
-                    # print(spectral_file_name)
-                    spectral_path = os.path.split(spectral_file_name[0])[0]
-                    spectral_name = os.path.split(spectral_file_name[0])[1]
+    #             if spectral_file_name[0].endswith('.vid'):
+    #                 # print(spectral_file_name)
+    #                 spectral_path = os.path.split(spectral_file_name[0])[0]
+    #                 spectral_name = os.path.split(spectral_file_name[0])[1]
 
-                    self.SpectralFileName_label.setText('Spectral camera file: ' + os.path.split(spectral_file_name[0])[1])
+    #                 self.SpectralFileName_label.setText('Spectral camera file: ' + os.path.split(spectral_file_name[0])[1])
 
-                    self.spectral_vid = readVid(spectral_path, spectral_name)
+    #                 self.spectral_vid = readVid(spectral_path, spectral_name)
 
-                    self.spectral_vidlength = len(self.spectral_vid.frames)
-                    self.spectral_currentframe = findSpectrumFrame()
-                    # print(self.spectral_currentframe)
-                    # self.spectral_currentframe = int(len(self.spectral_vid.frames)/2)
+    #                 self.spectral_vidlength = len(self.spectral_vid.frames)
+    #                 self.spectral_currentframe = findSpectrumFrame()
+    #                 # print(self.spectral_currentframe)
+    #                 # self.spectral_currentframe = int(len(self.spectral_vid.frames)/2)
                     
 
-                    self.updateSpectralFrames()
+    #                 self.updateSpectralFrames()
 
-                    ### Enable some buttons ###
-                    self.FlattenSpectral_button.setEnabled(True)
-                    self.AutoPick_button.setEnabled(True)
-                    self.AutoTrackSpectral_button.setEnabled(True)
-                    self.SelectSpectralRegion_button.setEnabled(True)
-                    self.ClearSpectralRegion_button.setEnabled(True)
-                    self.CheckSpectralRegion_button.setEnabled(True)
-                    self.CheckSpectralBackground_button.setEnabled(True)
-                    self.UploadSpectralBias_button.setEnabled(True)
-                    self.UploadSpectralFlat_button.setEnabled(True)
-                    self.AutoSpectralFlat_button.setEnabled(True)
-                    self.Affine_button.setEnabled(True)
-                else:
-                    pass
-        else:
-            spectral_file_name = file
+    #                 ### Enable some buttons ###
+    #                 self.FlattenSpectral_button.setEnabled(True)
+    #                 self.AutoPick_button.setEnabled(True)
+    #                 self.AutoTrackSpectral_button.setEnabled(True)
+    #                 self.SelectSpectralRegion_button.setEnabled(True)
+    #                 self.ClearSpectralRegion_button.setEnabled(True)
+    #                 self.CheckSpectralRegion_button.setEnabled(True)
+    #                 self.CheckSpectralBackground_button.setEnabled(True)
+    #                 self.UploadSpectralBias_button.setEnabled(True)
+    #                 self.UploadSpectralFlat_button.setEnabled(True)
+    #                 self.AutoSpectralFlat_button.setEnabled(True)
+    #                 self.Affine_button.setEnabled(True)
+    #             else:
+    #                 pass
+    #     else:
+    #         spectral_file_name = file
 
-            if spectral_file_name.endswith('.vid'):
-                spectral_path = os.path.split(spectral_file_name)[0]
-                spectral_name = os.path.split(spectral_file_name)[1]
+    #         if spectral_file_name.endswith('.vid'):
+    #             spectral_path = os.path.split(spectral_file_name)[0]
+    #             spectral_name = os.path.split(spectral_file_name)[1]
 
-                # self.DirectFilePath_linedit.setText(direct_path)
-                # self.DirectFileName_linedit.setText(direct_name)
+    #             # self.DirectFilePath_linedit.setText(direct_path)
+    #             # self.DirectFileName_linedit.setText(direct_name)
 
-                self.SpectralFileName_label.setText('Spectral camera file: ' + os.path.split(spectral_file_name)[1])
+    #             self.SpectralFileName_label.setText('Spectral camera file: ' + os.path.split(spectral_file_name)[1])
 
-                self.spectral_vid = readVid(spectral_path, spectral_name)
-                self.spectral_vidlength = len(self.spectral_vid.frames)
-                self.spectral_currentframe = self.findSpectrumFrame()
-                # self.spectral_currentframe = int(len(self.spectral_vid.frames)/2)
-                # self.spectral_vidlength = len(self.spectral_vid.frames)
+    #             self.spectral_vid = readVid(spectral_path, spectral_name)
+    #             self.spectral_vidlength = len(self.spectral_vid.frames)
+    #             self.spectral_currentframe = self.findSpectrumFrame()
+    #             # self.spectral_currentframe = int(len(self.spectral_vid.frames)/2)
+    #             # self.spectral_vidlength = len(self.spectral_vid.frames)
 
-                self.updateSpectralFrames()
+    #             self.updateSpectralFrames()
 
-                self.FlattenSpectral_button.setEnabled(True)
-                self.AutoPick_button.setEnabled(True)
-                self.AutoTrackSpectral_button.setEnabled(True)
-                self.SelectSpectralRegion_button.setEnabled(True)
-                self.ClearSpectralRegion_button.setEnabled(True)
-                self.CheckSpectralRegion_button.setEnabled(True)
-                self.CheckSpectralBackground_button.setEnabled(True)
-                self.UploadSpectralBias_button.setEnabled(True)
-                self.UploadSpectralFlat_button.setEnabled(True)
-                self.AutoSpectralFlat_button.setEnabled(True)
+    #             self.FlattenSpectral_button.setEnabled(True)
+    #             self.AutoPick_button.setEnabled(True)
+    #             self.AutoTrackSpectral_button.setEnabled(True)
+    #             self.SelectSpectralRegion_button.setEnabled(True)
+    #             self.ClearSpectralRegion_button.setEnabled(True)
+    #             self.CheckSpectralRegion_button.setEnabled(True)
+    #             self.CheckSpectralBackground_button.setEnabled(True)
+    #             self.UploadSpectralBias_button.setEnabled(True)
+    #             self.UploadSpectralFlat_button.setEnabled(True)
+    #             self.AutoSpectralFlat_button.setEnabled(True)
 
     # Update spectral frame
     def updateDirectFrames(self):
@@ -2425,7 +2440,7 @@ class Ui(QtWidgets.QMainWindow):
         self.direct_markers.setData(x = [self.dir_x], y = [self.dir_y])
         self.direct_circle.setData(x = [self.dir_x], y = [self.dir_y])
 
-        print(self.dir_x, self.dir_y)
+        # print(self.dir_x, self.dir_y)
 
         # for i in range(-25,25):
         #     for j in range(-25,25):
@@ -3036,10 +3051,10 @@ class Ui(QtWidgets.QMainWindow):
         self.Plot.setLabel('bottom', 'Wavelength (nm)')
 
         # Create the plot
-        self.Plot.plot(scaled_spectral_profile_short, np.divide(spectral_profile_short,yMnew), pen = pen) # Uncomment for responsivity
+        # self.Plot.plot(scaled_spectral_profile_short, np.divide(spectral_profile_short,yMnew), pen = pen) # Uncomment for responsivity
         self.Plot.plot(scaled_spectral_profile_short, spectral_profile_short, pen = pg.mkPen(pg.intColor(2)), width = 1)
         self.Plot.setXRange(np.min(scaled_spectral_profile_short),np.max(scaled_spectral_profile_short))
-        self.Plot.setYRange(0,self.plotMax)
+        # self.Plot.setYRange(0,self.plotMax)
         # self.Plot.setYRange(0,8000)
         self.CalibrateSpectrum_button.setEnabled(True)
         self.SetReference_button.setEnabled(True)

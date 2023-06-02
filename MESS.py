@@ -599,21 +599,21 @@ class Ui(QtWidgets.QMainWindow):
         # self.Frame2SpectralStart_linedit.insert("50")
         # self.Frame2SpectralEnd_linedit.insert("60")
 
-        # #################### SPECTRAL MARKERS ####################
+        #################### SPECTRAL MARKERS ####################
 
-        # # Init affine marker on spectral image
-        # self.affine_markers = pg.ScatterPlotItem()
-        # # self.affine_markers.setPen('r')
-        # # self.affine_markers.setSymbol('o')
-        # self.affine_markers.setData(pxMode=False, symbol='o', size=10, pen='r', brush='r')
-        # self.spectral_imageframe.addItem(self.affine_markers)
+        # Init affine marker on spectral image
+        self.affine_markers = pg.ScatterPlotItem()
+        # self.affine_markers.setPen('r')
+        # self.affine_markers.setSymbol('o')
+        self.affine_markers.setData(pxMode=False, symbol='o', size=10, pen='r', brush='r')
+        self.direct_imageframe.addItem(self.affine_markers)
 
-        # # Init projected affine marker  on  spectral  image
-        # self.proj_affine_markers = pg.ScatterPlotItem()
-        # # self.proj_affine_markers.setPen('b')
-        # # self.proj_affine_markers.setSymbol('o')
-        # self.affine_markers.setData(pxMode=False, symbol='+', size=10, pen='b', brush='b')
-        # self.spectral_imageframe.addItem(self.proj_affine_markers)  
+        # Init projected affine marker  on  spectral  image
+        self.proj_affine_markers = pg.ScatterPlotItem()
+        # self.proj_affine_markers.setPen('b')
+        # self.proj_affine_markers.setSymbol('o')
+        self.affine_markers.setData(pxMode=False, symbol='+', size=10, pen='b', brush='b')
+        self.direct_imageframe.addItem(self.proj_affine_markers)  
         
         ################# LOAD SPECTRAL FLAT ####################
 
@@ -647,14 +647,7 @@ class Ui(QtWidgets.QMainWindow):
         self.Affine_button.clicked.connect(self.affineTransform)
         # Update affine transform
         self.UpdateAffine_button.clicked.connect(self.updateTransform)        
-        # Next frame (both direct and spectral)       
-        self.NextFrame_button.clicked.connect(self.nextFrame)
-        # Last frame (both direct and spectral)   
-        self.LastFrame_button.clicked.connect(self.lastFrame)  
-        # Next frame set that is as close in time as possible
-        self.NextTimeFrame_button.clicked.connect(self.nextTimeFrame) 
-        # Last frame set that is as close in time as possible
-        self.LastTimeFrame_button.clicked.connect(self.lastTimeFrame)
+
 
         # ################# SPECTRAL FILE CONTROL BUTTONS #################
     
@@ -951,9 +944,9 @@ class Ui(QtWidgets.QMainWindow):
 
         self.PlottedSpectrumNumber = 0
 
-        self.Scale_label.setText('2.85')
-        self.nm0_label.setText('410.0')
-        self.nm0_edit.setText('410.0')
+        self.Scale_label.setText('2.15')
+        self.nm0_label.setText('422.8')
+        self.nm0_edit.setText('422.8')
 
         self.extra_elements = ['Al-II', 'Al-I', 'Ar-II', 'Ar-I', 'Ba-II', 'Ba-I', 'Be-II', 'Be-I', 'Ca-II', 'C-II', \
         'C-I', 'Cl-II', 'Cl-I', 'Co-II', 'Co-I', 'Cr-II', 'Cr-I', 'Cs-II', 'Cs-I', 'Cu-II', 'Cu-I', 'Fe-II', \
@@ -1000,6 +993,10 @@ class Ui(QtWidgets.QMainWindow):
             print('Loaded default responsivity curve.')
         except:
             print('Unable to load default responsivity curve!')
+
+
+        self.dir_x = 0
+        self.dir_y = 0
 
     ###############################################################################################
     ###################################### /// FUNCTIONS /// ######################################
@@ -1274,8 +1271,8 @@ class Ui(QtWidgets.QMainWindow):
         scaled_spectral_profile = np.zeros(len(self.spectral_profile))
 
         # Scaling parameters
-        # s = 2.85 # px/nm
-        s = self.SpectralScale_rollbox.value() * self.spectral_vid.frames[0].img_data.shape[1]/676.0 # px/nm
+        s = 1/2.15 # px/nm
+        # s = self.SpectralScale_rollbox.value() * self.spectral_vid.frames[0].img_data.shape[1]/676.0 # px/nm
         # nm0 = float(self.nm0_edit.text()) # nm 
         print('s = %s' % s)
 
@@ -1325,7 +1322,7 @@ class Ui(QtWidgets.QMainWindow):
 
     def calculateScale(self):
 
-        old_scale = 2.85
+        old_scale = self.ui.NewScale_rollbox.value()
         w1 = int(self.ui.Wave1_edit.text())
         w2 = int(self.ui.Wave2_edit.text())
         x1 = float(self.ui.CalibX1_label.text())
@@ -1913,29 +1910,30 @@ class Ui(QtWidgets.QMainWindow):
                     self.updateDirectFrames()
 
                     ### Enable some buttons ###
+                    # self.FlattenSpectral_button.setEnabled(True)
+                    self.AutoPick_button.setEnabled(True)
+                    # self.AutoTrackSpectral_button.setEnabled(True)
+                    self.SelectSpectralRegion_button.setEnabled(True)
+                    self.ClearSpectralRegion_button.setEnabled(True)
+                    # self.CheckSpectralRegion_button.setEnabled(True)
+                    # self.CheckSpectralBackground_button.setEnabled(True)
+                    # self.UploadSpectralBias_button.setEnabled(True)
+                    self.UploadSpectralFlat_button.setEnabled(True)
+                    self.AutoSpectralFlat_button.setEnabled(True)
+                    self.Affine_button.setEnabled(True)
                     self.AutoPickDirect_button.setEnabled(True)
                     self.AutoTrackDirect_button.setEnabled(True)
                     # self.ManualPickDirect_button.setEnabled(True)
                     self.ClearPicksDirect_button.setEnabled(True)
-                    self.UploadSpectralFlat_button.setEnabled(True)
-                    # self.UploadSpectralBias_button.setEnabled(True)
-                    self.AutoSpectralFlat_button.setEnabled(True)
-                    self.AutoPick_button.setEnabled(True)
-                    self.SelectSpectralRegion_button.setEnabled(True)
-                    self.ClearSpectralRegion_button.setEnabled(True)
-
-                    # self.FlattenSpectral_button.setEnabled(True)
-                    # self.AutoTrackSpectral_button.setEnabled(True)                  
-                    # self.CheckSpectralRegion_button.setEnabled(True)
-                    # self.CheckSpectralBackground_button.setEnabled(True)
-                    
-                    
-                    
+                    self.DeltaX_edit.setEnabled(True)
+                    self.DeltaY_edit.setEnabled(True)
+                    self.nm0_edit.setEnabled(True)
+                    self.UpdateAffine_button.setEnabled(True)
+                                        
                 else:
                     pass
 
         else:
-            print(file)
             direct_file_name = file
 
             if direct_file_name.endswith('.vid'):
@@ -1953,6 +1951,18 @@ class Ui(QtWidgets.QMainWindow):
 
                 self.updateDirectFrames()
 
+                ### Enable some buttons ###
+                self.FlattenSpectral_button.setEnabled(True)
+                self.AutoPick_button.setEnabled(True)
+                self.AutoTrackSpectral_button.setEnabled(True)
+                self.SelectSpectralRegion_button.setEnabled(True)
+                self.ClearSpectralRegion_button.setEnabled(True)
+                self.CheckSpectralRegion_button.setEnabled(True)
+                self.CheckSpectralBackground_button.setEnabled(True)
+                self.UploadSpectralBias_button.setEnabled(True)
+                self.UploadSpectralFlat_button.setEnabled(True)
+                self.AutoSpectralFlat_button.setEnabled(True)
+                self.Affine_button.setEnabled(True)
                 self.AutoPickDirect_button.setEnabled(True)
                 self.AutoTrackDirect_button.setEnabled(True)
                 # self.ManualPickDirect_button.setEnabled(True)
@@ -2094,13 +2104,16 @@ class Ui(QtWidgets.QMainWindow):
         # scale_file_name = "direct_spectral_20210526_02J.aff"
 
         # Load the scale plate
-        self.scale = loadScale(scale_dir_path, scale_file_name[0])
+        # self.scale = loadScale(scale_dir_path, scale_file_name[0])
 
         # Enable the update button
         self.UpdateAffine_button.setEnabled(True)
 
         # Convert image (X, Y) to encoder (Hu, Hv)
-        self.hu, self.hv = plateScaleMap(self.scale, self.dir_x, self.dir_y)
+        # self.hu, self.hv = plateScaleMap(self.scale, self.dir_x, self.dir_y)
+
+        self.hu = self.dir_x + 300
+        self.hv = self.dir_y
 
         # Set data for markers and plot on 
         self.affine_markers.setData(x = [self.hu], y = [self.hv])
@@ -2109,7 +2122,9 @@ class Ui(QtWidgets.QMainWindow):
         self.nm0_label.setText(self.nm0_edit.text())
         deltaX = int(self.DeltaX_edit.text())
         deltaY = int(self.DeltaY_edit.text())
-        self.hu, self.hv = plateScaleMap(self.scale, self.dir_x + deltaX, self.dir_y + deltaY)
+        # self.hu, self.hv = plateScaleMap(self.scale, self.dir_x + deltaX, self.dir_y + deltaY)
+        self.hu = self.dir_x + deltaX
+        self.hv = self.dir_y + deltaY
         self.affine_markers.setData(x = [self.hu], y = [self.hv])
 
     ################# SPECTRAL FILE CONTROL FUNCTIONS #################
@@ -2236,7 +2251,6 @@ class Ui(QtWidgets.QMainWindow):
                 else:
                     pass
         else:
-            print(file)
             spectral_file_name = file
 
             if spectral_file_name.endswith('.vid'):
@@ -2300,8 +2314,8 @@ class Ui(QtWidgets.QMainWindow):
 
         # Display time
         self.st = unixTime2Date(self.direct_frame.ts, self.direct_frame.tu, dt_obj=False)
-        print('DT-spec')
-        print(self.st)
+        # print('DT-spec')
+        # print(self.st)
         # self.st = str(self.st)
         # self.SpectralTime_label.setText(self.st)
 
@@ -2329,7 +2343,7 @@ class Ui(QtWidgets.QMainWindow):
         #     self.spectral_frame_img = applyFlat(self.spectral_frame_img, self.flat_structure)
 
         # Set spectral image
-        self.direct_image.setImage(direct_frame_img.T) 
+        self.direct_image.setImage(direct_frame_img.T)
 
     # Click to next Spectral frame
     def nextSpectralFrame(self):
@@ -2494,14 +2508,22 @@ class Ui(QtWidgets.QMainWindow):
 
         print(self.dir_x, self.dir_y)
 
+        # for i in range(-25,25):
+        #     for j in range(-25,25):
+        #         self.direct_vid.frames[self.direct_currentframe].img_data.T[int(self.dir_x)+i,int(self.dir_y)+j] = 30
+
+        # print(np.amin(self.direct_vid.frames[self.direct_currentframe].img_data))
+
+        # self.updateDirectFrames()
+
 
     def autoPickROI(self):
 
        # image = imageio.imread('TestSpectrum1.png', as_gray=True)
         image = self.direct_frame_img
 
-        fig = plt.figure(figsize=(10,6))
-        ax = fig.add_subplot(111)
+        # fig = plt.figure(figsize=(10,6))
+        # ax = fig.add_subplot(111)
 
         y,x = np.indices(image.shape)
 
@@ -2515,21 +2537,19 @@ class Ui(QtWidgets.QMainWindow):
 
         for i in range(1,np.amax(image),int(np.amax(image)*0.02)):
             # print(i)
-            axins = ax.inset_axes([-0.1,0.8,0.3,0.3])
-            ax.set_xlim(0,image.shape[1])
-            ax.set_ylim(0,image.shape[0])
-            plt.gca().invert_yaxis()
+            # axins = ax.inset_axes([-0.1,0.8,0.3,0.3])
+            # ax.set_xlim(0,image.shape[1])
+            # ax.set_ylim(0,image.shape[0])
+            # plt.gca().invert_yaxis()
 
             valid_z = (y.ravel()>0) & (image.ravel()>(50+i))
             x_valid = x.ravel()[valid_z]
             y_valid = y.ravel()[valid_z]
             z_valid = image.ravel()[valid_z]
 
-            print(len(z_valid))
-
             if len(z_valid) > 200:
-                sc1 = ax.scatter(x_valid,y_valid, color='yellowgreen', marker='.')
-                sc2 = ax.scatter(x_valid,y_valid, color='gold', marker='.')
+                # sc1 = ax.scatter(x_valid,y_valid, color='yellowgreen', marker='.')
+                # sc2 = ax.scatter(x_valid,y_valid, color='gold', marker='.')
 
                 ransac = RANSACRegressor(residual_threshold=5).fit(x_valid.reshape(-1,1), y_valid.reshape(-1,1), sample_weight=z_valid)
                 # ransac.fit(x_valid.reshape(-1,1), y_valid.reshape(-1,1), sample_weight=z_valid**2)
@@ -2544,24 +2564,22 @@ class Ui(QtWidgets.QMainWindow):
                 mae.append(mean_absolute_error(y_valid,prediction))
                 scores.append(ransac.score(x_valid.reshape(-1,1), y_valid.reshape(-1,1)))
 
-                sc1.set_offsets(np.c_[x_valid[inlier_mask], y_valid[inlier_mask]])
-                sc2.set_offsets(np.c_[x_valid[outlier_mask], y_valid[outlier_mask]])
+                # sc1.set_offsets(np.c_[x_valid[inlier_mask], y_valid[inlier_mask]])
+                # sc2.set_offsets(np.c_[x_valid[outlier_mask], y_valid[outlier_mask]])
 
                 z = np.polyfit(x_valid,y_valid, w=z_valid, deg=1)
-                print("###")
-                print(z)
                 p = np.poly1d(z)
 
                 x_plot = np.linspace(x_valid.min(), x_valid.max(), 100)
                 y_plot = p(x_plot)
 
-                ax.plot(x_plot, y_plot, '-r', lw=2, label='LR')
-                ax.plot(line_X, line_y_ransac, label='RANSAC')
+                # ax.plot(x_plot, y_plot, '-r', lw=2, label='LR')
+                # ax.plot(line_X, line_y_ransac, label='RANSAC')
 
-                axins.plot(mae, label='MAE')
+                # axins.plot(mae, label='MAE')
 
-                ax.legend(loc='upper right')
-                axins.legend(loc='upper right')
+                # ax.legend(loc='upper right')
+                # axins.legend(loc='upper right')
 
                 this_roll = -1*math.degrees(math.atan2((line_y_ransac.max()-line_y_ransac.min()),(line_X.max()-line_X.min())))                
                 roll_ransac.append(this_roll)
@@ -2569,33 +2587,37 @@ class Ui(QtWidgets.QMainWindow):
                 this_b = line_y_ransac.max()-((line_y_ransac.max()-line_y_ransac.min())/(line_X.max()-line_X.min()))*line_X.max()
                 b_ransac.append(this_b)
                 
-                ax.text(int(image.shape[1]/4),-10,f'This roll = {this_roll:.3} degrees')
+                # ax.text(int(image.shape[1]/4),-10,f'This roll = {this_roll:.3} degrees')
 
                 if len(mae) > 1:
                     best_roll = roll_ransac[np.argmin(mae)]
-                    ax.text(int(image.shape[1]/2),-10,f'Best roll = {best_roll:.3} degrees')
+                    # ax.text(int(image.shape[1]/2),-10,f'Best roll = {best_roll:.3} degrees')
 
                     self.Roll_rollbox.setValue(best_roll)
 
-                    x_vals = np.linspace(0,image.shape[1],2)
-                    y_vals = b_ransac[np.argmin(mae)]+20+ np.tan(math.radians(best_roll))*x_vals
-                    ax.plot(x_vals, y_vals, '--')
+                    # x_vals = np.linspace(0,image.shape[1],2)
+                    # y_vals = b_ransac[np.argmin(mae)]+20+ np.tan(math.radians(best_roll))*x_vals
+                    # ax.plot(x_vals, y_vals, '--')
 
-                    # self.spectralAutoROI(image.shape[1],30,best_roll,b_ransac[np.argmin(mae)])
+                    if self.direct_roi is not None:
+                        self.direct_roi.deleteLater()
+                        self.direct_roi = None
+
                     self.spectralAutoROI(image.shape[1],30,best_roll,b_ransac[np.argmin(mae)])
 
             else:
                 break
-            # print(line_y_ransac.max()-((line_y_ransac.max()-line_y_ransac.min())/(line_X.max()-line_X.min()))*line_X.max())
-            plt.axis('equal')
+            # # print(line_y_ransac.max()-((line_y_ransac.max()-line_y_ransac.min())/(line_X.max()-line_X.min()))*line_X.max())
+            # plt.axis('equal')
 
-            fig.canvas.draw_idle()
-            plt.pause(0.01)
-            ax.cla()
+            # fig.canvas.draw_idle()
+            # plt.pause(0.01)
+            # ax.cla()
 
             # plt.show()
 
-        plt.waitforbuttonpress()
+        print(self.dir_x, self.dir_y)
+        # plt.waitforbuttonpress()
 
         # self.spectralAutoROI(image.shape[1],20,best_roll,b_ransac[np.argmin(mae)])
 
@@ -2723,7 +2745,7 @@ class Ui(QtWidgets.QMainWindow):
         # Re-initialize the spectral ROI
         self.direct_roi = None
 
-    # Clear the affine marker
+    # Clear the affine marker - ***
     def clearAffine(self):
         """
         Clears the affine marker from the spectral image view. 
@@ -2732,19 +2754,18 @@ class Ui(QtWidgets.QMainWindow):
         """
 
         # Clear the marker
-        self.spectral_imageframe.removeItem(self.affine_markers)
+        self.direct_imageframe.removeItem(self.affine_markers)
 
         # Re-initalize
         self.affine_markers = pg.ScatterPlotItem()
         self.affine_markers.setPen('r')
         self.affine_markers.setSymbol('o')
-        self.spectral_imageframe.addItem(self.affine_markers)   
+        self.direct_imageframe.addItem(self.affine_markers)   
     
     # Load spectral flat loadFlat(dir_path, file_name, dtype=None, byteswap=True, dark=None
 
 
-    # Remove image flat
-
+    # Remove image flat - ***
     def removeSpectralFlat(self):
         """
         Allows user to remove flat from the current frame only. 
@@ -2754,7 +2775,6 @@ class Ui(QtWidgets.QMainWindow):
         Background and spectrum will still be calculted with flat applied,
         the flat can only be removed for user convenience.
         """
-
         # Set frame 
         self.direct_frame = self.direct_vid.frames[self.direct_currentframe]
         self.direct_frame_img = self.direct_frame.img_data
@@ -2782,197 +2802,196 @@ class Ui(QtWidgets.QMainWindow):
 
     ################# JOINT FILE CONTROL FUNCTIONS #################
 
-    # Next frames
-    def nextFrame(self):
-        """
-        Moves both spectral and direct frames forward by 1 frame.
-        """
+    # # Next frames
+    # def nextFrame(self):
+    #     """
+    #     Moves both spectral and direct frames forward by 1 frame.
+    #     """
+    #     # Direct frame
+    #     self.nextDirectFrame()
 
-        # Direct frame
-        self.nextDirectFrame()
+    #     # Spectral frame
+    #     self.nextSpectralFrame()
 
-        # Spectral frame
-        self.nextSpectralFrame()
+    # # Last frames
+    # def lastFrame(self):
+    #     """
+    #     Moves both spectral and direct frames back by 1 frame.
+    #     """
+    #     # Direct frame
+    #     self.lastDirectFrame()
 
-    # Last frames
-    def lastFrame(self):
-        """
-        Moves both spectral and direct frames back by 1 frame.
-        """
-        # Direct frame
-        self.lastDirectFrame()
+    #     # Spectral Frame
+    #     self.lastSpectralFrame()
 
-        # Spectral Frame
-        self.lastSpectralFrame()
+    # # Next frames that are as close in time as possible
+    # def nextTimeFrame(self):
+    #     """
+    #     Finds next frame set that is as close in time as possible.
+    #     Evaluates tenths and hundredths of a second
+    #     portion of timestamp, finds the difference
+    #     between the direct and spectral timestamps, then recognizes the time 
+    #     gap and finds the appropriate method by which to get the next closest
+    #     frames. 
 
-    # Next frames that are as close in time as possible
-    def nextTimeFrame(self):
-        """
-        Finds next frame set that is as close in time as possible.
-        Evaluates tenths and hundredths of a second
-        portion of timestamp, finds the difference
-        between the direct and spectral timestamps, then recognizes the time 
-        gap and finds the appropriate method by which to get the next closest
-        frames. 
+    #     Does not work if the time gap is too great - user must have the 
+    #     timestamp within 100 milliseconds.
+    #     """
 
-        Does not work if the time gap is too great - user must have the 
-        timestamp within 100 milliseconds.
-        """
+    #     # Tenths place value of seconds for the direct timestamp
+    #     self.dir_ms_a = int(self.dt[25])
+    #     # Hundredths place value of seconds for the direct timestamp
+    #     self.dir_ms_b = int(self.dt[26])
+    #     # Tenths place value of the seconds for the spectral timestamp
+    #     self.spec_ms_a = int(self.st[25])
+    #     # Hundredths place value of seconds for the spectral timestamp
+    #     self.spec_ms_b = int(self.st[26])
 
-        # Tenths place value of seconds for the direct timestamp
-        self.dir_ms_a = int(self.dt[25])
-        # Hundredths place value of seconds for the direct timestamp
-        self.dir_ms_b = int(self.dt[26])
-        # Tenths place value of the seconds for the spectral timestamp
-        self.spec_ms_a = int(self.st[25])
-        # Hundredths place value of seconds for the spectral timestamp
-        self.spec_ms_b = int(self.st[26])
+    #     # Subtract tenths value of direct timestamp from tenths value of spectral timestamp
+    #     self.a = self.dir_ms_a - self.spec_ms_a
+    #     # Repeat above for hundredths
+    #     self.b = self.dir_ms_b - self.spec_ms_b
 
-        # Subtract tenths value of direct timestamp from tenths value of spectral timestamp
-        self.a = self.dir_ms_a - self.spec_ms_a
-        # Repeat above for hundredths
-        self.b = self.dir_ms_b - self.spec_ms_b
+    #     # If the tenths values are the same
+    #     if self.a == 0:
+    #         if 0 < self.b < 5:
+    #             self.nextFrame()
 
-        # If the tenths values are the same
-        if self.a == 0:
-            if 0 < self.b < 5:
-                self.nextFrame()
-
-            if 5 <= self.b < 9:
-                self.nextSpectralFrame()
+    #         if 5 <= self.b < 9:
+    #             self.nextSpectralFrame()
             
-            if 0 >= self.b > -5:
-                self.nextSpectralFrame()
-                self.nextDirectFrame()
+    #         if 0 >= self.b > -5:
+    #             self.nextSpectralFrame()
+    #             self.nextDirectFrame()
             
-            if -5 >= self.b > -10:
-                self.nextDirectFrame()
+    #         if -5 >= self.b > -10:
+    #             self.nextDirectFrame()
         
-        # If the direct timestamp is ahead of the spectral timestamp
-        if self.a ==1:
+    #     # If the direct timestamp is ahead of the spectral timestamp
+    #     if self.a ==1:
 
-            if self.b == 0:
-                self.nextSpectralFrame()
-                self.nextSpectralFrame()
+    #         if self.b == 0:
+    #             self.nextSpectralFrame()
+    #             self.nextSpectralFrame()
 
-            if 0 < self.b < 5:
-                self.nextSpectralFrame()
-                self.nextSpectralFrame()
+    #         if 0 < self.b < 5:
+    #             self.nextSpectralFrame()
+    #             self.nextSpectralFrame()
             
-            if self.b > 5:
-                self.nextSpectralFrame()
-                self.nextSpectralFrame()
-                self.nextSpectralFrame()
+    #         if self.b > 5:
+    #             self.nextSpectralFrame()
+    #             self.nextSpectralFrame()
+    #             self.nextSpectralFrame()
             
-            if self.b < 0:
-                self.nextSpectralFrame()
+    #         if self.b < 0:
+    #             self.nextSpectralFrame()
 
-        # IF the direct timestamp is behind the spectral timestamp
-        if self.a == -1:
+    #     # IF the direct timestamp is behind the spectral timestamp
+    #     if self.a == -1:
             
-            if self.b == 0:
-                self.nextDirectFrame()
-                self.nextDirectFrame()
+    #         if self.b == 0:
+    #             self.nextDirectFrame()
+    #             self.nextDirectFrame()
 
-            if 0 < self.b < 5:
-                self.nextDirectFrame()
-                self.nextDirectFrame()
+    #         if 0 < self.b < 5:
+    #             self.nextDirectFrame()
+    #             self.nextDirectFrame()
             
-            if self.b > 5:
-                self.nextDirectFrame()
-                self.nextDirectFrame()
-                self.nextDirectFrame()
+    #         if self.b > 5:
+    #             self.nextDirectFrame()
+    #             self.nextDirectFrame()
+    #             self.nextDirectFrame()
             
-            if self.b < 0:
-                self.nextDirectFrame()
+    #         if self.b < 0:
+    #             self.nextDirectFrame()
         
-        # If the direct timestamp is ahead by more than a tenth of a second
-        if self.a > 1:
+    #     # If the direct timestamp is ahead by more than a tenth of a second
+    #     if self.a > 1:
 
-            print ("Time difference too great to apply time lock")
+    #         print ("Time difference too great to apply time lock")
 
-        # If the spectral timestamp is ahead by more than a tenth of a second
-        if self.a < -1:
+    #     # If the spectral timestamp is ahead by more than a tenth of a second
+    #     if self.a < -1:
             
-            print("Time difference too great to apply time lock")
+    #         print("Time difference too great to apply time lock")
     
-    # Last frames that are as close in time as possible
-    def lastTimeFrame(self):
-        """
-        Finds last frame set that is as close in time as possible.
-        Evaluates tenths and hundredths of seconds
-        portion of timestamp, finds the difference
-        between the direct and spectral timestamps, then recognizes the time 
-        gap and finds the appropriate method by which to get the next closest
-        frames. 
+    # # Last frames that are as close in time as possible
+    # def lastTimeFrame(self):
+    #     """
+    #     Finds last frame set that is as close in time as possible.
+    #     Evaluates tenths and hundredths of seconds
+    #     portion of timestamp, finds the difference
+    #     between the direct and spectral timestamps, then recognizes the time 
+    #     gap and finds the appropriate method by which to get the next closest
+    #     frames. 
 
-        Does not work if the time gap is too great - user must have the 
-        timestamp within 1 tenth of a second.
-        """
+    #     Does not work if the time gap is too great - user must have the 
+    #     timestamp within 1 tenth of a second.
+    #     """
 
-        # If the tenths values are the same
-        if self.a == 0:
+    #     # If the tenths values are the same
+    #     if self.a == 0:
 
-            if 0 < self.b < 5:
-                self.lastFrame()
+    #         if 0 < self.b < 5:
+    #             self.lastFrame()
 
-            if 5 <= self.b < 9:
-                self.lastSpectralFrame()
+    #         if 5 <= self.b < 9:
+    #             self.lastSpectralFrame()
             
-            if 0 >= self.b > -5:
-                self.lastSpectralFrame()
-                self.lastDirectFrame()
+    #         if 0 >= self.b > -5:
+    #             self.lastSpectralFrame()
+    #             self.lastDirectFrame()
             
-            if -5 >= self.b > -10:
-                self.lastDirectFrame()
+    #         if -5 >= self.b > -10:
+    #             self.lastDirectFrame()
         
-        # If the direct timestamp is ahead of the spectral timestamp
-        if self.a ==1:
+    #     # If the direct timestamp is ahead of the spectral timestamp
+    #     if self.a ==1:
 
-            if self.b == 0:
-                self.lastSpectralFrame()
-                self.lastSpectralFrame()
+    #         if self.b == 0:
+    #             self.lastSpectralFrame()
+    #             self.lastSpectralFrame()
 
-            if 0 < self.b < 5:
-                self.lastSpectralFrame()
-                self.lastSpectralFrame()
+    #         if 0 < self.b < 5:
+    #             self.lastSpectralFrame()
+    #             self.lastSpectralFrame()
             
-            if self.b > 5:
-                self.lastSpectralFrame()
-                self.lastSpectralFrame()
-                self.lastSpectralFrame()
+    #         if self.b > 5:
+    #             self.lastSpectralFrame()
+    #             self.lastSpectralFrame()
+    #             self.lastSpectralFrame()
             
-            if self.b < 0:
-                self.lastSpectralFrame()
+    #         if self.b < 0:
+    #             self.lastSpectralFrame()
 
-        # IF the direct timestamp is behind the spectral timestamp
-        if self.a == -1:
+    #     # IF the direct timestamp is behind the spectral timestamp
+    #     if self.a == -1:
             
-            if self.b == 0:
-                self.lastDirectFrame()
-                self.lastDirectFrame()
+    #         if self.b == 0:
+    #             self.lastDirectFrame()
+    #             self.lastDirectFrame()
 
-            if 0 < self.b < 5:
-                self.lastDirectFrame()
-                self.lastDirectFrame()
+    #         if 0 < self.b < 5:
+    #             self.lastDirectFrame()
+    #             self.lastDirectFrame()
             
-            if self.b > 5:
-                self.lastDirectFrame()
-                self.lastDirectFrame()
-                self.lastDirectFrame()
+    #         if self.b > 5:
+    #             self.lastDirectFrame()
+    #             self.lastDirectFrame()
+    #             self.lastDirectFrame()
             
-            if self.b < 0:
-                self.lastDirectFrame()
+    #         if self.b < 0:
+    #             self.lastDirectFrame()
         
-        # If the direct timestamp is ahead by more than a tenth of a second
-        if self.a > 1:
+    #     # If the direct timestamp is ahead by more than a tenth of a second
+    #     if self.a > 1:
 
-            print ("Time difference too great to apply time lock")
+    #         print ("Time difference too great to apply time lock")
 
-        # If the spectral timestamp is ahead by more than a tenth of a second
-        if self.a < -1:
+    #     # If the spectral timestamp is ahead by more than a tenth of a second
+    #     if self.a < -1:
             
-            print("Time difference too great to apply time lock")
+    #         print("Time difference too great to apply time lock")
            
     ################# PLOTTING FUNCTIONS #################
 
@@ -3016,8 +3035,8 @@ class Ui(QtWidgets.QMainWindow):
         # Check background and set region to be plotted
         self.checkSpectralBackground()
         self.checkSpectralRegion()
-        # self.projectAffine()
-        self.x = 400
+        self.projectAffine()
+        # self.x = 400
         
         # Set pen  
         if self.PlottedSpectrumNumber == 0:
@@ -3056,8 +3075,8 @@ class Ui(QtWidgets.QMainWindow):
         scaled_spectral_profile = np.zeros(len(spectral_profile))
 
         # Scaling parameters
-        # s = 2.85 # px/nm
-        s = self.SpectralScale_rollbox.value() # px/nm
+        # s = 1/2.15 # px/nm
+        s = 1/self.SpectralScale_rollbox.value() # px/nm
         nm0 = float(self.nm0_edit.text()) # nm 
 
         # Calculate wavelength values as they correspond to each pixel

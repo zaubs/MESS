@@ -105,11 +105,53 @@
       </item>
      </layout>
     </widget>
+    <widget class="QLabel" name="DirectTime_label">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>30</y>
+       <width>261</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string> at xx:xx:xx.xxx on xxxx/xx/xx</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="DirectFrame_label">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>30</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Frame # --</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="DirectXYCoordsDisplay_label">
+     <property name="geometry">
+      <rect>
+       <x>11</x>
+       <y>32</y>
+       <width>211</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
     <widget class="QLabel" name="DirectFileName_label">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>30</y>
+       <x>160</x>
+       <y>0</y>
        <width>371</width>
        <height>21</height>
       </rect>
@@ -122,35 +164,6 @@
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="DirectTime_label">
-     <property name="geometry">
-      <rect>
-       <x>510</x>
-       <y>30</y>
-       <width>181</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string> at xx:xx:xx.xxx on xxxx/xx/xx</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="DirectFrame_label">
-     <property name="geometry">
-      <rect>
-       <x>410</x>
-       <y>30</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Frame # --</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </widget>
@@ -167,58 +180,6 @@
      <string>Clear Plot</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="LastFrame_button">
-    <property name="geometry">
-     <rect>
-      <x>510</x>
-      <y>330</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Previous</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="NextFrame_button">
-    <property name="geometry">
-     <rect>
-      <x>610</x>
-      <y>330</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Next</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="LastTimeFrame_button">
-    <property name="geometry">
-     <rect>
-      <x>730</x>
-      <y>330</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>&lt; Time</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="NextTimeFrame_button">
-    <property name="geometry">
-     <rect>
-      <x>830</x>
-      <y>330</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Time &gt;</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="RemoveFlat_button">
     <property name="geometry">
      <rect>
@@ -232,19 +193,6 @@
      <string>Remove Flat</string>
     </property>
    </widget>
-   <widget class="QLabel" name="DirectXYCoordsDisplay_label">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>340</y>
-      <width>211</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="nm0_label">
     <property name="geometry">
      <rect>
@@ -255,7 +203,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>410</string>
+     <string>422.8</string>
     </property>
    </widget>
    <widget class="QLabel" name="Scale_label">
@@ -268,7 +216,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>2.85</string>
+     <string>2.15</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_44">
@@ -366,6 +314,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
           <string>Autopick ROI</string>
          </property>
@@ -397,7 +351,7 @@
             </size>
            </property>
            <property name="text">
-            <string>0</string>
+            <string>300</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -499,11 +453,12 @@
          <property name="font">
           <font>
            <weight>75</weight>
+           <italic>true</italic>
            <bold>true</bold>
           </font>
          </property>
          <property name="text">
-          <string>Spectral View</string>
+          <string>- Spectral View -</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -516,7 +471,7 @@
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>Load Affine</string>
+          <string>Load Transform</string>
          </property>
         </widget>
        </item>
@@ -584,7 +539,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Autotrack</string>
+          <string>Autotrack 0th Order</string>
          </property>
         </widget>
        </item>
@@ -599,11 +554,12 @@
          <property name="font">
           <font>
            <weight>75</weight>
+           <italic>true</italic>
            <bold>true</bold>
           </font>
          </property>
          <property name="text">
-          <string>Transform</string>
+          <string>- Transform -</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -621,8 +577,14 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
-          <string>Autopick</string>
+          <string>Autopick 0th Order</string>
          </property>
         </widget>
        </item>
@@ -638,6 +600,12 @@
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
            <property name="text">
             <string>Update</string>
@@ -740,6 +708,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
           <string>Auto Flat</string>
          </property>
@@ -773,12 +747,12 @@
          <property name="font">
           <font>
            <weight>75</weight>
-           <italic>false</italic>
+           <italic>true</italic>
            <bold>true</bold>
           </font>
          </property>
          <property name="text">
-          <string>Data</string>
+          <string>- Data -</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -792,6 +766,12 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
          </property>
          <property name="text">
           <string>Load Spectral Vid</string>
@@ -857,6 +837,12 @@
            <height>40</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
           <string>Show Spectrum</string>
          </property>
@@ -890,11 +876,12 @@
          <property name="font">
           <font>
            <weight>75</weight>
+           <italic>true</italic>
            <bold>true</bold>
           </font>
          </property>
          <property name="text">
-          <string>Spectrum</string>
+          <string>- Spectrum -</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -1252,23 +1239,6 @@
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_25">
-           <item>
-            <widget class="QPushButton" name="RefreshPlot_button">
-             <property name="maximumSize">
-              <size>
-               <width>150</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Refresh Plot</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
           <spacer name="verticalSpacer_5">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -1457,7 +1427,7 @@
            <item>
             <widget class="QDoubleSpinBox" name="SpectralScale_rollbox">
              <property name="minimum">
-              <double>2.000000000000000</double>
+              <double>0.100000000000000</double>
              </property>
              <property name="maximum">
               <double>8.000000000000000</double>
@@ -1466,7 +1436,7 @@
               <double>0.100000000000000</double>
              </property>
              <property name="value">
-              <double>2.850000000000000</double>
+              <double>2.150000000000000</double>
              </property>
             </widget>
            </item>
@@ -1491,6 +1461,23 @@
              </property>
              <property name="singleStep">
               <double>1.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_25">
+           <item>
+            <widget class="QPushButton" name="RefreshPlot_button">
+             <property name="maximumSize">
+              <size>
+               <width>150</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Refresh Plot</string>
              </property>
             </widget>
            </item>

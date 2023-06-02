@@ -249,8 +249,14 @@
      <pointsize>14</pointsize>
     </font>
    </property>
+   <property name="minimum">
+    <double>0.100000000000000</double>
+   </property>
+   <property name="maximum">
+    <double>5.000000000000000</double>
+   </property>
    <property name="value">
-    <double>2.850000000000000</double>
+    <double>2.150000000000000</double>
    </property>
   </widget>
   <widget class="QLabel" name="label_9">
@@ -294,7 +300,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>410</string>
+    <string>422.8</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

@@ -1512,13 +1512,13 @@ void  ReadElementsData( int     nwavelengths,   // number of user defined wavele
 		//........ If this is a neutral, find its corresponding ion
 
 		if (els->ioncode == 1) {
-			printf("This is neutral. Finding corresponding ion...\n");
+			// printf("This is neutral. Finding corresponding ion...\n");
 			for (jelem = 0; jelem < elemdata->nelements; jelem++) {
 
 				if (fabs(elemdata->els[jelem].elementcode - (els->elementcode + 0.01)) < 1.0e-3) {
 
 					els->ionindex = jelem;
-					printf("%d\n", els->ionindex);
+					// printf("%d\n", els->ionindex);
 
 					break;
 				}
@@ -2480,11 +2480,14 @@ double  JonesElectronDensity(struct elements_data *elemdata, int kneutral_primar
 	//========== Number density of neutrals for the primary element
 
 	n_neutrals_primary = elemdata->els[kneutral_primary].N_warm / elemdata->VolumeDepth;
+	printf("Number of neutral = %e\n", n_neutrals_primary);
 
 
 	//========== Number density of atoms (neutrals + ions) for the primary element based on Jones fraction
 
 	n_atoms_primary = n_neutrals_primary / (1.0 - elemdata->els[kneutral_primary].beta_jones);
+	printf("Number of atoms = %e\n", n_atoms_primary);
+	printf("Beta Jones = %f\n", elemdata->els[kneutral_primary].beta_jones);
 
 
 	//========== Compute sum over all elements to get number density of electrons = number density of ions
@@ -2501,16 +2504,19 @@ double  JonesElectronDensity(struct elements_data *elemdata, int kneutral_primar
 		//-------- Number density of atoms total for this element based on cosmic abundance ratio re primary element
 
 		n_atoms_cosmic = n_atoms_primary * elemdata->els[kelem].init_abundance / elemdata->els[kneutral_primary].init_abundance;
-
+		printf("Number of atoms based on cosmic abundance = %e\n", n_atoms_cosmic);
 		//-------- Add in number of ions for this element based on Jones fraction beta
 
 		n_ions_cosmic = n_atoms_cosmic * elemdata->els[kelem].beta_jones;
+		printf("Number of ions_cosmic = %e   beta_jones = %e\n", n_ions_cosmic, elemdata->els[kelem].beta_jones);
 
 		ne += n_ions_cosmic;
+		printf("ne = %e\n", ne);
 
 	}
 
 	elemdata->ne_jones = ne;
+	printf("ne_jones = %e\n", elemdata->ne_jones);
 
 	return(ne);
 
@@ -2552,7 +2558,7 @@ double    IterativeElectronDensity(struct elements_data *elemdata, int kneutral_
 			* elemdata->els[kion].partfuncTlo / elemdata->els[kneutral_primary].partfuncTlo / ne;
 
 		n_atoms_primary = n_neutrals_primary * (1.0 + nratio);
-		printf("nratio: %f\nn_atoms: %f\n", nratio, n_atoms_primary);
+		printf("nratio: %e\nn_atoms: %f\n", nratio, n_atoms_primary);
 
 		//-------- Sum the contributing #ions = #electrons for all elements
 
@@ -2790,7 +2796,7 @@ void  ResetOneElementAbundance( int kelem, double Vinfinity, struct elements_dat
 	//========== Initialize the Jones' beta value
 
 	cvterm = elemdata->els[kelem].c * pow(Vinfinity - elemdata->els[kelem].Vo, 2) * pow(Vinfinity, 0.8);
-
+	printf("CVTERM = %e", cvterm);
 	elemdata->els[kelem].beta_jones = cvterm / (1.0 + cvterm);
 
 }

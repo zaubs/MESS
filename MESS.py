@@ -878,6 +878,8 @@ class Ui(QtWidgets.QMainWindow):
         #========== Set user adjustable values in the elemdata structure to their starting defaults
         #              such as sigma, temperatures, electron density, hot-to-warm, airmass factor
         spectral_library.adjustableParametersDefaults(self.spectral)
+        self.spectral.vinfinity_kmsec = 35.0
+        spectral_library.GuralSpectral.resetAllElementalAbundances(self.spectral)
 
         self.PlottedSpectrumNumber = 0
 
@@ -1522,7 +1524,7 @@ class Ui(QtWidgets.QMainWindow):
         #========== Zero all the elemental abundances and #atoms
         #           Set all element fitting flags to not selected for fitting = FITLESS 
         #           Compute Jones 1997 fraction of ionized atoms Beta = n+ / ( n+ + no ) = function( Vinf )
-        # spectral_library.GuralSpectral.resetAllElementalAbudances(self.spectral)
+        # spectral_library.GuralSpectral.resetAllElementalAbundances(self.spectral)
 
         # #========== Obtain model spectra for warm and hot temperature plasmas
         # # self.spectral.elemdata.els[kelem_Fe].user_fitflag = FITTING
@@ -1569,7 +1571,7 @@ class Ui(QtWidgets.QMainWindow):
         self.element_array[:,3] = self.element_array[:,3] * 10**self.Scale_rollbox.value()
 
     def resetAllElementalAbundances(self):
-        spectral_library.GuralSpectral.resetAllElementalAbudances(self.spectral)
+        spectral_library.GuralSpectral.resetAllElementalAbundances(self.spectral)
 
     def messageBox(self, message):
         msgBox = QMessageBox()
@@ -1643,8 +1645,9 @@ class Ui(QtWidgets.QMainWindow):
             
             self.calculateElementSpectrum()
             self.plotElement(self)
-
-            # self.columnDensityClicked()
+            print("N warm: %s" % self.spectral.elemdata.els[self.elemIndex].N_warm)
+            self.columnDensityClicked()
+            print("N warm: %s" % self.spectral.elemdata.els[self.elemIndex].N_warm)
 
             # print('N warm: %s' % self.spectral.elemdata.els[elemIndex].N_warm)
 

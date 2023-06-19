@@ -1405,7 +1405,7 @@ class GuralSpectral(object):
 				self.earth_radius_km + self.site_height_km, self.spcalib)
 
 	
-	def resetAllElementalAbudances(self):
+	def resetAllElementalAbundances(self):
 		"""
 		Zeros all the elemental  abundances and number of atoms.
 		Set all  element fitting flags to not selected for fitting = FITLESS.
@@ -1608,11 +1608,12 @@ class GuralSpectral(object):
 		"""
 
 		# Normally get col density from a fit (see later)
-		self.elemdata.els[elem1].N_warm = 3.0e+9  
+		# self.elemdata.els[elem1].N_warm = 3.0e+9
+		print("** %s" % self.elemdata.els[elem1].N_warm)
 
 		# Normally get col density from a fit (see later)
-		self.elemdata.els[elem2].N_warm = 1.2e+09
-		# self.elemdata.els[elem2].N_warm = 3.0e+9
+		# self.elemdata.els[elem2].N_warm = 1.2e+09
+		print("** %s" % self.elemdata.els[elem2].N_warm)
 
 		if elem3 != None:
 			# self.elemdata.els[elem3].N_warm = 1.0e+09

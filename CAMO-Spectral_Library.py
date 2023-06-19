@@ -1611,8 +1611,8 @@ class GuralSpectral(object):
 		self.elemdata.els[elem1].N_warm = 3.0e+9  
 
 		# Normally get col density from a fit (see later)
-		# self.elemdata.els[elem2].N_warm = 1.2e+09
-		self.elemdata.els[elem2].N_warm = 3.0e+9
+		self.elemdata.els[elem2].N_warm = 1.2e+09
+		# self.elemdata.els[elem2].N_warm = 3.0e+9
 
 		if elem3 != None:
 			# self.elemdata.els[elem3].N_warm = 1.0e+09
@@ -1620,13 +1620,16 @@ class GuralSpectral(object):
 
 		# Sets ne_jones
 		ne_guess = self.spectral_lib.JonesElectronDensity(self.elemdata, self.elemdata.kelem_ref)
-		print(ne_guess)         
+		print("ne_Jones %s" % ne_guess)         
 
 		# Sets ne_iter
-		self.ne = float(self.spectral_lib.IterativeElectronDensity(self.elemdata, self.elemdata.kelem_ref, ne_guess))  
+		self.ne = float(self.spectral_lib.IterativeElectronDensity(self.elemdata, self.elemdata.kelem_ref, ne_guess))
+		print("ne_iter %s" % self.ne)  
 		
 		# Caclulate column densities
 		self.spectral_lib.ColumnDensities_NumberAtoms(self.elemdata, self.ne)
+		print("Column density #1 = %s" % self.elemdata.els[elem1].N_warm)
+		print("Column density #2 = %s" % self.elemdata.els[elem2].N_warm)
 
 		# Calculate the  spectrum, given all coefficients previously calculated
 		self.spectral_lib.SpectrumGivenAllCoefs(self.elemdata, self.spectra.fit_spectrum)

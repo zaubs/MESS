@@ -654,7 +654,8 @@ class Ui(QtWidgets.QMainWindow):
 
         #################### Elemental Abundance Buttons #################
 
-        self.ResetElements_button.clicked.connect(self.clearSpec)
+        self.FitMeasuredSpectrum_button.clicked.connect(self.fitMeasuredSpectrum)
+        self.ResetElements_button.clicked.connect(self.resetAllElementalAbundances)
 
         ######################## Commands Buttons #########################
 
@@ -881,8 +882,8 @@ class Ui(QtWidgets.QMainWindow):
         self.PlottedSpectrumNumber = 0
 
         self.Scale_label.setText('2.15')
-        self.nm0_label.setText('422.8')
-        self.nm0_edit.setText('422.8')
+        self.nm0_label.setText('518.2')
+        self.nm0_edit.setText('518.2')
 
         self.extra_elements = ['Al-II', 'Al-I', 'Ar-II', 'Ar-I', 'Ba-II', 'Ba-I', 'Be-II', 'Be-I', 'Ca-II', 'C-II', \
         'C-I', 'Cl-II', 'Cl-I', 'Co-II', 'Co-I', 'Cr-II', 'Cr-I', 'Cs-II', 'Cs-I', 'Cu-II', 'Cu-I', 'Fe-II', \
@@ -1438,6 +1439,9 @@ class Ui(QtWidgets.QMainWindow):
 
         self.plotElement(self)
 
+    def fitMeasuredSpectrum(self):
+        spectral_library.GuralSpectral.fitMeasSpec(self.spectral)
+
     def calculateFullSpectrum(self):
         self.kelem_ref = spectral_library.GuralSpectral.setReferenceElem(self.spectral)
 
@@ -1453,6 +1457,7 @@ class Ui(QtWidgets.QMainWindow):
             if (self.elementDeets[i][1] == 1):
                 fittingElems.append(self.elementDeets[i][3])
 
+        print('Elements being fit...')
         print(fittingElems)
 
         if len(fittingElems) == 2:
@@ -1466,15 +1471,15 @@ class Ui(QtWidgets.QMainWindow):
             self.fullspec_array[i][0] = self.spectral.spcalib.wavelength_nm[i]
             self.fullspec_array[i][1] = self.spectral.spectra.fit_spectrum[i]
 
-        # self.fullSpecScaler = self.plotMax / np.max(self.fullspec_array[:,1])
-        self.fullSpecScaler = 1.0
+        self.fullSpecScaler = self.plotMax / np.max(self.fullspec_array[:,1])
+        # self.fullSpecScaler = 1.0
 
         self.plotFullSpectrum()
 
         spectral_library.GuralSpectral.writeFullSpectrum2(self.spectral, './FullSpectrumTest.txt')
 
         # print(self.spectral.elemdata.els[17].N_warm)
-        print(self.spectral.ne)
+        print("self.spectral.ne %s" % self.spectral.ne)
 
         # for i in range(self.spectral.elemdata.nelements):
         #     print(self.spectral.elemdata.els[i].element_string, self.elementDeets[i][3], self.elementDeets[i][1])
@@ -1563,6 +1568,9 @@ class Ui(QtWidgets.QMainWindow):
         self.element_array[:,2] = self.element_array[:,2] * 10**self.Scale_rollbox.value()
         self.element_array[:,3] = self.element_array[:,3] * 10**self.Scale_rollbox.value()
 
+    def resetAllElementalAbundances(self):
+        spectral_library.GuralSpectral.resetAllElementalAbudances(self.spectral)
+
     def messageBox(self, message):
         msgBox = QMessageBox()
         msgBox.setIcon(QMessageBox.Warning)
@@ -1636,7 +1644,8 @@ class Ui(QtWidgets.QMainWindow):
             self.calculateElementSpectrum()
             self.plotElement(self)
 
-            self.columnDensityClicked()
+            # self.columnDensityClicked()
+
             # print('N warm: %s' % self.spectral.elemdata.els[elemIndex].N_warm)
 
             self.elementsState[1] += 1

@@ -54,7 +54,7 @@
        <x>10</x>
        <y>50</y>
        <width>681</width>
-       <height>501</height>
+       <height>506</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -969,9 +969,9 @@
      <widget class="QWidget" name="gridLayoutWidget_2">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>5</x>
         <y>0</y>
-        <width>691</width>
+        <width>686</width>
         <height>531</height>
        </rect>
       </property>
@@ -1605,23 +1605,23 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_31">
            <item>
-            <widget class="QPushButton" name="FittedSpec_button">
+            <widget class="QPushButton" name="FitMeasuredSpectrum_button">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="text">
               <string>Fit Spectrum</string>
              </property>
             </widget>
            </item>
-           <item>
-            <widget class="QPushButton" name="ResetElements_button">
-             <property name="text">
-              <string>Reset</string>
-             </property>
-            </widget>
-           </item>
           </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="ResetElements_button">
+           <property name="text">
+            <string>Reset Elements</string>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="CalculateFullSpectrum_button">

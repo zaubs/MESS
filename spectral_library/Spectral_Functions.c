@@ -1317,7 +1317,7 @@ void  ReadElementsData( int     nwavelengths,   // number of user defined wavele
 
 		els->ioncode = 1 + ((int)(els->elementcode * 100.0) % 100);  // 1, 2, ... = Neutral, first ionization ...
 																     // 51 = molecule
-
+		// printf("*** Ion code = %d\n", els->ioncode);
 		//-------- Add this element to list of only neutrals if it is a neutral
 
 		if (els->ioncode == 1 || els->ioncode == 51) {
@@ -1499,7 +1499,7 @@ void  ReadElementsData( int     nwavelengths,   // number of user defined wavele
 	//========== Set the ion indices that correspond to a neutral and vice versa
 
 	for (kelem = 0; kelem < elemdata->nelements; kelem++) {
-
+		// printf("Setting ion indices...\n");
 		els = &elemdata->els[kelem];
 
 		els->ionindex = -1; // indicator that there may be no ion in the table for this element
@@ -1512,12 +1512,13 @@ void  ReadElementsData( int     nwavelengths,   // number of user defined wavele
 		//........ If this is a neutral, find its corresponding ion
 
 		if (els->ioncode == 1) {
-
+			printf("This is neutral. Finding corresponding ion...\n");
 			for (jelem = 0; jelem < elemdata->nelements; jelem++) {
 
 				if (fabs(elemdata->els[jelem].elementcode - (els->elementcode + 0.01)) < 1.0e-3) {
 
 					els->ionindex = jelem;
+					printf("%d\n", els->ionindex);
 
 					break;
 				}
@@ -1529,13 +1530,13 @@ void  ReadElementsData( int     nwavelengths,   // number of user defined wavele
 		//........ If this is an ion, find its corresponding neutral
 
 		if (els->ioncode == 2) {
-
+			// printf("This is an ion. Finding corresponding neutral...\n");
 			for (jelem = 0; jelem < elemdata->nelements; jelem++) {
 
 				if (fabs(elemdata->els[jelem].elementcode - (els->elementcode - 0.01)) < 1.0e-3) {
 
 					els->neuindex = jelem;
-
+					// printf("%d\n", els->neuindex);
 					break;
 				}
 			}
@@ -2528,15 +2529,17 @@ double    IterativeElectronDensity(struct elements_data *elemdata, int kneutral_
 
 
 	//========== Iteratively loop until the electron number density converges, uses Jones ne for initial guess
-
+	printf("Iteratively computing electron density...\n");
 	nloops = 50;
 
 	ne = ne_guess;
 
 	for (kloop = 0; kloop < nloops; kloop++) {
+		printf("Iteration #%d\n", kloop+1);
 
 		//-------- Number density of warm neutrals fit as column density for the primary reference element
-
+		printf("N_warm: %f\n", elemdata->els[kneutral_primary].N_warm);
+		printf("Volume Depth %f\n", elemdata->VolumeDepth);
 		n_neutrals_primary = elemdata->els[kneutral_primary].N_warm / elemdata->VolumeDepth;
 
 
@@ -2549,12 +2552,13 @@ double    IterativeElectronDensity(struct elements_data *elemdata, int kneutral_
 			* elemdata->els[kion].partfuncTlo / elemdata->els[kneutral_primary].partfuncTlo / ne;
 
 		n_atoms_primary = n_neutrals_primary * (1.0 + nratio);
-
+		printf("nratio: %f\nn_atoms: %f\n", nratio, n_atoms_primary);
 
 		//-------- Sum the contributing #ions = #electrons for all elements
 
 		ne_sum = 0.0;
 
+		printf("%le %d %le %le\n", n_neutrals_primary, kion, nratio, n_atoms_primary);
 
 		//-------- Loop over all NEUTRAL elements to get column densities and get number of atoms
 
@@ -2617,7 +2621,6 @@ double    IterativeElectronDensity(struct elements_data *elemdata, int kneutral_
 		//-------- Next guess for ne is based on an average of the previous and current estimate
 
 		ne = (ne + ne_sum) / 2;
-
 
 	} //... end of iterative loop
 
@@ -3443,6 +3446,7 @@ double  **V;
 
    //========== Determine number of active elements to be used in the fit 
    //              by checking for the FITTING flag but not fit locked (FITLOCK)
+   printf("Determining the number of active elements...\n");
 
    kfit = 0;
 
@@ -3460,6 +3464,8 @@ double  **V;
    nfit = kfit;
 
    elemdata->nfit = nfit;
+
+   printf("Number of active elements = %s\n", nfit);
 
 
    //========== Find limits and largest value in the spectrum and check wavelengths match

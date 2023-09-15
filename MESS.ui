@@ -64,14 +64,14 @@
          <enum>QLayout::SetFixedSize</enum>
         </property>
         <item>
-         <widget class="QPushButton" name="BackFiveDirect_button">
+         <widget class="QPushButton" name="BackFiveSpectral_button">
           <property name="text">
            <string>&lt;&lt;</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="LastDirect_button">
+         <widget class="QPushButton" name="LastSpectral_button">
           <property name="text">
            <string>&lt;</string>
           </property>
@@ -85,14 +85,14 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="NextDirect_button">
+         <widget class="QPushButton" name="NextSpectral_button">
           <property name="text">
            <string>&gt;</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="ForwardFiveDirect_button">
+         <widget class="QPushButton" name="ForwardFiveSpectral_button">
           <property name="text">
            <string>&gt;&gt;</string>
           </property>
@@ -101,11 +101,11 @@
        </layout>
       </item>
       <item>
-       <layout class="QGridLayout" name="Direct_layout"/>
+       <layout class="QGridLayout" name="Spectral_layout"/>
       </item>
      </layout>
     </widget>
-    <widget class="QLabel" name="DirectTime_label">
+    <widget class="QLabel" name="SpectralTime_label">
      <property name="geometry">
       <rect>
        <x>430</x>
@@ -118,7 +118,7 @@
       <string> at xx:xx:xx.xxx on xxxx/xx/xx</string>
      </property>
     </widget>
-    <widget class="QLabel" name="DirectFrame_label">
+    <widget class="QLabel" name="SpectralFrame_label">
      <property name="geometry">
       <rect>
        <x>250</x>
@@ -134,7 +134,7 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="DirectXYCoordsDisplay_label">
+    <widget class="QLabel" name="SpectralXYCoordsDisplay_label">
      <property name="geometry">
       <rect>
        <x>11</x>
@@ -147,7 +147,7 @@
       <string>.</string>
      </property>
     </widget>
-    <widget class="QLabel" name="DirectFileName_label">
+    <widget class="QLabel" name="SpectralFileName_label">
      <property name="geometry">
       <rect>
        <x>3</x>
@@ -293,7 +293,7 @@
         <x>10</x>
         <y>10</y>
         <width>681</width>
-        <height>523</height>
+        <height>571</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
@@ -433,7 +433,7 @@
             </size>
            </property>
            <property name="text">
-            <string>410.0</string>
+            <string>518.0</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -697,28 +697,6 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
-        <widget class="QPushButton" name="AutoSpectralFlat_button">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Auto Flat</string>
-         </property>
-        </widget>
-       </item>
        <item row="10" column="1">
         <widget class="QPushButton" name="CalibrateSpectrum_button">
          <property name="enabled">
@@ -756,25 +734,6 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QPushButton" name="UploadDirect_button">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Load Spectral Vid</string>
          </property>
         </widget>
        </item>
@@ -870,7 +829,10 @@
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>Pick Known Feature</string>
+          <string>Pick Features</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -911,22 +873,6 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QPushButton" name="UploadSpectralFlat_button">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Load Spectral Flat</string>
-         </property>
-        </widget>
-       </item>
        <item row="6" column="1">
         <widget class="QPushButton" name="ClearSpectralRegion_button">
          <property name="enabled">
@@ -958,6 +904,114 @@
           <bool>false</bool>
          </property>
         </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QPushButton" name="AutoSpectralFlat_button">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Auto Flat</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QPushButton" name="UploadSpectralFlat_button">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Load Spectral Flat</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_27">
+         <item>
+          <widget class="QPushButton" name="UploadSpectral_button">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string extracomment="Select vid file to load and rotate by amount in box to the right"/>
+           </property>
+           <property name="text">
+            <string>Load Spectral Vid</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="SpectralRotation_rollbox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string extracomment="Rotation"/>
+           </property>
+           <property name="whatsThis">
+            <string extracomment="Rotation"/>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::RightToLeft</enum>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="buttonSymbols">
+            <enum>QAbstractSpinBox::PlusMinus</enum>
+           </property>
+           <property name="decimals">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <double>90.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_10">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt; vertical-align:sup;&quot;&gt;&amp;deg;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>

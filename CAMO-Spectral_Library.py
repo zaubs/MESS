@@ -865,7 +865,7 @@ class GuralSpectral(object):
 		self.starspectra = StarSpectraInfo()
 
 		# Add variables needed by plasmaVolumes - MJM
-		# self.vinfinity_kmsec = 40.0     # km/sec
+		self.vinfinity_kmsec = 40.0     # km/sec
 		self.approach_angle_radians = 55.0 * 3.141592654 / 180.0
 		self.earth_radius_km = 6378.16  # WGS84
 		self.site_height_km = 0.2       # Above WGS84 Earth surface
@@ -873,7 +873,6 @@ class GuralSpectral(object):
 		self.altitude_deg = 45.0        # elevation angle above horizon
 		Rsin = self.earth_radius_km * math.sin(self.altitude_deg * 3.141592654 / 180.0)
 		self.meteor_range_km = math.sqrt( Rsin * Rsin + 2.0 * self.earth_radius_km * self.meteor_height_km + self.meteor_height_km * self.meteor_height_km) - Rsin
-
 
 	def loadLibrary(self):
 

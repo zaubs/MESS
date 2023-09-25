@@ -1607,11 +1607,11 @@ class GuralSpectral(object):
 		"""
 
 		# Normally get col density from a fit (see later)
-		# self.elemdata.els[elem1].N_warm = 3.0e+9
+		self.elemdata.els[elem1].N_warm = 3.0e+9 # Check this...
 		print("** %s" % self.elemdata.els[elem1].N_warm)
 
 		# Normally get col density from a fit (see later)
-		# self.elemdata.els[elem2].N_warm = 1.2e+09
+		self.elemdata.els[elem2].N_warm = 1.2e+09 # Check this... MJM
 		print("** %s" % self.elemdata.els[elem2].N_warm)
 
 		if elem3 != None:

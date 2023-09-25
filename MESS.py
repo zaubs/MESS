@@ -948,10 +948,6 @@ class Ui(QtWidgets.QMainWindow):
         self.ColumnDensity_rollbox.setValue(self.spectral.elemdata.ne_jones/1E13)
         self.ColumnDensityIter_rollbox.setValue(self.spectral.elemdata.ne_iter/1E13)
         self.PlasmaRadius_rollbox.setValue(self.spectral.elemdata.plasma_radius_meters)
-        print('test')
-        print(self.spectral.elemdata.Xfactor)
-        print(self.spectral.elemdata.plasma_radius_meters)
-        print(self.spectral.elemdata.ne_jones)
 
         self.Scale_label.setText('2.15')
         self.nm0_label.setText('518.2')
@@ -3124,19 +3120,22 @@ class Ui(QtWidgets.QMainWindow):
         self.PlottedSpectrumNumber += 1
 
         # Shear spectral array
-        zoom = 10
-        shear = int(self.SpectralShear_rollbox.value())
+        if self.SpectralShear_rollbox.value() != 0.0:
+            zoom = 10
+            shear = int(self.SpectralShear_rollbox.value())
 
-        spectral_array_zoomed = scipy.ndimage.zoom(self.spectral_array, (1,zoom))
-        roi_w = np.shape(spectral_array_zoomed)[1]
+            spectral_array_zoomed = scipy.ndimage.zoom(self.spectral_array, (1,zoom))
+            roi_w = np.shape(spectral_array_zoomed)[1]
 
-        spectral_array_sheared = np.zeros((np.shape(spectral_array_zoomed)[0], np.shape(spectral_array_zoomed)[1]))
+            spectral_array_sheared = np.zeros((np.shape(spectral_array_zoomed)[0], np.shape(spectral_array_zoomed)[1]))
 
-        for i in range(np.shape(spectral_array_zoomed)[1]):
-            spectral_array_sheared[:,i] = np.roll(spectral_array_zoomed[:,i],int((shear-i*shear/roi_w)))
+            for i in range(np.shape(spectral_array_zoomed)[1]):
+                spectral_array_sheared[:,i] = np.roll(spectral_array_zoomed[:,i],int((shear-i*shear/roi_w)))
 
-        spectral_array_sheared = np.roll(spectral_array_sheared, int(np.round(-shear/2)), axis=0)
-        spectral_array_unzoomed = scipy.ndimage.zoom(spectral_array_sheared, (1,1/zoom))
+            spectral_array_sheared = np.roll(spectral_array_sheared, int(np.round(-shear/2)), axis=0)
+            spectral_array_unzoomed = scipy.ndimage.zoom(spectral_array_sheared, (1,1/zoom))
+        else:
+            spectral_array_unzoomed = self.spectral_array
 
         px = 1/plt.rcParams['figure.dpi']  # pixel in inches
         # plt.subplots(figsize=(676*px, 100*px))
@@ -3193,11 +3192,6 @@ class Ui(QtWidgets.QMainWindow):
         fM = interpolate.interp1d(xM,yM)
         yMnew = fM(scaled_spectral_profile_short)
 
-        # plt.figure(figsize=(16,8))
-        # plt.plot(scaled_spectral_profile_short,spectral_profile_short)
-        # plt.show()
-
-        #
         # print(len(yMnew))
         # print(np.min(scaled_spectral_profile), np.max(scaled_spectral_profile), len(scaled_spectral_profile))
 
@@ -3208,10 +3202,28 @@ class Ui(QtWidgets.QMainWindow):
         self.Plot.setLabel('bottom', 'Wavelength (nm)')
 
         # Create the plot
-        self.Plot.plot(scaled_spectral_profile_short, np.divide(spectral_profile_short,yMnew), pen = pen) # Uncomment for responsivity
-        self.Plot.plot(scaled_spectral_profile_short, spectral_profile_short, pen = pg.mkPen(pg.intColor(2)), width = 1)
+        self.Plot.plot([518,518],[0,self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
+        self.Plot.plot([589,589],[0,self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
+        self.Plot.plot([777,777],[0,self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
+
+        self.Plot.plot(scaled_spectral_profile_short, spectral_profile_short, pen = pg.mkPen(color=(0,255,0), width = 4))
+        self.Plot.plot(scaled_spectral_profile_short, np.divide(spectral_profile_short,yMnew), pen=pg.mkPen(color=(0,0,255), width=3)) # Uncomment for responsivity
+
+        # line = pg.InfiniteLine(pos=589, angle=90, pen=pen)
+
+        self.t1 = pg.TextItem('518.2 nm', anchor=(1,1), angle=90)
+        self.t2 = pg.TextItem('589.1 nm', anchor=(1,1), angle=90)
+        self.t3 = pg.TextItem('777.1 nm', anchor=(1,1), angle=90)
+        self.Plot.addItem(self.t1)
+        self.Plot.addItem(self.t2)
+        self.Plot.addItem(self.t3)
+        self.t1.setPos(518,self.plotMax)
+        self.t2.setPos(589,self.plotMax)
+        self.t3.setPos(777,self.plotMax)
+        
         self.Plot.setXRange(np.min(scaled_spectral_profile_short),np.max(scaled_spectral_profile_short))
         self.Plot.setYRange(0,self.plotMax)
+        self.Plot.setBackground('w')
         # self.Plot.setYRange(0,30000)
         self.CalibrateSpectrum_button.setEnabled(True)
         self.SetReference_button.setEnabled(True)

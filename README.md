@@ -11,6 +11,8 @@
  - imageio
  - sklearn
 
+It would also be good/necessary to have the WMPL and RMS installed.
+
  Installation in a virtualenv or a Conda environment is recommended.
  
  Build and install SpectralTest.so

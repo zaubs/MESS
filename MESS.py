@@ -1433,25 +1433,51 @@ class Ui(QtWidgets.QMainWindow):
         # nm0 = 410 # nm
 
         if self.elemName == 'Na':
-            pen_color = (0,10)
+            pen_color = (0,23)
         elif self.elemName == 'K':
-            pen_color = (1,10)
+            pen_color = (1,23)
         elif self.elemName == 'Mg':
-            pen_color = (2,10)
+            pen_color = (2,23)
         elif self.elemName == 'O':
-            pen_color = (3,10)
+            pen_color = (3,23)
         elif self.elemName == 'N2':
-            pen_color = (4,10)
+            pen_color = (4,23)
         elif self.elemName == 'Si':
-            pen_color = (5,10)
+            pen_color = (5,23)
         elif self.elemName == 'Fe':
-            pen_color = (6,10)
+            pen_color = (6,23)
         elif self.elemName == 'Ca':
-            pen_color = (7,10)
+            pen_color = (7,23)
         elif self.elemName == 'N':
-            pen_color = (8,10)
+            pen_color = (8,23)
+        elif self.elemName == 'Al':
+            pen_color = (9,23)
+        elif self.elemName == 'Cr':
+            pen_color = (10,23)
+        elif self.elemName == 'Mn':
+            pen_color = (11,23)
+        elif self.elemName == 'Ti':
+            pen_color = (12,23)
+        elif self.elemName == 'CaII':
+            pen_color = (13,23)
+        elif self.elemName == 'FeII':
+            pen_color = (14,23)
+        elif self.elemName == 'MgII':
+            pen_color = (15,23)
+        elif self.elemName == 'SiII':
+            pen_color = (16,23)
+        # elif self.elemName == 'O2':
+        #     pen_color = (17,23)
+        # elif self.elemName == 'CaO':
+        #     pen_color = (18,23)
+        # elif self.elemName == 'FeO':
+        #     pen_color = (19,23)
+        # elif self.elemName == 'MgO':
+        #     pen_color = (20,23)
+        # elif self.elemName == 'AlO':
+        #     pen_color = (21,23)
         else:
-            pen_color = 'w' 
+            pen_color = 'k' 
 
         plotName = str(self.elemName)
 
@@ -3206,8 +3232,8 @@ class Ui(QtWidgets.QMainWindow):
         self.Plot.plot([589,589],[0,self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
         self.Plot.plot([777,777],[0,self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
 
-        self.Plot.plot(scaled_spectral_profile_short, spectral_profile_short, pen = pg.mkPen(color=(0,255,0), width = 4))
-        self.Plot.plot(scaled_spectral_profile_short, np.divide(spectral_profile_short,yMnew), pen=pg.mkPen(color=(0,0,255), width=3)) # Uncomment for responsivity
+        self.Plot.plot(scaled_spectral_profile_short, spectral_profile_short, pen = pg.mkPen(color=(50,50,50), width = 2))
+        self.Plot.plot(scaled_spectral_profile_short, np.divide(spectral_profile_short,yMnew), pen=pg.mkPen(color=(0,0,255), width=2)) # Uncomment for responsivity
 
         # line = pg.InfiniteLine(pos=589, angle=90, pen=pen)
 

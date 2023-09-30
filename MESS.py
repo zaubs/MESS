@@ -19,6 +19,7 @@ import numpy as np
 import pyqtgraph as pg
 import sys 
 sys.path.append('../RMS/RMS/Routines')
+print(sys.path)
 import matplotlib.pyplot as plt
 import scipy.ndimage
 import os

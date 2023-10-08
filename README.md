@@ -11,6 +11,8 @@
  - imageio
  - sklearn
 
+It is also necessary to have the WMPL and RMS installed. If you find that you have trouble importing some of the modules from RMS (BinImageCy, for example), you can create soft links from the MESS.py directory to the appropriate files (BinImageCy.py and BinImageCy.pyx, in my case). 
+
  Installation in a virtualenv or a Conda environment is recommended.
  
  Build and install SpectralTest.so

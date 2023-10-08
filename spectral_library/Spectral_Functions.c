@@ -1189,8 +1189,13 @@ void  ReadElementsData( int     nwavelengths,   // number of user defined wavele
 	nelem = 0;
 	while (feof(elemfile) == 0) {
 		fscanf(elemfile, "%[^\n]\n", text);
+		// printf("%s\n",text);
 		nelem++;
 	}
+
+	printf("Number of elements read:\n");
+	printf("%d\n", nelem);
+	printf("****\n");
 
 	elemdata->nelements = nelem;
 
@@ -2504,14 +2509,14 @@ double  JonesElectronDensity(struct elements_data *elemdata, int kneutral_primar
 		//-------- Number density of atoms total for this element based on cosmic abundance ratio re primary element
 
 		n_atoms_cosmic = n_atoms_primary * elemdata->els[kelem].init_abundance / elemdata->els[kneutral_primary].init_abundance;
-		printf("Number of atoms based on cosmic abundance = %e\n", n_atoms_cosmic);
+		// printf("Number of atoms based on cosmic abundance = %e\n", n_atoms_cosmic);
 		//-------- Add in number of ions for this element based on Jones fraction beta
 
 		n_ions_cosmic = n_atoms_cosmic * elemdata->els[kelem].beta_jones;
-		printf("Number of ions_cosmic = %e   beta_jones = %e\n", n_ions_cosmic, elemdata->els[kelem].beta_jones);
+		// printf("Number of ions_cosmic = %e   beta_jones = %e\n", n_ions_cosmic, elemdata->els[kelem].beta_jones);
 
 		ne += n_ions_cosmic;
-		printf("ne = %e\n", ne);
+		// printf("ne = %e\n", ne);
 
 	}
 
@@ -2541,11 +2546,11 @@ double    IterativeElectronDensity(struct elements_data *elemdata, int kneutral_
 	ne = ne_guess;
 
 	for (kloop = 0; kloop < nloops; kloop++) {
-		printf("Iteration #%d\n", kloop+1);
+		// printf("Iteration #%d\n", kloop+1);
 
 		//-------- Number density of warm neutrals fit as column density for the primary reference element
-		printf("N_warm: %f\n", elemdata->els[kneutral_primary].N_warm);
-		printf("Volume Depth %f\n", elemdata->VolumeDepth);
+		// printf("N_warm: %f\n", elemdata->els[kneutral_primary].N_warm);
+		// printf("Volume Depth %f\n", elemdata->VolumeDepth);
 		n_neutrals_primary = elemdata->els[kneutral_primary].N_warm / elemdata->VolumeDepth;
 
 
@@ -2558,13 +2563,13 @@ double    IterativeElectronDensity(struct elements_data *elemdata, int kneutral_
 			* elemdata->els[kion].partfuncTlo / elemdata->els[kneutral_primary].partfuncTlo / ne;
 
 		n_atoms_primary = n_neutrals_primary * (1.0 + nratio);
-		printf("nratio: %e\nn_atoms: %f\n", nratio, n_atoms_primary);
+		// printf("nratio: %e\nn_atoms: %f\n", nratio, n_atoms_primary);
 
 		//-------- Sum the contributing #ions = #electrons for all elements
 
 		ne_sum = 0.0;
 
-		printf("%le %d %le %le\n", n_neutrals_primary, kion, nratio, n_atoms_primary);
+		// printf("%le %d %le %le\n", n_neutrals_primary, kion, nratio, n_atoms_primary);
 
 		//-------- Loop over all NEUTRAL elements to get column densities and get number of atoms
 
@@ -2796,7 +2801,7 @@ void  ResetOneElementAbundance( int kelem, double Vinfinity, struct elements_dat
 	//========== Initialize the Jones' beta value
 
 	cvterm = elemdata->els[kelem].c * pow(Vinfinity - elemdata->els[kelem].Vo, 2) * pow(Vinfinity, 0.8);
-	printf("CVTERM = %e", cvterm);
+	//printf("CVTERM = %e\n", cvterm);
 	elemdata->els[kelem].beta_jones = cvterm / (1.0 + cvterm);
 
 }
@@ -3051,10 +3056,10 @@ struct  element_lines_spectrum  *els;
     //========== Compute broadening terms
 
     sigma = elemdata->sigma0 / 2.3548;
-    printf("Sigma... %f\n", elemdata->sigma0);
+    // printf("Sigma... %f\n", elemdata->sigma0);
 
 	sigmahalf = sigma / 2.0;
-	printf("Sigmahalf... %f\n", sigmahalf);
+	// printf("Sigmahalf... %f\n", sigmahalf);
 
     invsigmasq_1st = -0.5 /  ( sigma * sigma );
 
@@ -3068,7 +3073,7 @@ struct  element_lines_spectrum  *els;
 	//========== Compute lambda cutoff range when contribution = 10^-6
 
 	dlimit = sigma * sqrt( -2.0 * log( 1.0e-6 ) );
-	printf("dlimit... %f\n", dlimit);
+	// printf("dlimit... %f\n", dlimit);
 
 	kmin = (int)( elemdata->wave[0] / ( elemdata->wave[1] - elemdata->wave[0] ) );
 
@@ -3453,16 +3458,22 @@ double  **V;
    //========== Determine number of active elements to be used in the fit 
    //              by checking for the FITTING flag but not fit locked (FITLOCK)
    printf("Determining the number of active elements...\n");
+   printf("%d\n", elemdata->nelements);
 
    kfit = 0;
 
    for( kelem=0; kelem<elemdata->nelements; kelem++ )  {
+
+   		printf("User fit flag: %d\n", elemdata->els[kelem].user_fitflag);
+   		// printf("%d\n", kelem);
+   		// printf("Init fit flag: %d\n", elemdata->els[kelem].init_fitflag);
 
 	    if( elemdata->els[kelem].user_fitflag == FITTING )  {
 
 			elemdata->fit_element_index[kfit] = kelem;
 			
 			kfit++;
+			printf("kfit: %d\n", kfit);
 
 		}
    }
@@ -3471,7 +3482,7 @@ double  **V;
 
    elemdata->nfit = nfit;
 
-   printf("Number of active elements = %s\n", nfit);
+   printf("Number of active elements = %d\n", nfit);
 
 
    //========== Find limits and largest value in the spectrum and check wavelengths match
@@ -3811,7 +3822,8 @@ void  SpectrumGivenAllCoefs( struct  elements_data     *elemdata,
 {
 int      kneutral, kelem, kwave, kneu, kion;
 double   sum; 
-
+	printf("elemdata\n");
+	printf("fitspectrum\n");
 
    //========== loop over all output wavelengths
 
@@ -3847,6 +3859,8 @@ double   sum;
 		fitspectrum[kwave] = sum;
 
 	}
+
+	printf("Successfully fit. I think...");
 
 
 }

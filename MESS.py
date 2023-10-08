@@ -19,7 +19,6 @@ import numpy as np
 import pyqtgraph as pg
 import sys 
 sys.path.append('../RMS/RMS/Routines')
-print(sys.path)
 import matplotlib.pyplot as plt
 import scipy.ndimage
 import os
@@ -671,7 +670,7 @@ class Ui(QtWidgets.QMainWindow):
         # Clear the plot    
         self.Clear_button.clicked.connect(self.clearSpec)
         # Save the plot
-        self.SavePlot_button.clicked.connect(self.saveSpec)
+        self.SavePlot_button.clicked.connect(self.savePlot)
         #MJM
 
         #################### Elemental Abundance Buttons #################
@@ -690,8 +689,8 @@ class Ui(QtWidgets.QMainWindow):
         self.Sigma_rollbox.valueChanged.connect(lambda: self.updateSigmaValue())
         self.Hot2WarmRatio_rollbox.valueChanged.connect(lambda: self.updateHot2WarmRatio())
 
-        self.MeteorSpeed_rollbox.valueChanged.connect(lambda: self.updateMeteorSpeedValue())
-        self.MeteorHeight_rollbox.valueChanged.connect(lambda: self.updateMeteorHeightValue())
+        self.MeteorSpeed_rollbox.valueChanged.connect(lambda: self.updateMeteorSpeed())
+        self.MeteorHeight_rollbox.valueChanged.connect(lambda: self.updateMeteorHeight())
         self.ColumnDensity_rollbox.valueChanged.connect(lambda: self.updateColumnDensity())
         self.PlasmaRadius_rollbox.valueChanged.connect(lambda: self.updatePlasmaRadius())
 
@@ -709,18 +708,30 @@ class Ui(QtWidgets.QMainWindow):
         self.Mn_button.clicked.connect(self.elementButtonClicked)
         self.Al_button.clicked.connect(self.elementButtonClicked)
         self.Ti_button.clicked.connect(self.elementButtonClicked)
-
+        self.Ni_button.clicked.connect(self.elementButtonClicked)
+        self.C_button.clicked.connect(self.elementButtonClicked)
+        self.Co_button.clicked.connect(self.elementButtonClicked)
+        self.Cu_button.clicked.connect(self.elementButtonClicked)
+        self.V_button.clicked.connect(self.elementButtonClicked)
+        self.Sc_button.clicked.connect(self.elementButtonClicked)
 
         self.CaII_button.clicked.connect(self.elementButtonClicked)
         self.MgII_button.clicked.connect(self.elementButtonClicked)
         self.NaII_button.clicked.connect(self.elementButtonClicked)
         self.SiII_button.clicked.connect(self.elementButtonClicked)
+        self.FeII_button.clicked.connect(self.elementButtonClicked)
+        self.NII_button.clicked.connect(self.elementButtonClicked)
+        self.CII_button.clicked.connect(self.elementButtonClicked)
 
         self.N2_button.clicked.connect(self.elementButtonClicked)
         self.O2_button.clicked.connect(self.elementButtonClicked)
+        self.CH_button.clicked.connect(self.elementButtonClicked)
+        self.CO2_button.clicked.connect(self.elementButtonClicked)
+
         self.CaO_button.clicked.connect(self.elementButtonClicked)
         self.FeO_button.clicked.connect(self.elementButtonClicked)
         self.MgO_button.clicked.connect(self.elementButtonClicked)
+        self.AlO_button.clicked.connect(self.elementButtonClicked)
 
         # toggle-able command buttons
         self.HotTempOn_button.setCheckable(True)
@@ -950,15 +961,15 @@ class Ui(QtWidgets.QMainWindow):
         self.ColumnDensityIter_rollbox.setValue(self.spectral.elemdata.ne_iter/1E13)
         self.PlasmaRadius_rollbox.setValue(self.spectral.elemdata.plasma_radius_meters)
 
-        self.Scale_label.setText('2.15')
-        self.nm0_label.setText('518.2')
-        self.nm0_edit.setText('518.2')
 
-        self.extra_elements = ['Al-II', 'Al-I', 'Ar-II', 'Ar-I', 'Ba-II', 'Ba-I', 'Be-II', 'Be-I', 'Ca-II', 'C-II', \
-        'C-I', 'Cl-II', 'Cl-I', 'Co-II', 'Co-I', 'Cr-II', 'Cr-I', 'Cs-II', 'Cs-I', 'Cu-II', 'Cu-I', 'Fe-II', \
-        'F-II', 'F-I', 'Ge-II', 'Ge-I', 'H-II', 'H-I', 'K-II', 'Li-II', 'Li-I', 'Mg-II', 'Mn-II', 'Mn-I',\
-        'N2-II', 'N2-I', 'Na-II', 'Ne-II', 'Ne-I', 'Ni-II', 'Ni-I', 'O-II', 'Pb-II', 'Pb-I', 'P-II', \
-        'P-I', 'Rb-II', 'Rb-I', 'Sc-II', 'Sc-I', 'Si-II', 'S-I', 'Sr-II', 'Sr-I', 'Ti-II', 'Ti-I', 'V-II', 'V-I', \
+        self.Scale_label.setText(str(self.SpectralScale_rollbox.value()))
+        self.nm0_label.setText(self.nm0_edit.text())
+
+        self.extra_elements = ['Al-II', 'Ar-II', 'Ar-I', 'Ba-II', 'Ba-I', 'Be-II', 'Be-I', \
+        'Cl-II', 'Cl-I', 'Co-II', 'Cr-II', 'Cr-I', 'Cs-II', 'Cs-I', 'Cu-II', \
+        'F-II', 'F-I', 'Ge-II', 'Ge-I', 'H-II', 'K-II', 'Li-II', 'Li-I', 'Mg-II', 'Mn-II',\
+        'N2-II', 'N2-I', 'Na-II', 'Ne-II', 'Ne-I', 'Ni-II', 'O-II', 'Pb-II', 'Pb-I', 'P-II', \
+        'P-I', 'Rb-II', 'Rb-I', 'Sc-II', 'S-I', 'Sr-II', 'Sr-I', 'Ti-II', 'V-II', \
         'Y-II', 'Y-I', 'Zn-II', 'Zn-I', 'Zr-II', 'Zr-I']
         self.ExtraElements_combo.addItems(self.extra_elements)
         self.ExtraElements_combo.currentIndexChanged.connect(self.plotExtraElement)
@@ -1459,6 +1470,19 @@ class Ui(QtWidgets.QMainWindow):
             pen_color = (11,23)
         elif self.elemName == 'Ti':
             pen_color = (12,23)
+        elif self.elemName == 'Ni':
+            pen_color = (12,23)
+        elif self.elemName == 'C':
+            pen_color = (12,23)
+        elif self.elemName == 'Co':
+            pen_color = (12,23)
+        elif self.elemName == 'Cu':
+            pen_color = (12,23)
+        elif self.elemName == 'V':
+            pen_color = (12,23)
+        elif self.elemName == 'Sc':
+            pen_color = (12,23)
+
         elif self.elemName == 'CaII':
             pen_color = (13,23)
         elif self.elemName == 'FeII':
@@ -1467,8 +1491,18 @@ class Ui(QtWidgets.QMainWindow):
             pen_color = (15,23)
         elif self.elemName == 'SiII':
             pen_color = (16,23)
+        elif self.elemName == 'NII':
+            pen_color = (17,23)
+        elif self.elemName == 'CII':
+            pen_color = (18,23)
+
         # elif self.elemName == 'O2':
         #     pen_color = (17,23)
+        # elif self.elemName == 'CH':
+        #     pen_color = (17,23)
+        # elif self.elemName == 'CO2':
+        #     pen_color = (17,23)
+
         # elif self.elemName == 'CaO':
         #     pen_color = (18,23)
         # elif self.elemName == 'FeO':
@@ -1555,11 +1589,28 @@ class Ui(QtWidgets.QMainWindow):
         self.plotElement(self)
 
     def fitMeasuredSpectrum(self):
-        spectral_library.GuralSpectral.fitMeasSpec(self.spectral)
+        """ Call fitMeasSpec from the Gural spectral library which does the following...
+            1. Sets Jones' electron density by calling JonesElectronDensity from the C library
+            2. Uses Jones' n_e as an initial guess for an iterative method (IterativeElectronDensity function)
+            3. Spectral coefficients are then fit by calling FitSpectralCoefficients
+            4. Column densities are then calculated with ColumnDensities_NumberAtoms
+            5. The model spectrum is then calculated with SpectrumGivenAllCoefs
+        """
+        self.kelem_ref = spectral_library.GuralSpectral.setReferenceElem(self.spectral)
+
+        fittingElems = []
+
+        for i in range(self.spectral.elemdata.nelements):
+            if (self.elementDeets[i][1] == 1):
+                fittingElems.append(self.elementDeets[i][3])
+
+        if len(fittingElems) == 2:
+            spectral_library.GuralSpectral.fitMeasSpec(self.spectral, fittingElems[0], fittingElems[1])
+        else:
+            spectral_library.GuralSpectral.fitMeasSpec(self.spectral, fittingElems[0], fittingElems[1], fittingElems[2])
 
     def calculateFullSpectrum(self):
         self.kelem_ref = spectral_library.GuralSpectral.setReferenceElem(self.spectral)
-
         print('Reference Element: %s' % self.kelem_ref)
 
 
@@ -1572,7 +1623,7 @@ class Ui(QtWidgets.QMainWindow):
             if (self.elementDeets[i][1] == 1):
                 fittingElems.append(self.elementDeets[i][3])
 
-        print('Elements being fit...')
+        print('%s elements being fit...' % len(fittingElems))
         print(fittingElems)
 
         if len(fittingElems) == 2:
@@ -1586,8 +1637,11 @@ class Ui(QtWidgets.QMainWindow):
             self.fullspec_array[i][0] = self.spectral.spcalib.wavelength_nm[i]
             self.fullspec_array[i][1] = self.spectral.spectra.fit_spectrum[i]
 
-        self.fullSpecScaler = self.plotMax / np.max(self.fullspec_array[:,1])
-        # self.fullSpecScaler = 1.0
+        try:
+            self.fullSpecScaler = self.plotMax / np.max(self.fullspec_array[:,1])
+        except:
+            self.fullSpecScaler = 1.0
+            print('Could not scale spectrum.')
 
         self.plotFullSpectrum()
 
@@ -1610,7 +1664,7 @@ class Ui(QtWidgets.QMainWindow):
 
         if globals()[plotName] is None:
             self.Plot.addLegend()
-            globals()[plotName] = self.Plot.plot(self.fullspec_array[:,0], self.fullspec_array[:,1]*self.fullSpecScaler, pen=pg.mkPen('w', width=4), name='Full')
+            globals()[plotName] = self.Plot.plot(self.fullspec_array[:,0], self.fullspec_array[:,1]*self.fullSpecScaler, pen=pg.mkPen('k', width=4), name='Full')
         else:
             globals()[plotName].setData(self.fullspec_array[:,0], self.fullspec_array[:,1])
         
@@ -1730,6 +1784,7 @@ class Ui(QtWidgets.QMainWindow):
                 self.elementsState[2] -= 1
 
             self.elementDeets[self.buttonIndex][1] = 0
+            # self.spectral.elemdata.els[self.elemIndex].user_fitflag = 0
             self.spectral.elemdata.els[self.elemIndex].user_fitflag = 0
             
             spectral_library.GuralSpectral.removeElemFromModel(self.spectral, self.elemNumber)          
@@ -1740,6 +1795,7 @@ class Ui(QtWidgets.QMainWindow):
         if self.elementsState[1] > 2 and self.elementDeets[self.buttonIndex][1] == 2:
             self.sender().setStyleSheet('background-color:#FFFF00;color:#000000;')
             # spectral_library.GuralSpectral.lockElemFit(self.spectral, self.elemNumber)
+            # self.spectral.elemdata.els[self.elemIndex].user_fitflag = 2
             self.spectral.elemdata.els[self.elemIndex].user_fitflag = 2
             print('Locked element and added to Fit')
             self.statusBar.showMessage('Locked %s fit' % self.elemName,2000)
@@ -1757,15 +1813,17 @@ class Ui(QtWidgets.QMainWindow):
         
         if self.elementDeets[self.buttonIndex][1] == 1:
             self.sender().setStyleSheet('background-color:#00FF00;color:#000000;')
-            # spectral_library.GuralSpectral.elemFitting(self.spectral, self.elemNumber)
-            self.spectral.elemdata.els[self.elemIndex].user_fitflag = 1
+            spectral_library.GuralSpectral.elemFitting(self.spectral, self.elemIndex)
+            print("elemNumber: %s" % self.elemNumber)
+            print("elemIndex: %s" % self.elemIndex)
+            # self.spectral.elemdata.els[self.elemIndex].user_fitflag = 1
             self.statusBar.showMessage('Set to fitting mode. %s' % self.elemName,2000)
             
             self.calculateElementSpectrum()
             self.plotElement(self)
-            print("N warm: %s" % self.spectral.elemdata.els[self.elemIndex].N_warm)
+            # print("N warm: %s" % self.spectral.elemdata.els[self.elemIndex].N_warm)
             self.columnDensityClicked()
-            print("N warm: %s" % self.spectral.elemdata.els[self.elemIndex].N_warm)
+            # print("N warm: %s" % self.spectral.elemdata.els[self.elemIndex].N_warm)
 
             # print('N warm: %s' % self.spectral.elemdata.els[elemIndex].N_warm)
 
@@ -2711,7 +2769,7 @@ class Ui(QtWidgets.QMainWindow):
 
             # plt.show()
 
-        print(self.dir_x, self.dir_y)
+        # print(self.dir_x, self.dir_y)
         # plt.waitforbuttonpress()
 
         # self.spectralAutoROI(image.shape[1],20,best_roll,b_ransac[np.argmin(mae)])
@@ -3213,7 +3271,7 @@ class Ui(QtWidgets.QMainWindow):
         # Interpolate responsivity curve to match scaled_spectral_profile
         xM = self.responsivityDefault[:,0]
         # xM = np.linspace(300,1100,800)
-        print(self.responsivityDefault[:,1])
+        # print(self.responsivityDefault[:,1])
         yM = self.responsivityDefault[:,1]/np.max(self.responsivityDefault[:,1])
         # yM = np.ones(800)
         fM = interpolate.interp1d(xM,yM)
@@ -3265,7 +3323,7 @@ class Ui(QtWidgets.QMainWindow):
         self.PlottedSpectrumNumber = 0
         self.Plot.clear()
 
-    def saveSpec(self):
+    def savePlot(self):
         print('Saving plot...')
 
         plt.figure(figsize=(14,10))

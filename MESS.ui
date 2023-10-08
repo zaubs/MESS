@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1438</width>
-    <height>995</height>
+    <height>990</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -196,9 +196,9 @@
    <widget class="QLabel" name="nm0_label">
     <property name="geometry">
      <rect>
-      <x>1001</x>
+      <x>995</x>
       <y>337</y>
-      <width>41</width>
+      <width>46</width>
       <height>18</height>
      </rect>
     </property>
@@ -222,7 +222,7 @@
    <widget class="QLabel" name="label_44">
     <property name="geometry">
      <rect>
-      <x>965</x>
+      <x>955</x>
       <y>331</y>
       <width>41</width>
       <height>31</height>
@@ -248,7 +248,7 @@
    <widget class="QLabel" name="label_48">
     <property name="geometry">
      <rect>
-      <x>1170</x>
+      <x>1180</x>
       <y>337</y>
       <width>71</width>
       <height>18</height>
@@ -258,26 +258,13 @@
      <string>nm/pix</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="SavePlot_button">
-    <property name="geometry">
-     <rect>
-      <x>1230</x>
-      <y>20</y>
-      <width>91</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Save Plot</string>
-    </property>
-   </widget>
    <widget class="QTabWidget" name="tabWidget_2">
     <property name="geometry">
      <rect>
       <x>720</x>
       <y>365</y>
       <width>701</width>
-      <height>581</height>
+      <height>576</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -293,7 +280,7 @@
         <x>10</x>
         <y>10</y>
         <width>681</width>
-        <height>571</height>
+        <height>526</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
@@ -1347,36 +1334,86 @@
             </widget>
            </item>
            <item>
-            <spacer name="horizontalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Maximum</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
+            <widget class="QPushButton" name="Ni_button">
+             <property name="maximumSize">
               <size>
                <width>40</width>
-               <height>20</height>
+               <height>16777215</height>
               </size>
              </property>
-            </spacer>
+             <property name="text">
+              <string>Ni</string>
+             </property>
+            </widget>
            </item>
            <item>
-            <spacer name="horizontalSpacer_4">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Maximum</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
+            <widget class="QPushButton" name="C_button">
+             <property name="maximumSize">
               <size>
                <width>40</width>
-               <height>20</height>
+               <height>16777215</height>
               </size>
              </property>
-            </spacer>
+             <property name="text">
+              <string>C</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_45">
+           <item>
+            <widget class="QPushButton" name="Co_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Co</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="Cu_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Cu</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="V_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>V</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="Sc_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Sc</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -1433,6 +1470,19 @@
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="FeII_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Fe+</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QPushButton" name="MgII_button">
              <property name="maximumSize">
               <size>
@@ -1458,6 +1508,10 @@
              </property>
             </widget>
            </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_44">
            <item>
             <widget class="QPushButton" name="SiII_button">
              <property name="maximumSize">
@@ -1471,10 +1525,33 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QPushButton" name="NII_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>N+</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="CII_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>C+</string>
+             </property>
+            </widget>
+           </item>
           </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_44"/>
          </item>
          <item>
           <spacer name="verticalSpacer_4">
@@ -1542,6 +1619,86 @@
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="CH_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>CH</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="CO2_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>CO2</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_9">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_56">
+           <item>
+            <widget class="QLabel" name="label_28">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Oxides</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="Line" name="line_7">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_57">
+           <item>
+            <widget class="QPushButton" name="MgO_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>MgO</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QPushButton" name="CaO_button">
              <property name="maximumSize">
               <size>
@@ -1567,10 +1724,6 @@
              </property>
             </widget>
            </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_45">
            <item>
             <widget class="QPushButton" name="FeO_button">
              <property name="maximumSize">
@@ -1583,51 +1736,6 @@
               <string>FeO</string>
              </property>
             </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="MgO_button">
-             <property name="maximumSize">
-              <size>
-               <width>40</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>MgO</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_6">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Maximum</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_5">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Maximum</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </item>
@@ -1710,19 +1818,6 @@
             <enum>Qt::Horizontal</enum>
            </property>
           </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_5">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
          </item>
         </layout>
        </item>
@@ -1949,6 +2044,9 @@
              <property name="singleStep">
               <double>100.000000000000000</double>
              </property>
+             <property name="value">
+              <double>10000.000000000000000</double>
+             </property>
             </widget>
            </item>
           </layout>
@@ -1970,6 +2068,12 @@
              </property>
              <property name="maximum">
               <double>10000.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>100.000000000000000</double>
+             </property>
+             <property name="value">
+              <double>4500.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -2017,6 +2121,19 @@
           </layout>
          </item>
          <item>
+          <spacer name="verticalSpacer_8">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_25">
            <item>
             <widget class="QPushButton" name="RefreshPlot_button">
@@ -2032,19 +2149,6 @@
             </widget>
            </item>
           </layout>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_8">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
          </item>
         </layout>
        </item>
@@ -2212,12 +2316,24 @@
              <property name="text">
               <string>Ions</string>
              </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item>
             <widget class="QPushButton" name="Neutral_button">
              <property name="text">
               <string>Neutral</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -2230,6 +2346,9 @@
              <property name="text">
               <string>Responsivity</string>
              </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item>
@@ -2239,6 +2358,20 @@
              </property>
              <property name="checked">
               <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox">
+             <property name="text">
+              <string>Transmission</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox_2">
+             <property name="text">
+              <string>Blackbody</string>
              </property>
             </widget>
            </item>
@@ -2258,6 +2391,13 @@
           </spacer>
          </item>
          <item>
+          <widget class="QPushButton" name="CalculateFullSpectrum_button">
+           <property name="text">
+            <string>Show Full Spectrum</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_31">
            <item>
             <widget class="QPushButton" name="FitMeasuredSpectrum_button">
@@ -2275,13 +2415,6 @@
           <widget class="QPushButton" name="ResetElements_button">
            <property name="text">
             <string>Reset Elements</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="CalculateFullSpectrum_button">
-           <property name="text">
-            <string>Show Full Spectrum</string>
            </property>
           </widget>
          </item>
@@ -2534,7 +2667,7 @@
     </widget>
     <widget class="QWidget" name="tab_8">
      <attribute name="title">
-      <string>Summary</string>
+      <string>Create Reports</string>
      </attribute>
      <widget class="QWidget" name="horizontalLayoutWidget_4">
       <property name="geometry">
@@ -2554,7 +2687,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_4">
+        <widget class="QPushButton" name="SavePlot_button">
          <property name="text">
           <string>Create Plots</string>
          </property>

@@ -834,6 +834,21 @@ class Ui(QtWidgets.QMainWindow):
         self.elementDeets.append(['Al-I',0,13,spectral_library.GuralSpectral.getElementIndex(self.spectral, 0, 13)])
         self.elementButtons.append(self.Ti_button)
         self.elementDeets.append(['Ti-I',0,22,spectral_library.GuralSpectral.getElementIndex(self.spectral, 0, 22)])
+        # self.elementButtons.append(self.H_button)
+        # self.elementDeets.append(['H-I',0,1,spectral_library.GuralSpectral.getElementIndex(self.spectral, 0, 1)])
+        self.elementButtons.append(self.C_button)
+        self.elementDeets.append(['C-I',0,6,spectral_library.GuralSpectral.getElementIndex(self.spectral, 0, 6)])
+        self.elementButtons.append(self.Sc_button)
+        self.elementDeets.append(['Sc-I',0,21,spectral_library.GuralSpectral.getElementIndex(self.spectral, 0, 21)])
+        self.elementButtons.append(self.V_button)
+        self.elementDeets.append(['V-I',0,23,spectral_library.GuralSpectral.getElementIndex(self.spectral, 0, 23)])
+        self.elementButtons.append(self.Co_button)
+        self.elementDeets.append(['Co-I',0,27,spectral_library.GuralSpectral.getElementIndex(self.spectral, 0, 27)])
+        self.elementButtons.append(self.Ni_button)
+        self.elementDeets.append(['Ni-I',0,28,spectral_library.GuralSpectral.getElementIndex(self.spectral, 0, 28)])
+        self.elementButtons.append(self.Cu_button)
+        self.elementDeets.append(['Cu-I',0,29,spectral_library.GuralSpectral.getElementIndex(self.spectral, 0, 29)])
+
 
         self.elementButtons.append(self.CaII_button)
         self.elementDeets.append(['CaII',0,20,spectral_library.GuralSpectral.getElementIndex(self.spectral, 1, 20)])
@@ -855,11 +870,9 @@ class Ui(QtWidgets.QMainWindow):
         self.elementDeets.append(['Be-I',0,4,spectral_library.GuralSpectral.getElementIndex(self.spectral, 0, 4)])
         # self.elementDeets.append(['Ca-II',0,20,spectral_library.GuralSpectral.getElementIndex(self.spectral, 1, 20)])
         self.elementDeets.append(['C-II',0,6,spectral_library.GuralSpectral.getElementIndex(self.spectral, 1, 6)])
-        self.elementDeets.append(['C-I',0,6,spectral_library.GuralSpectral.getElementIndex(self.spectral, 0, 6)])
         self.elementDeets.append(['Cl-II',0,17,spectral_library.GuralSpectral.getElementIndex(self.spectral, 1, 17)])
         self.elementDeets.append(['Cl-I',0,17,spectral_library.GuralSpectral.getElementIndex(self.spectral, 0, 17)])
         self.elementDeets.append(['Co-II',0,27,spectral_library.GuralSpectral.getElementIndex(self.spectral, 1, 27)])
-        self.elementDeets.append(['Co-I',0,27,spectral_library.GuralSpectral.getElementIndex(self.spectral, 0, 27)])
         self.elementDeets.append(['Cr-II',0,24,spectral_library.GuralSpectral.getElementIndex(self.spectral, 1, 24)])
         # self.elementDeets.append(['Cr-I',0,24,spectral_library.GuralSpectral.getElementIndex(self.spectral, 0, 24)])
         self.elementDeets.append(['Cs-II',0,55,spectral_library.GuralSpectral.getElementIndex(self.spectral, 1, 55)])
@@ -1445,56 +1458,58 @@ class Ui(QtWidgets.QMainWindow):
         # nm0 = 410 # nm
 
         if self.elemName == 'Na':
-            pen_color = (0,23)
+            pen_color = (255,255,0)
         elif self.elemName == 'K':
-            pen_color = (1,23)
+            pen_color = (238,130,238)
         elif self.elemName == 'Mg':
-            pen_color = (2,23)
+            pen_color = (0,255,0)
         elif self.elemName == 'O':
-            pen_color = (3,23)
+            pen_color = (255,69,0)
         elif self.elemName == 'N2':
-            pen_color = (4,23)
+            pen_color = (1,18)
         elif self.elemName == 'Si':
-            pen_color = (5,23)
+            pen_color = (2,18)
         elif self.elemName == 'Fe':
-            pen_color = (6,23)
+            pen_color = (30,144,255)
         elif self.elemName == 'Ca':
-            pen_color = (7,23)
+            pen_color = (3,18)
         elif self.elemName == 'N':
-            pen_color = (8,23)
+            pen_color = (139,0,0)
         elif self.elemName == 'Al':
-            pen_color = (9,23)
+            pen_color = (4,18)
         elif self.elemName == 'Cr':
-            pen_color = (10,23)
+            pen_color = (5,18)
         elif self.elemName == 'Mn':
-            pen_color = (11,23)
+            pen_color = (6,18)
         elif self.elemName == 'Ti':
-            pen_color = (12,23)
+            pen_color = (7,18)
         elif self.elemName == 'Ni':
-            pen_color = (12,23)
+            pen_color = (8,18)
         elif self.elemName == 'C':
-            pen_color = (12,23)
+            pen_color = (9,18)
         elif self.elemName == 'Co':
-            pen_color = (12,23)
+            pen_color = (10,18)
         elif self.elemName == 'Cu':
-            pen_color = (12,23)
+            pen_color = (11,18)
         elif self.elemName == 'V':
-            pen_color = (12,23)
+            pen_color = (12,18)
         elif self.elemName == 'Sc':
-            pen_color = (12,23)
+            pen_color = (13,18)
+        elif self.elemName == 'H':
+            pen_color = (255,0,0)
 
         elif self.elemName == 'CaII':
-            pen_color = (13,23)
+            pen_color = (160,32,240)
         elif self.elemName == 'FeII':
-            pen_color = (14,23)
+            pen_color = (14,18)
         elif self.elemName == 'MgII':
-            pen_color = (15,23)
+            pen_color = (15,18)
         elif self.elemName == 'SiII':
-            pen_color = (16,23)
+            pen_color = (210,180,140)
         elif self.elemName == 'NII':
-            pen_color = (17,23)
+            pen_color = (16,18)
         elif self.elemName == 'CII':
-            pen_color = (18,23)
+            pen_color = (18,18)
 
         # elif self.elemName == 'O2':
         #     pen_color = (17,23)
@@ -1766,6 +1781,7 @@ class Ui(QtWidgets.QMainWindow):
         self.buttonClicked = self.sender().objectName()
       
         self.elemName = str(self.buttonClicked).split('_')[0]
+        print(self.elemName)
         self.buttonIndex = self.elementButtons.index(self.sender())
         self.elemNumber = self.elementDeets[self.buttonIndex][2]
         self.elemIndex = self.elementDeets[self.buttonIndex][3]

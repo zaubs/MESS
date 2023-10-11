@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1438</width>
-    <height>990</height>
+    <height>1012</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,7 +39,7 @@
       <x>12</x>
       <y>339</y>
       <width>701</width>
-      <height>601</height>
+      <height>626</height>
      </rect>
     </property>
     <property name="title">
@@ -54,7 +54,7 @@
        <x>10</x>
        <y>50</y>
        <width>681</width>
-       <height>506</height>
+       <height>576</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -264,11 +264,11 @@
       <x>720</x>
       <y>365</y>
       <width>701</width>
-      <height>576</height>
+      <height>601</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab_5">
      <attribute name="title">
@@ -1091,7 +1091,7 @@
         <x>5</x>
         <y>0</y>
         <width>686</width>
-        <height>542</height>
+        <height>565</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
@@ -1196,45 +1196,6 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_16">
            <item>
-            <widget class="QPushButton" name="Al_button">
-             <property name="maximumSize">
-              <size>
-               <width>40</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Al</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="Ca_button">
-             <property name="maximumSize">
-              <size>
-               <width>40</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Ca</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="Cr_button">
-             <property name="maximumSize">
-              <size>
-               <width>40</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Cr</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QPushButton" name="H_button">
              <property name="maximumSize">
               <size>
@@ -1247,12 +1208,8 @@
              </property>
             </widget>
            </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_18">
            <item>
-            <widget class="QPushButton" name="K_button">
+            <widget class="QPushButton" name="C_button">
              <property name="maximumSize">
               <size>
                <width>40</width>
@@ -1260,20 +1217,7 @@
               </size>
              </property>
              <property name="text">
-              <string>K</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="Mn_button">
-             <property name="maximumSize">
-              <size>
-               <width>40</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Mn</string>
+              <string>C</string>
              </property>
             </widget>
            </item>
@@ -1291,6 +1235,36 @@
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="O_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>O</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_18">
+           <item>
+            <widget class="QPushButton" name="Al_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Al</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QPushButton" name="Si_button">
              <property name="maximumSize">
               <size>
@@ -1303,12 +1277,8 @@
              </property>
             </widget>
            </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_43">
            <item>
-            <widget class="QPushButton" name="O_button">
+            <widget class="QPushButton" name="K_button">
              <property name="maximumSize">
               <size>
                <width>40</width>
@@ -1316,7 +1286,37 @@
               </size>
              </property>
              <property name="text">
-              <string>O</string>
+              <string>K</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="Ca_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Ca</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_43">
+           <item>
+            <widget class="QPushButton" name="Sc_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Sc</string>
              </property>
             </widget>
            </item>
@@ -1334,7 +1334,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="Ni_button">
+            <widget class="QPushButton" name="V_button">
              <property name="maximumSize">
               <size>
                <width>40</width>
@@ -1342,12 +1342,12 @@
               </size>
              </property>
              <property name="text">
-              <string>Ni</string>
+              <string>V</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="C_button">
+            <widget class="QPushButton" name="Cr_button">
              <property name="maximumSize">
               <size>
                <width>40</width>
@@ -1355,7 +1355,7 @@
               </size>
              </property>
              <property name="text">
-              <string>C</string>
+              <string>Cr</string>
              </property>
             </widget>
            </item>
@@ -1363,6 +1363,19 @@
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_45">
+           <item>
+            <widget class="QPushButton" name="Mn_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Mn</string>
+             </property>
+            </widget>
+           </item>
            <item>
             <widget class="QPushButton" name="Co_button">
              <property name="maximumSize">
@@ -1373,6 +1386,19 @@
              </property>
              <property name="text">
               <string>Co</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="Ni_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Ni</string>
              </property>
             </widget>
            </item>
@@ -1389,29 +1415,36 @@
              </property>
             </widget>
            </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_60">
            <item>
-            <widget class="QPushButton" name="V_button">
+            <widget class="QLabel" name="label_29">
              <property name="maximumSize">
               <size>
-               <width>40</width>
+               <width>75</width>
                <height>16777215</height>
               </size>
              </property>
              <property name="text">
-              <string>V</string>
+              <string>ColDens</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="Sc_button">
+            <widget class="QDoubleSpinBox" name="ActiveColumnDensity_rollbox"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="ActiveElement_label">
              <property name="maximumSize">
               <size>
-               <width>40</width>
+               <width>25</width>
                <height>16777215</height>
               </size>
              </property>
              <property name="text">
-              <string>Sc</string>
+              <string>Fe</string>
              </property>
             </widget>
            </item>
@@ -1457,19 +1490,6 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_39">
            <item>
-            <widget class="QPushButton" name="CaII_button">
-             <property name="maximumSize">
-              <size>
-               <width>40</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Ca+</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QPushButton" name="FeII_button">
              <property name="maximumSize">
               <size>
@@ -1508,12 +1528,8 @@
              </property>
             </widget>
            </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_44">
            <item>
-            <widget class="QPushButton" name="SiII_button">
+            <widget class="QPushButton" name="CaII_button">
              <property name="maximumSize">
               <size>
                <width>40</width>
@@ -1521,7 +1537,24 @@
               </size>
              </property>
              <property name="text">
-              <string>Si+</string>
+              <string>Ca+</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_44">
+           <item>
+            <widget class="QPushButton" name="CII_button">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>C+</string>
              </property>
             </widget>
            </item>
@@ -1539,7 +1572,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="CII_button">
+            <widget class="QPushButton" name="SiII_button">
              <property name="maximumSize">
               <size>
                <width>40</width>
@@ -1547,7 +1580,7 @@
               </size>
              </property>
              <property name="text">
-              <string>C+</string>
+              <string>Si+</string>
              </property>
             </widget>
            </item>
@@ -2405,7 +2438,7 @@
               <bool>true</bool>
              </property>
              <property name="text">
-              <string>Fit Spectrum</string>
+              <string>Fit Element(s)</string>
              </property>
             </widget>
            </item>
@@ -2417,19 +2450,6 @@
             <string>Reset Elements</string>
            </property>
           </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_19">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
          </item>
         </layout>
        </item>

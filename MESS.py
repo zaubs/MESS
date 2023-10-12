@@ -1771,8 +1771,18 @@ class Ui(QtWidgets.QMainWindow):
     def elementButtonClicked(self):
 
         # Detect whether shift key is held down
-        mods = QtGui.QApplication.keyboardModifiers()
+        mods = QtWidgets.QApplication.keyboardModifiers()
         isShiftPressed = mods & QtCore.Qt.ShiftModifier
+
+        if mods == QtCore.Qt.ShiftModifier:
+            print('Shift+Click')
+        elif mods == QtCore.Qt.ControlModifier:
+            print('Control+Click')
+        elif mods == (QtCore.Qt.ControlModifier |
+                           QtCore.Qt.ShiftModifier):
+            print('Control+Shift+Click')
+        else:
+            print('Click')
 
         # if bool(isShiftPressed) == True:
         #     self.sender().setStyleSheet('background-color:#FFFFFF;font:bold')

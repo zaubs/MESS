@@ -268,7 +268,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab_5">
      <attribute name="title">
@@ -280,7 +280,7 @@
         <x>10</x>
         <y>10</y>
         <width>681</width>
-        <height>526</height>
+        <height>559</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
@@ -291,6 +291,16 @@
         <number>7</number>
        </property>
        <item row="4" column="1">
+        <widget class="QPushButton" name="ClearSpectralRegion_button">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Clear ROI</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
         <widget class="QPushButton" name="AutoPick_button">
          <property name="enabled">
           <bool>false</bool>
@@ -338,23 +348,7 @@
        <item row="11" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_4"/>
        </item>
-       <item row="2" column="1">
-        <widget class="QPushButton" name="AutoTrackDirect_button">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Autotrack 0th Order</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0">
+       <item row="7" column="0">
         <widget class="QLabel" name="label_11">
          <property name="maximumSize">
           <size>
@@ -374,28 +368,6 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="AutoPickDirect_button">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Autopick 0th Order</string>
          </property>
         </widget>
        </item>
@@ -555,45 +527,6 @@
          </item>
         </layout>
        </item>
-       <item row="3" column="1">
-        <widget class="QPushButton" name="ClearPicksDirect_button">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Clear Picks</string>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="1">
-        <widget class="QPushButton" name="CalibrateSpectrum_button">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>Calibrate</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label_13">
          <property name="font">
@@ -665,51 +598,7 @@
          </item>
         </layout>
        </item>
-       <item row="9" column="1">
-        <widget class="QPushButton" name="MeasuredSpec_button">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Show Spectrum</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QPushButton" name="SelectSpectralRegion_button">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Manual ROI</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
+       <item row="7" column="1">
         <widget class="QLabel" name="label_14">
          <property name="font">
           <font>
@@ -746,17 +635,60 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="1">
-        <widget class="QPushButton" name="ClearSpectralRegion_button">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>Clear ROI</string>
-         </property>
-        </widget>
+       <item row="9" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_34">
+         <item>
+          <widget class="QLabel" name="label_17">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Bias Level</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="BiasLevel_rollbox">
+           <property name="maximum">
+            <number>5000</number>
+           </property>
+           <property name="value">
+            <number>2450</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_18">
+           <property name="text">
+            <string>y Scale</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="YScaler_rollbox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimum">
+            <double>1.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>1.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
-       <item row="6" column="0">
+       <item row="5" column="0">
         <widget class="QPushButton" name="AutoSpectralFlat_button">
          <property name="enabled">
           <bool>false</bool>
@@ -778,7 +710,50 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="15" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_10">
+         <item>
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>Roll</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="Roll_rollbox">
+           <property name="value">
+            <double>1.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="11" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_61"/>
+       </item>
+       <item row="13" column="1">
+        <widget class="QPushButton" name="SetReference_button">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Set Reference</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+         <property name="default">
+          <bool>false</bool>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_27">
          <item>
           <widget class="QPushButton" name="UploadSpectral_button">
@@ -854,7 +829,7 @@
          </item>
         </layout>
        </item>
-       <item row="9" column="0">
+       <item row="8" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_30">
          <item>
           <widget class="QLabel" name="label_15">
@@ -905,22 +880,6 @@
           </widget>
          </item>
         </layout>
-       </item>
-       <item row="5" column="0">
-        <widget class="QPushButton" name="UploadSpectralFlat_button">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Load Spectral Flat</string>
-         </property>
-        </widget>
        </item>
        <item row="12" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -974,79 +933,17 @@
          </item>
         </layout>
        </item>
-       <item row="10" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_34">
-         <item>
-          <widget class="QLabel" name="label_17">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Bias Level</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="BiasLevel_rollbox">
-           <property name="maximum">
-            <number>5000</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_18">
-           <property name="text">
-            <string>y Scale</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDoubleSpinBox" name="YScaler_rollbox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimum">
-            <double>1.000000000000000</double>
-           </property>
-           <property name="value">
-            <double>1.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="11" column="1">
-        <widget class="QPushButton" name="SetReference_button">
+       <item row="12" column="1">
+        <widget class="QPushButton" name="CalibrateSpectrum_button">
          <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>Set Reference</string>
-         </property>
-         <property name="checkable">
           <bool>true</bool>
          </property>
-         <property name="autoDefault">
-          <bool>false</bool>
-         </property>
-         <property name="default">
-          <bool>false</bool>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
+         <property name="text">
+          <string>Calibrate</string>
          </property>
         </widget>
        </item>
-       <item row="13" column="1">
+       <item row="14" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_8">
          <item>
           <widget class="QLabel" name="label_4">
@@ -1060,23 +957,227 @@
          </item>
         </layout>
        </item>
-       <item row="14" column="1">
-        <layout class="QHBoxLayout" name="horizontalLayout_10">
+       <item row="4" column="0">
+        <widget class="QPushButton" name="UploadSpectralFlat_button">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Load Spectral Flat</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_62">
          <item>
-          <widget class="QLabel" name="label_6">
+          <widget class="QPushButton" name="UploadResponsivity_button">
            <property name="text">
-            <string>Roll</string>
+            <string>Response Curve</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="Roll_rollbox">
-           <property name="value">
-            <double>1.000000000000000</double>
+          <widget class="QPushButton" name="UploadFlux_button">
+           <property name="text">
+            <string>Calibrate Flux</string>
            </property>
           </widget>
          </item>
         </layout>
+       </item>
+       <item row="6" column="1">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_49">
+           <item>
+            <widget class="QLabel" name="label_26">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <italic>true</italic>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>- Shift Spectrum -</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_51">
+           <item>
+            <widget class="QPushButton" name="ShiftUp_button">
+             <property name="maximumSize">
+              <size>
+               <width>60</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Up</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_50">
+           <item>
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="ShiftLeft_button">
+             <property name="maximumSize">
+              <size>
+               <width>60</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Left</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="ShiftRight_button">
+             <property name="maximumSize">
+              <size>
+               <width>60</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Right</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_52">
+           <item>
+            <widget class="QPushButton" name="ShiftDown_button">
+             <property name="maximumSize">
+              <size>
+               <width>60</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Down</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item row="9" column="1">
+        <widget class="QPushButton" name="MeasuredSpec_button">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Show Spectrum</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QPushButton" name="SelectSpectralRegion_button">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Manual ROI</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -1977,7 +2078,11 @@
             </widget>
            </item>
            <item>
-            <widget class="QDoubleSpinBox" name="Extinction_rollbox"/>
+            <widget class="QDoubleSpinBox" name="Extinction_rollbox">
+             <property name="singleStep">
+              <double>0.100000000000000</double>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -2187,101 +2292,6 @@
        </item>
        <item row="0" column="2">
         <layout class="QVBoxLayout" name="verticalLayout_4">
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_49">
-           <item>
-            <widget class="QLabel" name="label_26">
-             <property name="text">
-              <string>Shift Spectrum</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="Line" name="line_3">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_51">
-           <item>
-            <widget class="QPushButton" name="ShiftUp_button">
-             <property name="maximumSize">
-              <size>
-               <width>60</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Up</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_50">
-           <item>
-            <widget class="QPushButton" name="ShiftLeft_button">
-             <property name="maximumSize">
-              <size>
-               <width>60</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Left</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="ShiftRight_button">
-             <property name="maximumSize">
-              <size>
-               <width>60</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Right</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_52">
-           <item>
-            <widget class="QPushButton" name="ShiftDown_button">
-             <property name="maximumSize">
-              <size>
-               <width>60</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Down</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_7">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_23">
            <item>
@@ -2689,39 +2699,13 @@
      <attribute name="title">
       <string>Create Reports</string>
      </attribute>
-     <widget class="QWidget" name="horizontalLayoutWidget_4">
-      <property name="geometry">
-       <rect>
-        <x>9</x>
-        <y>9</y>
-        <width>681</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_33">
-       <item>
-        <widget class="QPushButton" name="pushButton_5">
-         <property name="text">
-          <string>Save Files</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="SavePlot_button">
-         <property name="text">
-          <string>Create Plots</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QScrollArea" name="scrollArea">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>70</y>
+        <y>390</y>
         <width>681</width>
-        <height>451</height>
+        <height>171</height>
        </rect>
       </property>
       <property name="widgetResizable">
@@ -2733,10 +2717,183 @@
          <x>0</x>
          <y>0</y>
          <width>679</width>
-         <height>449</height>
+         <height>169</height>
         </rect>
        </property>
       </widget>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget_4">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>15</y>
+        <width>679</width>
+        <height>356</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_38">
+         <item>
+          <widget class="QPushButton" name="ChooseSavePath_button">
+           <property name="text">
+            <string>Choose Path</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="SavePath_edit">
+           <property name="text">
+            <string>.</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_53">
+         <item>
+          <widget class="QCheckBox" name="ShowResponsivityPlot_check">
+           <property name="text">
+            <string>Responsivity</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="ShowMarkersPlot_check">
+           <property name="text">
+            <string>Show Markers</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="ShowMgPlot_check">
+           <property name="text">
+            <string>Mg</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="ShowNaPlot_check">
+           <property name="text">
+            <string>Na</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="ShowFePlot_check">
+           <property name="text">
+            <string>Fe</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="ShowActivePlot_check">
+           <property name="text">
+            <string>All Active</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="ShowBlackbodyPlot_check">
+           <property name="text">
+            <string>Blackbody</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_33">
+         <item>
+          <widget class="QPushButton" name="SavePlot_button">
+           <property name="text">
+            <string>Create Plots</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_7">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="label_27">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <italic>true</italic>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>- Ternary Plots -</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_54">
+           <item>
+            <widget class="QCheckBox" name="checkBox_3">
+             <property name="text">
+              <string>CheckBox</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_37">
+           <item>
+            <widget class="QPushButton" name="pushButton_4">
+             <property name="text">
+              <string>Pick Fe/Mg/Na</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_8">
+             <property name="text">
+              <string>Save Picks</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_7">
+             <property name="text">
+              <string>Plot</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </widget>
     </widget>
    </widget>

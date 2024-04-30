@@ -1621,11 +1621,11 @@ class GuralSpectral(object):
 
 		# Sets ne_jones
 		ne_guess = self.spectral_lib.JonesElectronDensity(self.elemdata, self.elemdata.kelem_ref)
-		# print("ne_Jones %s" % ne_guess)         
+		print("+++++ ne_Jones %s" % ne_guess)         
 
 		# Sets ne_iter
 		self.ne = float(self.spectral_lib.IterativeElectronDensity(self.elemdata, self.elemdata.kelem_ref, ne_guess))
-		# print("ne_iter %s" % self.ne)  
+		print("+++++ ne_iter %s" % self.ne)  
 		
 		# Caclulate column densities
 		self.spectral_lib.ColumnDensities_NumberAtoms(self.elemdata, self.ne)
@@ -1633,7 +1633,9 @@ class GuralSpectral(object):
 		print("Column density #2 = %s" % self.elemdata.els[elem2].N_warm)
 
 		# Calculate the  spectrum, given all coefficients previously calculated
+		print('ComputeFullSpec')
 		self.spectral_lib.SpectrumGivenAllCoefs(self.elemdata, self.spectra.fit_spectrum)
+		print('ComputeFullSpec')
 
 	
 	def fitMeasSpec(self, elem1, elem2, elem3=None):
@@ -1647,14 +1649,14 @@ class GuralSpectral(object):
 		Return:
 			Model spectrum calculated with coefficients determined by the function
 		"""
-
+		print("--- fitMeasSpec ---")
 		# Normally get col density from a fit (see later)
 		self.elemdata.els[elem1].N_warm = 3.0e+9 # Check this...
-		# print("** %s" % self.elemdata.els[elem1].N_warm)
+		print("Num warm element 1: %s" % self.elemdata.els[elem1].N_warm)
 
 		# Normally get col density from a fit (see later)
 		self.elemdata.els[elem2].N_warm = 1.2e+09 # Check this... MJM
-		# print("** %s" % self.elemdata.els[elem2].N_warm)
+		print("Num warm element 2: %s" % self.elemdata.els[elem2].N_warm)
 
 		if elem3 != None:
 			# self.elemdata.els[elem3].N_warm = 1.0e+09
@@ -1667,21 +1669,24 @@ class GuralSpectral(object):
 		# Sets ne_iter
 		self.ne = float(self.spectral_lib.IterativeElectronDensity(self.elemdata, \
 			self.elemdata.kelem_ref, ne_guess))
-		print('Calculated ne_iter: %s' % self.ne)
+		print('Calculated ne_iter: %e' % self.ne)
 
 		# Fit spectral coefficients
-		print('Fitting spectral coefficients...')
+		print('--- Fitting spectral coefficients...')
 		self.spectral_lib.FitSpectralCoefficients(self.spcalib.nwavelengths, \
 			self.spcalib.wavelength_nm, self.spectra.meas_spectrum, self.elemdata, self.spconfig)
 
 		# Calculate column densities
-		print('Calculating column densities...')
+		print('--- Calculating column densities...')
 		self.spectral_lib.ColumnDensities_NumberAtoms(self.elemdata, self.ne)
 
 		# Calculate model spectrum
-		print('Calculating model spectrum...')
+		print('--- Calculating model spectrum...')
 		self.spectral_lib.SpectrumGivenAllCoefs(self.elemdata, self.spectra.fit_spectrum)
+		print('FitMeasuredSpec')
 	
+		print("Num warm element 1: %s" % self.elemdata.els[elem1].N_warm)
+		print("Num warm element 2: %s" % self.elemdata.els[elem2].N_warm)
 	
 	def scaleWarmColumnDensity(self, elem, scale_factor):
 		"""

@@ -284,6 +284,7 @@ int   AllocMemorySpectralCalWavelengths( struct speccalibration *spcalib, int nc
 	//========== Set the user defined wavelengths
 
 	spcalib->nwavelengths = nwavelengths;
+	printf("Number of wavelengths (nwavelengths) %d\n", nwavelengths);
 
 	for (int kwave = 0; kwave < nwavelengths; kwave++) {
 		spcalib->wavelength_nm[kwave] = startwavelength_nm + (double)kwave * deltawavelength_nm;
@@ -400,7 +401,6 @@ double  mslope, *wave, *wcumR, *prevR, *cummR, *modlR, *prevE, *cummE;
 	  fscanf( spcalibfile, "%[^\n]\n",     text );
 	  fscanf( spcalibfile, "%[^\n]\n",     text );
 
-
 	  //========== Allocate memory to read file data (this is done because the requested 
 	  //              wavelengths "wave_spec" may not match the file wavelengths "wav"
 	  //              and the data will need to get interpolated.
@@ -447,7 +447,7 @@ double  mslope, *wave, *wcumR, *prevR, *cummR, *modlR, *prevE, *cummE;
 	  kwave_file = 0;
 
 	  for( kwave=0; kwave< spcalib->nwavelengths; kwave++ )  {
-
+	  		printf("********** spcalib->nwavelengths %d\n", spcalib->nwavelengths);
 		    //-------- Are we below or above the star spectral wavelength band
 
 		    if( spcalib->wavelength_nm[kwave] < wave[0]  ||
@@ -827,7 +827,7 @@ long     year, month, day, hour;
 
 	   if (directory_ptr != NULL) {
 
-		   while (entry = readdir(directory_ptr))  {
+		   while ((entry = readdir(directory_ptr)))  {
 
 			   strcpy(fullfilename, entry->d_name);
 
@@ -1341,6 +1341,7 @@ void  ReadElementsData( int     nwavelengths,   // number of user defined wavele
 			Delay_msec(15000);
 			exit(4);
 		}
+		printf("nwave ********** %d\n", elemdata->nwave);
 
 		for (kwave = 0; kwave < elemdata->nwave; kwave++)  els->speclo[kwave] = 0.0;
 		for (kwave = 0; kwave < elemdata->nwave; kwave++)  els->spechi[kwave] = 0.0;
@@ -1663,7 +1664,7 @@ void  ReadStarSpectra(char *pathname, struct StarSpectraInfo *starspectra)
 
 		fscanf(starfile, "%ld %5s %lf %lf %lf %lf %lf %lf",
 			&starspectra->star[ks].hip,
-			&starspectra->star[ks].specType,
+			starspectra->star[ks].specType,
 			&starspectra->star[ks].ra_deg,
 			&starspectra->star[ks].dec_deg,
 			&starspectra->star[ks].vmag,
@@ -1991,7 +1992,7 @@ double   *Ssq;  // squared singular values
 double   *work;
 double   *coefs;
 
-
+	printf("Fitting extinction coefficients...");
     //========== Allocate memory for the 1D and 2D arrays used for the SVD LMS solution
 
     tpe   = (double*)malloc(NUMCOEFS * sizeof(double));
@@ -2351,6 +2352,7 @@ double  PlasmaRadius(double height_km)
 {
 	double  plasma_radius_meters, log10diameter_meters, H100;
 
+	printf("\n*** Computing plasma radius... \n");
 
 	H100 = height_km / 100.0;
 
@@ -2366,7 +2368,7 @@ double  PlasmaRadius(double height_km)
 
 	plasma_radius_meters = 0.5 * pow(10.0, log10diameter_meters);
 
-	////printf(" H = %lf   r = %lf \n", H_km, plasma_radius_meters );
+	printf("Plasma radius at H = %lf  is r = %lf \n", height_km, plasma_radius_meters );
 
 	return(plasma_radius_meters);
 
@@ -2400,6 +2402,7 @@ void    PlasmaVolumes(double height_km, double range_km, double approach_angle, 
 
 	elemdata->VolumeThi = elemdata->VolumeTlo * hot2warm;  //... m^3
 
+	printf("Plasma volumes at H = %lf  are Vlo = %lf  and Vhi = %lf \n", height_km, elemdata->VolumeTlo, elemdata->VolumeThi );
 
 }
 
@@ -2440,7 +2443,11 @@ int   GetPrimaryNeutralElement(struct elements_data *elemdata)
 
 	for (kelem = 0; kelem < elemdata->nelements; kelem++) {
 
-		if (elemdata->els[kelem].elementcode == 12.0  &&  elemdata->els[kelem].user_fitflag != FITLESS)  return(kelem);
+		if (elemdata->els[kelem].elementcode == 12.0  &&  elemdata->els[kelem].user_fitflag != FITLESS)
+		{
+			printf("Primary element is Mg \n");
+			return(kelem);
+		}
 
 	}
 
@@ -2449,7 +2456,11 @@ int   GetPrimaryNeutralElement(struct elements_data *elemdata)
 
 	for (kelem = 0; kelem < elemdata->nelements; kelem++) {
 
-		if (elemdata->els[kelem].elementcode == 26.0  &&  elemdata->els[kelem].user_fitflag != FITLESS)  return(kelem);
+		if (elemdata->els[kelem].elementcode == 26.0  &&  elemdata->els[kelem].user_fitflag != FITLESS)
+		{
+			printf("Primary element is Fe \n");
+			return(kelem);
+		}
 
 	}
 
@@ -2458,10 +2469,13 @@ int   GetPrimaryNeutralElement(struct elements_data *elemdata)
 
 	for (kelem = 0; kelem < elemdata->nelements; kelem++) {
 
-		if (elemdata->els[kelem].elementcode == 11.0  &&  elemdata->els[kelem].user_fitflag != FITLESS)  return(kelem);
+		if (elemdata->els[kelem].elementcode == 11.0  &&  elemdata->els[kelem].user_fitflag != FITLESS)
+		{
+			printf("Primary element is Na \n");
+			return(kelem);
+		}
 
 	}
-
 
 	//========== Additonal tests would go here
 
@@ -2481,6 +2495,7 @@ double  JonesElectronDensity(struct elements_data *elemdata, int kneutral_primar
 	int     kneutral, kelem;
 	double  ne, n_neutrals_primary, n_atoms_primary, n_atoms_cosmic, n_ions_cosmic;
 
+	printf("\n*** Computing Jones' electron density... \n");
 
 	//========== Number density of neutrals for the primary element
 
@@ -2509,14 +2524,14 @@ double  JonesElectronDensity(struct elements_data *elemdata, int kneutral_primar
 		//-------- Number density of atoms total for this element based on cosmic abundance ratio re primary element
 
 		n_atoms_cosmic = n_atoms_primary * elemdata->els[kelem].init_abundance / elemdata->els[kneutral_primary].init_abundance;
-		// printf("Number of atoms based on cosmic abundance = %e\n", n_atoms_cosmic);
+		//printf("Number of atoms based on cosmic abundance = %e\n", n_atoms_cosmic);
 		//-------- Add in number of ions for this element based on Jones fraction beta
 
 		n_ions_cosmic = n_atoms_cosmic * elemdata->els[kelem].beta_jones;
-		// printf("Number of ions_cosmic = %e   beta_jones = %e\n", n_ions_cosmic, elemdata->els[kelem].beta_jones);
+		//printf("Number of ions_cosmic = %e   beta_jones = %e\n", n_ions_cosmic, elemdata->els[kelem].beta_jones);
 
 		ne += n_ions_cosmic;
-		// printf("ne = %e\n", ne);
+		//printf("ne = %e\n", ne);
 
 	}
 
@@ -2540,10 +2555,11 @@ double    IterativeElectronDensity(struct elements_data *elemdata, int kneutral_
 
 
 	//========== Iteratively loop until the electron number density converges, uses Jones ne for initial guess
-	printf("Iteratively computing electron density...\n");
+	printf("\n*** Iteratively computing electron density... \n");
 	nloops = 50;
 
 	ne = ne_guess;
+	printf("ne_guess = %le \n", ne_guess);
 
 	for (kloop = 0; kloop < nloops; kloop++) {
 		// printf("Iteration #%d\n", kloop+1);
@@ -2569,7 +2585,7 @@ double    IterativeElectronDensity(struct elements_data *elemdata, int kneutral_
 
 		ne_sum = 0.0;
 
-		// printf("%le %d %le %le\n", n_neutrals_primary, kion, nratio, n_atoms_primary);
+		printf("n_neutrals = %le  kion = %d  nratio = %le  n_atoms = %le\n", n_neutrals_primary, kion, nratio, n_atoms_primary);
 
 		//-------- Loop over all NEUTRAL elements to get column densities and get number of atoms
 
@@ -2640,6 +2656,8 @@ double    IterativeElectronDensity(struct elements_data *elemdata, int kneutral_
 
 	elemdata->numiter = kloop;
 
+	printf("Iterative ne = %le \n", ne);
+
 	return(ne);
 
 }
@@ -2665,6 +2683,7 @@ void    ColumnDensities_NumberAtoms(struct elements_data *elemdata, double ne)
 
 	}
 
+	printf("\n*** Computing column densities and number of atoms... \n");
 
 	//========== Loop over all NEUTRAL elements to get column densities and get number of atoms
 
@@ -2704,6 +2723,9 @@ void    ColumnDensities_NumberAtoms(struct elements_data *elemdata, double ne)
 
 						elemdata->els[kneu].ions2neut_hot = elemdata->els[kneu].beta_jones / (1.0 - elemdata->els[kneu].beta_jones);
 
+						printf("%le %le %le %le %le %le\n", elemdata->els[kneu].ions2neut_warm, elemdata->Tlo, elemdata->els[kneu].ionenergy, elemdata->els[kion].partfuncTlo, elemdata->els[kneu].partfuncTlo, ne);
+						printf("%le %le %le\n", elemdata->els[kneu].ions2neut_hot, elemdata->els[kneu].beta_jones, elemdata->els[kneu].beta_jones);
+
 					}
 
 					else {
@@ -2728,6 +2750,8 @@ void    ColumnDensities_NumberAtoms(struct elements_data *elemdata, double ne)
 
 					elemdata->els[kneu].N_warm_total = elemdata->els[kneu].N_warm + elemdata->els[kion].N_warm;
 
+					printf("%le %le %le\n", elemdata->els[kion].N_warm, elemdata->els[kneu].N_warm, elemdata->els[kneu].ions2neut_warm);
+					printf("%le %le %le\n", elemdata->els[kneu].N_warm_total, elemdata->els[kneu].N_warm, elemdata->els[kion].N_warm);
 
 					//.... Get number density and the total number of atoms for the warm component
 
@@ -2748,18 +2772,18 @@ void    ColumnDensities_NumberAtoms(struct elements_data *elemdata, double ne)
 
 					elemdata->els[kion].N_hot = elemdata->els[kneu].N_hot * elemdata->els[kneu].ions2neut_hot;
 
-					//.... Print statements for de-bubbing purposes
+					//.... Print statements for debugging purposes
 
-					//printf("neu_ion %d %d %le %le %le %le %le %le %le\n", kneu, kion, 
-					//elemdata->els[kion].N_warm,
-					//elemdata->els[kneu].N_warm_total,
-					//number_density,
-					//elemdata->els[kneu].number_atoms,
-					//N_hot_total,
-					//elemdata->els[kneu].N_hot,
-					//elemdata->els[kion].N_hot);
+					printf("neu_ion %d %d %le %le %le %le %le %le %le\n", kneu, kion, 
+					elemdata->els[kion].N_warm,
+					elemdata->els[kneu].N_warm_total,
+					number_density,
+					elemdata->els[kneu].number_atoms,
+					N_hot_total,
+					elemdata->els[kneu].N_hot,
+					elemdata->els[kion].N_hot);
 
-					//.... End of de-bugging print statements
+					//.... End of debugging print statements
 
 
 				} //... end IF there exists both a neutral and ion
@@ -3052,11 +3076,11 @@ double  sigma, sigmahalf, dlimit, dlambda, expterm, pf;
 double  maxspec, sumterm, RespExtn, solid_angle;
 struct  element_lines_spectrum  *els;
 
-
+	printf("\n*** Computing model spectrum at Tlo... \n");
     //========== Compute broadening terms
 
     sigma = elemdata->sigma0 / 2.3548;
-    // printf("Sigma... %f\n", elemdata->sigma0);
+    printf("Sigma... %f\n", elemdata->sigma0);
 
 	sigmahalf = sigma / 2.0;
 	// printf("Sigmahalf... %f\n", sigmahalf);
@@ -3454,17 +3478,18 @@ double  **QtQ;  // svd of QtQ = USV'
 double  **US;
 double  **V;
 
+   printf("*** FitSpectralCoefficients ***\n");
 
    //========== Determine number of active elements to be used in the fit 
    //              by checking for the FITTING flag but not fit locked (FITLOCK)
-   printf("Determining the number of active elements...\n");
+   printf("*** Determining the number of active elements...\n");
    printf("%d\n", elemdata->nelements);
 
    kfit = 0;
 
    for( kelem=0; kelem<elemdata->nelements; kelem++ )  {
 
-   		printf("User fit flag: %d\n", elemdata->els[kelem].user_fitflag);
+   		// printf("User fit flag: %d\n", elemdata->els[kelem].user_fitflag);
    		// printf("%d\n", kelem);
    		// printf("Init fit flag: %d\n", elemdata->els[kelem].init_fitflag);
 
@@ -3473,7 +3498,7 @@ double  **V;
 			elemdata->fit_element_index[kfit] = kelem;
 			
 			kfit++;
-			printf("kfit: %d\n", kfit);
+			// printf("kfit: %d\n", kfit);
 
 		}
    }
@@ -3755,6 +3780,9 @@ double   sum;
 			         +  elemdata->els[kneu].N_hot  * elemdata->els[kneu].spechi[kwave]
 					 +  elemdata->els[kion].N_hot  * elemdata->els[kion].spechi[kwave];
 
+					 printf("1 N_warm %le   speclo %le    sum %le\n", elemdata->els[kneu].N_warm, elemdata->els[kneu].speclo[kwave], sum);
+
+
 			 }
 
 		}
@@ -3802,6 +3830,9 @@ double   sum;
 			         +  elemdata->els[kneu].N_hot  * elemdata->els[kneu].spechi[kwave]
 					 +  elemdata->els[kion].N_hot  * elemdata->els[kion].spechi[kwave];
 
+					 printf("2 N_warm %le   speclo %le    sum %le\n", elemdata->els[kneu].N_warm, elemdata->els[kneu].speclo[kwave], sum);
+
+
 			 }
 
 		}
@@ -3826,10 +3857,13 @@ double   sum;
 	printf("fitspectrum\n");
 
    //========== loop over all output wavelengths
+	sum = 1.0e-99;
 
    for( kwave=0; kwave<elemdata->nwave; kwave++ )  {
+   	// for( kwave=0; kwave<1001; kwave++ )  {
 
-	    sum = 1.0e-99;
+	    // sum = 1.0e-99;
+	    printf("%d %d\n", elemdata->nwave, kwave);
 
         //-------- Loop over all NEUTRAL elements to get column densities
 
@@ -3852,6 +3886,16 @@ double   sum;
 			         +  elemdata->els[kneu].N_hot  * elemdata->els[kneu].spechi[kwave]
 					 +  elemdata->els[kion].N_hot  * elemdata->els[kion].spechi[kwave];
 
+				 printf("%e %e\n", elemdata->els[kneu].N_warm, elemdata->els[kneu].speclo[kwave]);
+				 printf("%e %e\n", elemdata->els[kion].N_warm, elemdata->els[kneu].speclo[kwave]);
+				 printf("%e\n", elemdata->els[kneu].N_hot, elemdata->els[kneu].spechi[kwave]);
+				 printf("%e\n\n", elemdata->els[kion].N_hot, elemdata->els[kneu].spechi[kwave]);
+
+				 // printf("3 N_warm %e   speclo %e    sum %f\n", elemdata->els[kneu].N_warm, elemdata->els[kneu].speclo[kwave], sum);
+				 // printf("3 N_warm %f   speclo %f    sum %f\n", elemdata->els[kneu].N_warm, elemdata->els[kneu].speclo[kwave], sum);
+				 // printf("3 N_warm %ld   speclo %ld    sum %ld\n", elemdata->els[kneu].N_warm, elemdata->els[kneu].speclo[kwave], sum);
+
+
 			 }
 
 		}
@@ -3860,7 +3904,7 @@ double   sum;
 
 	}
 
-	printf("Successfully fit. I think...");
+	printf("Successfully fit. I think... \n");
 
 
 }
@@ -3915,6 +3959,7 @@ double   sum;
 			     if( neutral_ion_display != 2  &&  warm_hot_display != 2 )  {
 
 					 sum += elemdata->els[kneu].N_warm * elemdata->els[kneu].speclo[kwave];
+					 printf("4 N_warm %le   speclo %le    sum %le\n", elemdata->els[kneu].N_warm, elemdata->els[kneu].speclo[kwave], sum);
 				 }
 
 				 //.... Add in the ION WARM contribution for this element

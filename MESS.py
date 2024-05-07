@@ -698,6 +698,7 @@ class Ui(QtWidgets.QMainWindow):
         ######################## Commands Buttons #########################
 
         # Rollboxes
+        # self.SpectralScale_rollbox.valueChanged.connect(lambda: self.updateSpectralScale())
         self.Extinction_rollbox.valueChanged.connect(lambda: self.updateExtinctionValue())
         self.Roll_rollbox.valueChanged.connect(lambda: self.updateRollValue())
         self.Lmm_rollbox.valueChanged.connect(lambda: self.updateLmmValue())
@@ -792,35 +793,6 @@ class Ui(QtWidgets.QMainWindow):
         spectral_library.readSpectralCALFile(self.spectral)
 
         spectral_library.loadElementsData(self.spectral)
-
-        # Update controls based on config
-        # self.SpectralConfigVersion_label.setText(str(self.spectral.spconfig.version))
-        # self.SpectralConfigOrder_label.setText(str(self.spectral.spconfig.order4spcalib))
-        # self.SpectralConfigRowDelta_label.setText(str(self.spectral.spconfig.rowdelta))
-        # self.SpectralConfigMinCalWavelengthNm_label.setText(str(self.spectral.spconfig.min_cal_wavelength_nm))
-        # self.SpectralConfigMaxCalWavelengthNm_label.setText(str(self.spectral.spconfig.max_cal_wavelength_nm))
-        # self.SpectralConfigDelWavelengthNm_label.setText(str(self.spectral.spconfig.del_wavelength_nm))
-        # self.SpectralConfigMinFitWavelengthNm_label.setText(str(self.spectral.spconfig.min_fit_wavelength_nm))
-        # self.SpectralConfigMaxFitWavelengthNm_label.setText(str(self.spectral.spconfig.max_fit_wavelength_nm))
-        # self.SpectralConfigMinspacWavelengthNm_label.setText(str(self.spectral.spconfig.minspan_wavelength_nm))
-        # self.SpectralConfigSmoothBandwidthNm_label.setText(str(self.spectral.spconfig.smooth_bandwidth_nm))
-        # self.SpectralConfigFaintestStarMag_label.setText(str(self.spectral.spconfig.faintest_star_vmag))
-        # self.SpectralConfigAirmassLimit_label.setText(str(self.spectral.spconfig.airmass_limit))
-        # self.SpectralConfigFadingCoef_label.setText(str(self.spectral.spconfig.fading_coef))
-        # self.SpectralConfigCoinTimeTolerance_label.setText(str(self.spectral.spconfig.coin_time_tolerance))
-        # self.SpectralConfigMinLoExcTemp_label.setText(str(self.spectral.spconfig.min_lo_exc_temp))
-        # self.SpectralConfigMaxLoExcTemp_label.setText(str(self.spectral.spconfig.max_lo_exc_temp))
-        # self.SpectralConfigStepLoExcTemp_label.setText(str(self.spectral.spconfig.step_lo_exc_temp))
-        # self.SpectralConfigNominalLoExcTemp_label.setText(str(self.spectral.spconfig.nominal_lo_exc_temp))
-        # self.SpectralConfigGratingOffnormal_label.setText(str(self.spectral.spconfig.grating_offnormal_deg))
-        # self.SpectralConfigDefaultRollAngle_label.setText(str(self.spectral.spconfig.default_roll_deg))
-        # self.SpectralConfigDefaultPitchAngle_label.setText(str(self.spectral.spconfig.default_pitch_deg))
-        # self.SpectralConfigDefaultYawDeg_label.setText(str(self.spectral.spconfig.default_yaw_deg))
-        # self.SpectralConfigDefaultNe_label.setText(str(self.spectral.spconfig.default_ne))
-        # self.SpectralConfigDefaultHot2warm_label.setText(str(self.spectral.spconfig.default_hot2warm))
-        # self.SpectralConfigNcamsGrating_label.setText(str(self.spectral.spconfig.ncams_grating))
-        # self.SpectralConfigNominalHiExcTemp_label.setText(str(self.spectral.spconfig.nominal_hi_exc_temp))
-        # self.SpectralConfigNominalSigma0_label.setText(str(self.spectral.spconfig.nominal_sigma0))
 
         self.LowTemp_rollbox.setValue(int(self.spectral.spconfig.nominal_lo_exc_temp))
         self.HighTemp_rollbox.setValue(int(self.spectral.spconfig.nominal_hi_exc_temp))
@@ -1108,19 +1080,13 @@ class Ui(QtWidgets.QMainWindow):
         self.star_x_min = np.min(star_x)
         self.star_x_max = np.max(star_x)
 
-        # index_min = np.where(star_x == np.round(self.scaled_spectral_x_min))
-        # index_max = np.where(star_x == np.round(self.scaled_spectral_x_max))
         index_min = (np.abs(star_x - np.round(self.scaled_spectral_x_min))).argmin()
         index_max = (np.abs(star_x - np.round(self.scaled_spectral_x_max))).argmin()
-
-        # print(star_x)
 
         print('Index of min observed: %s' % np.where(star_x == np.round(self.scaled_spectral_x_min)))
         print('Index of max observed: %s' % np.where(star_x == np.round(self.scaled_spectral_x_max)))
 
         self.star_x_clipped = star_x[index_min:index_max]
-        # print(len(self.star_x_clipped))
-        # print(len(self.spectral_x))
 
         # Set axis titles 
         self.Plot.setLabel('left', 'Intensity')
@@ -1129,9 +1095,6 @@ class Ui(QtWidgets.QMainWindow):
         # Create the plot
         pen = pg.mkPen(width = 2)
         self.Plot.plot(star_x, star_y, pen = pen)
-        # self.Plot.setXRange(np.min(scaled_spectral_profile),np.max(scaled_spectral_profile))
-        # self.CalibrateSpectrum_button.setEnabled(True)
-        # self.SetReference_button.setEnabled(True)
 
     def stellarCalibrationClicked(self):
         self.window = QtWidgets.QMainWindow()
@@ -1193,7 +1156,6 @@ class Ui(QtWidgets.QMainWindow):
 
                 self.updateStarFrames()
                 self.autoPickROI()
-                # self.uploadStarFlat()
 
     def uploadStarFlat(self, byteswap=True, dark=None):
         dlg = QFileDialog()
@@ -1241,21 +1203,7 @@ class Ui(QtWidgets.QMainWindow):
         the flat can only be removed for user convenience.
         """
 
-        # Set frame 
-        # self.spectral_frame = self.spectral_vid.frames[self.spectral_currentframe]
-        # self.spectral_frame_img = self.spectral_frame.img_data
-
         self.spectral_frame_img = applyFlat(self.spectral_frame_img, self.flat_structure)
-
-        # # Display time
-        # self.st = unixTime2Date(self.spectral_frame.ts, self.spectral_frame.tu, dt_obj=False)
-        # self.st = str(self.st)
-        # self.SpectralTime_label.setText(self.st)
-        # self.update()
-
-        # # Display frame number
-        # self.SpectralFrame_label.setNum(self.spectral_currentframe)
-        # self.update()
 
         # Set image levels
         minv = np.percentile(self.spectral_frame_img, 0.1)
@@ -1279,19 +1227,6 @@ class Ui(QtWidgets.QMainWindow):
 
         self.spectral_frame_img = self.avg_frame_img
 
-        # Display time
-        # self.st = unixTime2Date(self.spectral_frame.ts, self.spectral_frame.tu, dt_obj=False)
-
-        # self.SpectralTime_label.setText(' at ' + str(self.st[3]) + ':' + str(self.st[4]) + \
-        #  ':' + str(self.st[5]) + '.' + str(self.st[6]) + 'UT on ' + str(self.st[0]) + '/' + \
-        #  str(self.st[1]) + '/' + str(self.st[2]))
-        # self.update()
-
-        # # Display frame number
-        # # self.SpectralFrame_label.setNum(self.spectral_currentframe)
-        # self.SpectralFrame_label.setText('Frame # ' + str(self.spectral_currentframe))
-        # self.update()
-
         # Call the function to apply the flat
         # if self.flat_structure is not None: 
         #     self.spectral_frame_img = applyFlat(self.spectral_frame_img, self.flat_structure)
@@ -1305,9 +1240,6 @@ class Ui(QtWidgets.QMainWindow):
 
 
         px = 1/plt.rcParams['figure.dpi']  # pixel in inches
-        # plt.subplots(figsize=(676*px, 100*px))
-        # plt.imshow(spectral_array_unzoomed.T)
-        # plt.show()
 
         # Set spectral profile
         self.spectral_profile = np.sum(self.spectral_array, axis=1)
@@ -1336,7 +1268,6 @@ class Ui(QtWidgets.QMainWindow):
 
         # Calculate wavelength values as they correspond to each pixel
         for i in range(len(scaled_spectral_profile)):
-            # nmt = (((i - self.x) / s) + nm0)
             nmt = i/s + 316.0 + self.dnm
             scaled_spectral_profile = np.append(scaled_spectral_profile, nmt)
 
@@ -1364,8 +1295,6 @@ class Ui(QtWidgets.QMainWindow):
         pen = pg.mkPen('r', width=2)
         self.Plot.plot(scaled_spectral_profile, self.spectral_profile, pen = pen)
         self.Plot.setXRange(np.min(scaled_spectral_profile),np.max(scaled_spectral_profile))
-        # self.CalibrateSpectrum_button.setEnabled(True)
-        # self.SetReference_button.setEnabled(True)
 
     def calculateScale(self):
 
@@ -1414,6 +1343,13 @@ class Ui(QtWidgets.QMainWindow):
             self.refreshPlot()
         except:
             pass
+
+    def updateSpectralScale(self):
+        self.nm0_label.setText(self.ui.nm0_edit.text())
+        self.nm0_edit.setText(self.ui.nm0_edit.text())
+        self.Scale_label.setText(str(self.ui.NewScale_rollbox.value()))
+        self.clearSpec()
+        self.plotMeasuredSpec()
 
     def updateScale(self):
         self.SpectralScale_rollbox.setValue(self.ui.NewScale_rollbox.value())
@@ -1504,12 +1440,6 @@ class Ui(QtWidgets.QMainWindow):
 
     def plotElement(self, event):
 
-        # scaled_element_array = np.zeros(len(self.element_array))
-
-        # # Scaling parameters
-        # s = 2.85 # px/nm
-        # nm0 = 410 # nm
-
         if self.elemName == 'Na':
             pen_color = (255,255,0)
         elif self.elemName == 'K':
@@ -1598,8 +1528,6 @@ class Ui(QtWidgets.QMainWindow):
             globals()[plotName].setData(self.element_array[:,0], self.element_array[:,3])
 
         # Add current data
-        # for row, lst in enumerate(self.elementDeets):
-        #     for col, value in enumerate(lst):
         for i in range(len(self.elementDeets)):
             if self.elementDeets[i][0] == self.elemName:
                 self.elementDeets[i][4] = self.element_array[:,0]
@@ -1632,9 +1560,7 @@ class Ui(QtWidgets.QMainWindow):
             spectral_library.GuralSpectral.extinctionModel(self.spectral)
 
 
-        if self.HotTempOn_button.isChecked() and (self.WarmTempOn_button.isChecked() == False):
-            # print('Hot is on. Warm is not.')
-            
+        if self.HotTempOn_button.isChecked() and (self.WarmTempOn_button.isChecked() == False):        
             self.element_array = np.zeros((self.spectral.spcalib.nwavelengths,4))
             for i in range(self.spectral.spcalib.nwavelengths):
                 self.element_array[i][0] = self.spectral.spcalib.wavelength_nm[i]
@@ -1643,7 +1569,6 @@ class Ui(QtWidgets.QMainWindow):
                 self.element_array[i][3] = self.element_array[i][2]
 
         elif (self.HotTempOn_button.isChecked() == False) and self.WarmTempOn_button.isChecked():
-            # print('Warm is on. Hot is not.')
             # spectral_library.GuralSpectral.computeWarmPlasmaSpectrum(self.spectral)
             self.element_array = np.zeros((self.spectral.spcalib.nwavelengths,4))
             for i in range(self.spectral.spcalib.nwavelengths):
@@ -1653,7 +1578,6 @@ class Ui(QtWidgets.QMainWindow):
                 self.element_array[i][3] = self.element_array[i][1]
 
         else:
-            # print('Warm and Hot are both on.')
             # spectral_library.GuralSpectral.computeWarmPlasmaSpectrum(self.spectral)
             # spectral_library.GuralSpectral.computeHotPlasmaSpectrum(self.spectral)
             self.element_array = np.zeros((self.spectral.spcalib.nwavelengths,4))
@@ -1687,9 +1611,15 @@ class Ui(QtWidgets.QMainWindow):
                 fittingElems.append(self.elementDeets[i][3])
 
         if len(fittingElems) == 2:
-            spectral_library.GuralSpectral.fitMeasSpec(self.spectral, fittingElems[0], fittingElems[1])
+            try:
+                spectral_library.GuralSpectral.fitMeasSpec(self.spectral, fittingElems[0], fittingElems[1])
+            except:
+                print('Could not call fitMeasSpec')
         else:
-            spectral_library.GuralSpectral.fitMeasSpec(self.spectral, fittingElems[0], fittingElems[1], fittingElems[2])
+            try:
+                spectral_library.GuralSpectral.fitMeasSpec(self.spectral, fittingElems[0], fittingElems[1], fittingElems[2])
+            except:
+                print('Could not call fitMeasSpec.')
 
     def calculateFullSpectrum(self):
         self.kelem_ref = spectral_library.GuralSpectral.setReferenceElem(self.spectral)
@@ -1708,6 +1638,9 @@ class Ui(QtWidgets.QMainWindow):
             spectral_library.GuralSpectral.computeFullSpec(self.spectral, fittingElems[0], fittingElems[1])
         elif len(fittingElems) == 3:
             spectral_library.GuralSpectral.computeFullSpec(self.spectral, fittingElems[0], fittingElems[1], fittingElems[2])
+        else:
+            print('Not enough fitting elements')
+            pass
 
         self.fullspec_array = np.zeros((self.spectral.spcalib.nwavelengths,2))
 
@@ -1743,6 +1676,7 @@ class Ui(QtWidgets.QMainWindow):
             globals()[plotName].setData(self.fullspec_array[:,0], self.fullspec_array[:,1])
         
     def calculateElementSpectrum(self):
+        print('MESS.py - calculateElementSpectrum')
         self.spectral.spconfig.default_hot2warm = self.Hot2WarmRatio_rollbox.value()
         self.spectral.elemdata.hot2warm = self.Hot2WarmRatio_rollbox.value()
         self.spectral.elemdata.sigma0 = self.Sigma_rollbox.value()

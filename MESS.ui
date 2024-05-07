@@ -518,7 +518,7 @@
             </size>
            </property>
            <property name="text">
-            <string>518.0</string>
+            <string>777.1</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -656,7 +656,7 @@
             <number>5000</number>
            </property>
            <property name="value">
-            <number>2450</number>
+            <number>2460</number>
            </property>
           </widget>
          </item>
@@ -2246,7 +2246,7 @@
               <number>3</number>
              </property>
              <property name="minimum">
-              <double>-10.000000000000000</double>
+              <double>-20.000000000000000</double>
              </property>
              <property name="maximum">
               <double>100.000000000000000</double>

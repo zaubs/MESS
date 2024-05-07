@@ -932,7 +932,7 @@ double  ResponsivityExtinctionEstimate( double                  *meas_spectrum,
 		spcalib->esti_extn_spec[kwave] = extinction;
 	}
 
-
+	printf("%f", Xairmass);
 	return(Xairmass);
 
 
@@ -1963,7 +1963,7 @@ double  logrho, integrated_density;
                
              integrated_density += 0.01 * pow( 10.0, logrho );
         }
-        
+        printf("Integrated Density = %f", integrated_density);
         return( integrated_density );
 }     
 
@@ -2389,6 +2389,7 @@ double  PlasmaRadius(double height_km)
 void    PlasmaVolumes(double height_km, double range_km, double approach_angle, double hot2warm, struct elements_data *elemdata)
 {
 
+	printf("\n*** Computing plasma volumes... \n");
 	//--------- Compute the plasma radius and volumes, convert range to meters
 
 	elemdata->plasma_radius_meters = PlasmaRadius(height_km);
@@ -2723,8 +2724,8 @@ void    ColumnDensities_NumberAtoms(struct elements_data *elemdata, double ne)
 
 						elemdata->els[kneu].ions2neut_hot = elemdata->els[kneu].beta_jones / (1.0 - elemdata->els[kneu].beta_jones);
 
-						printf("%le %le %le %le %le %le\n", elemdata->els[kneu].ions2neut_warm, elemdata->Tlo, elemdata->els[kneu].ionenergy, elemdata->els[kion].partfuncTlo, elemdata->els[kneu].partfuncTlo, ne);
-						printf("%le %le %le\n", elemdata->els[kneu].ions2neut_hot, elemdata->els[kneu].beta_jones, elemdata->els[kneu].beta_jones);
+						//printf("%le %le %le %le %le %le\n", elemdata->els[kneu].ions2neut_warm, elemdata->Tlo, elemdata->els[kneu].ionenergy, elemdata->els[kion].partfuncTlo, elemdata->els[kneu].partfuncTlo, ne);
+						//printf("%le %le %le\n", elemdata->els[kneu].ions2neut_hot, elemdata->els[kneu].beta_jones, elemdata->els[kneu].beta_jones);
 
 					}
 
@@ -2750,8 +2751,8 @@ void    ColumnDensities_NumberAtoms(struct elements_data *elemdata, double ne)
 
 					elemdata->els[kneu].N_warm_total = elemdata->els[kneu].N_warm + elemdata->els[kion].N_warm;
 
-					printf("%le %le %le\n", elemdata->els[kion].N_warm, elemdata->els[kneu].N_warm, elemdata->els[kneu].ions2neut_warm);
-					printf("%le %le %le\n", elemdata->els[kneu].N_warm_total, elemdata->els[kneu].N_warm, elemdata->els[kion].N_warm);
+					printf("kion %le  kneu %le  ions2neut %le\n", elemdata->els[kion].N_warm, elemdata->els[kneu].N_warm, elemdata->els[kneu].ions2neut_warm);
+					printf("kneu tot %le %le %le\n", elemdata->els[kneu].N_warm_total, elemdata->els[kneu].N_warm, elemdata->els[kion].N_warm);
 
 					//.... Get number density and the total number of atoms for the warm component
 
@@ -2774,7 +2775,7 @@ void    ColumnDensities_NumberAtoms(struct elements_data *elemdata, double ne)
 
 					//.... Print statements for debugging purposes
 
-					printf("neu_ion %d %d %le %le %le %le %le %le %le\n", kneu, kion, 
+					printf("neu_ion %d kion %d kion %le kneutot %le numdens %le numatoms %le nhot %le %le %le\n", kneu, kion, 
 					elemdata->els[kion].N_warm,
 					elemdata->els[kneu].N_warm_total,
 					number_density,
@@ -2827,6 +2828,7 @@ void  ResetOneElementAbundance( int kelem, double Vinfinity, struct elements_dat
 	cvterm = elemdata->els[kelem].c * pow(Vinfinity - elemdata->els[kelem].Vo, 2) * pow(Vinfinity, 0.8);
 	//printf("CVTERM = %e\n", cvterm);
 	elemdata->els[kelem].beta_jones = cvterm / (1.0 + cvterm);
+	printf("Reset single element abundance...");
 
 }
 
@@ -2846,6 +2848,7 @@ void  ResetAllElementAbundances(double Vinfinity, struct elements_data *elemdata
 		ResetOneElementAbundance(kelem, Vinfinity, elemdata);
 
 	}
+	printf("Reset single element abundance...");
 
 }
 
@@ -2859,7 +2862,7 @@ void  ComputeRelativeAbundance( struct  elements_data  *elemdata )
 int     kneutral, kelem;
 struct  element_lines_spectrum  *els_neu, *els_ref;
 
-
+	printf("\n*** Computing relative abundances...\n");
     //========== Get the reference neutral elements total warm column density
 
 	els_ref = &elemdata->els[elemdata->kelem_ref];
@@ -2913,7 +2916,7 @@ double  sigma, sigmahalf, dlimit, dlambda, expterm, pf;
 double  maxspec, sumterm, RespExtn, solid_angle;
 struct  element_lines_spectrum  *els;
 
-
+	printf("\n*** Computing iron-only spectrum...\n");
     //========== Compute broadening terms
 
     sigma = elemdata->sigma0 / 2.3548;
@@ -3083,7 +3086,7 @@ struct  element_lines_spectrum  *els;
     printf("Sigma... %f\n", elemdata->sigma0);
 
 	sigmahalf = sigma / 2.0;
-	// printf("Sigmahalf... %f\n", sigmahalf);
+	printf("Sigmahalf... %f\n", sigmahalf);
 
     invsigmasq_1st = -0.5 /  ( sigma * sigma );
 
@@ -3097,10 +3100,10 @@ struct  element_lines_spectrum  *els;
 	//========== Compute lambda cutoff range when contribution = 10^-6
 
 	dlimit = sigma * sqrt( -2.0 * log( 1.0e-6 ) );
-	// printf("dlimit... %f\n", dlimit);
+	printf("dlimit... %f\n", dlimit);
 
 	kmin = (int)( elemdata->wave[0] / ( elemdata->wave[1] - elemdata->wave[0] ) );
-
+	printf("kmin... %d\n", kmin);
 
 	//========== Set the compute model flag for low temperature
 
@@ -3279,7 +3282,7 @@ double  maxspec, sumterm, RespExtn, solid_angle;
 struct  element_lines_spectrum  *els;
 
 
-
+	printf("\n*** Computing the model spectrum at Thi...\n");
     //========== Compute broadening terms
 
     sigma = elemdata->sigma0 / 2.3548;
@@ -3300,6 +3303,9 @@ struct  element_lines_spectrum  *els;
 	dlimit = sigma * sqrt( -2.0 * log( 1.0e-6 ) );
 
 	kmin = (int)( elemdata->wave[0] / ( elemdata->wave[1] - elemdata->wave[0] ) );
+
+	printf("dlimit %f\n", dlimit);
+	printf("kmin %d\n", kmin);
 
 
 	//========== Set the compute model flag for high temperature
@@ -3478,7 +3484,7 @@ double  **QtQ;  // svd of QtQ = USV'
 double  **US;
 double  **V;
 
-   printf("*** FitSpectralCoefficients ***\n");
+   printf("\n*** FitSpectralCoefficients ***\n");
 
    //========== Determine number of active elements to be used in the fit 
    //              by checking for the FITTING flag but not fit locked (FITLOCK)
@@ -3754,7 +3760,7 @@ void  SpectrumGivenOnlyLockedCoefs( struct  elements_data     *elemdata,
 int      kneutral, kelem, kwave, kneu, kion;
 double   sum; 
 
-
+	printf("\n*** Computing spectrum for 'locked' elements...\n");
    //========== loop over all output wavelengths
 
    for( kwave=0; kwave<elemdata->nwave; kwave++ )  {
@@ -3804,7 +3810,7 @@ void  SpectrumGivenOnlyFittingCoefs( struct  elements_data     *elemdata,
 int      kneutral, kelem, kwave, kneu, kion;
 double   sum; 
 
-
+	printf("\n*** Computing spectrum for 'fitting' elements...\n");
    //========== loop over all output wavelengths
 
    for( kwave=0; kwave<elemdata->nwave; kwave++ )  {
@@ -3853,17 +3859,16 @@ void  SpectrumGivenAllCoefs( struct  elements_data     *elemdata,
 {
 int      kneutral, kelem, kwave, kneu, kion;
 double   sum; 
-	printf("elemdata\n");
-	printf("fitspectrum\n");
 
+	printf("\n*** Computing spectrum for 'fitting' and 'locked' elements...\n");
    //========== loop over all output wavelengths
-	sum = 1.0e-99;
+	//sum = 1.0e-99;
 
    for( kwave=0; kwave<elemdata->nwave; kwave++ )  {
    	// for( kwave=0; kwave<1001; kwave++ )  {
 
-	    // sum = 1.0e-99;
-	    printf("%d %d\n", elemdata->nwave, kwave);
+	    sum = 1.0e-99;
+	    //printf("%d %d\n", elemdata->nwave, kwave);
 
         //-------- Loop over all NEUTRAL elements to get column densities
 
@@ -3880,16 +3885,21 @@ double   sum;
 
 				 kneu = kelem;
 			     kion = elemdata->els[kelem].ionindex;
-
-			     sum += elemdata->els[kneu].N_warm * elemdata->els[kneu].speclo[kwave]
+			     printf("Sum: %e\n", sum);
+			     sum = sum + elemdata->els[kneu].N_warm * elemdata->els[kneu].speclo[kwave]
 					 +  elemdata->els[kion].N_warm * elemdata->els[kion].speclo[kwave]
 			         +  elemdata->els[kneu].N_hot  * elemdata->els[kneu].spechi[kwave]
 					 +  elemdata->els[kion].N_hot  * elemdata->els[kion].spechi[kwave];
-
+				
+				 printf("Sum: %e\n", sum);
 				 printf("%e %e\n", elemdata->els[kneu].N_warm, elemdata->els[kneu].speclo[kwave]);
 				 printf("%e %e\n", elemdata->els[kion].N_warm, elemdata->els[kneu].speclo[kwave]);
 				 printf("%e\n", elemdata->els[kneu].N_hot, elemdata->els[kneu].spechi[kwave]);
-				 printf("%e\n\n", elemdata->els[kion].N_hot, elemdata->els[kneu].spechi[kwave]);
+				 printf("%e\n", elemdata->els[kion].N_hot, elemdata->els[kneu].spechi[kwave]);
+				 printf("%e\n\n", elemdata->els[kneu].N_warm * elemdata->els[kneu].speclo[kwave]
+					 +  elemdata->els[kion].N_warm * elemdata->els[kion].speclo[kwave]
+			         +  elemdata->els[kneu].N_hot  * elemdata->els[kneu].spechi[kwave]
+					 +  elemdata->els[kion].N_hot  * elemdata->els[kion].spechi[kwave]);
 
 				 // printf("3 N_warm %e   speclo %e    sum %f\n", elemdata->els[kneu].N_warm, elemdata->els[kneu].speclo[kwave], sum);
 				 // printf("3 N_warm %f   speclo %f    sum %f\n", elemdata->els[kneu].N_warm, elemdata->els[kneu].speclo[kwave], sum);

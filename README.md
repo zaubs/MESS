@@ -20,6 +20,17 @@ It is also necessary to have the WMPL and RMS installed. If you find that you ha
  
  **Input data types:** VID files, ev* txt files, PNG images<br>
  **Output data types:** CSV and PNG images
+
+ # Quick Install
+ - Install virtualenv or Anaconda3 (ex. conda create -n mess python=3.8)
+ - Create an environment with Python=3.8 and activate it (ex. conda activate mess)
+ - Go to https://github.com/wmpg/WesternMeteorPyLib and follow the instructions to install it to the environment that you're currently working in
+ - Install some more packages...
+  - conda install -y -c conda-forge pyqtgraph
+  - conda install -y -c conda-forge imageio
+  - conda install -y -c conda-forge scikit-learn
+ - Go to https://github.com/CroatianMeteorNetwork/RMS and follow the instructions to install it to the environment that you're currently working in
+ 
  
 # Using MESS
 Under the 'Setup' tab...<br>

@@ -1653,11 +1653,11 @@ class GuralSpectral(object):
 		print("--- fitMeasSpec ---")
 		# Normally get col density from a fit (see later)
 		self.elemdata.els[elem1].N_warm = 3.0e+9 # Check this...
-		print("Num warm element 1: %s" % self.elemdata.els[elem1].N_warm)
+		print("Num warm element 1 (%s): %e" % (elem1, self.elemdata.els[elem1].N_warm))
 
 		# Normally get col density from a fit (see later)
 		self.elemdata.els[elem2].N_warm = 1.2e+09 # Check this... MJM
-		print("Num warm element 2: %s" % self.elemdata.els[elem2].N_warm)
+		print("Num warm element 2 (%s): %e" % (elem2, self.elemdata.els[elem2].N_warm))
 
 		if elem3 != None:
 			# self.elemdata.els[elem3].N_warm = 1.0e+09
@@ -1665,7 +1665,7 @@ class GuralSpectral(object):
 
 		# Sets ne_jones
 		ne_guess = self.spectral_lib.JonesElectronDensity(self.elemdata, self.elemdata.kelem_ref)   
-		print('Calculated ne_guess: %s' % ne_guess)      
+		print('Calculated ne_guess: %e' % ne_guess)      
 
 		# Sets ne_iter
 		self.ne = float(self.spectral_lib.IterativeElectronDensity(self.elemdata, \
@@ -1686,8 +1686,8 @@ class GuralSpectral(object):
 		self.spectral_lib.SpectrumGivenAllCoefs(self.elemdata, self.spectra.fit_spectrum)
 		print('FitMeasuredSpec')
 	
-		print("Num warm element 1: %s" % self.elemdata.els[elem1].N_warm)
-		print("Num warm element 2: %s" % self.elemdata.els[elem2].N_warm)
+		print("Num warm element 1 (%s): %e" % (elem1, self.elemdata.els[elem1].N_warm))
+		print("Num warm element 2 (%s): %e" % (elem2, self.elemdata.els[elem2].N_warm))
 	
 	def scaleWarmColumnDensity(self, elem, scale_factor):
 		"""

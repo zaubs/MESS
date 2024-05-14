@@ -56,7 +56,7 @@ from wmpl.Formats.Plates import loadScale, plateScaleMap
 # Cython init
 import pyximport
 pyximport.install(setup_args={'include_dirs':[np.get_include()]})
-from BinImageCy import binImage as binImageCy
+from RMS.Routines.BinImageCy import binImage as binImageCy
 
 spectral_library = __import__("CAMO-Spectral_Library")
 

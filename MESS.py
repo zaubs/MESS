@@ -2925,7 +2925,7 @@ class Ui(QtWidgets.QMainWindow):
 
     def saveData(self):
         print('Saving data...')
-        self.GuralSpectral.spectral_library.WriteFullSpectrum2(self, os.path.join(self.SavePath_edit.text(),test.txt))
+        spectral_library.GuralSpectral.WriteFullSpectrum2(self, os.path.join(self.SavePath_edit.text(),test.txt))
 
     def savePlot(self):
 

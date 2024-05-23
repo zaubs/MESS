@@ -1659,7 +1659,7 @@ class Ui(QtWidgets.QMainWindow):
 
         spectral_library.GuralSpectral.writeFullSpectrum2(self.spectral, './FullSpectrumTest.txt')
 
-        print("self.spectral.ne %s" % self.spectral.ne)
+        print("self.spectral.ne %e" % self.spectral.ne)
 
     def plotFullSpectrum(self):
 

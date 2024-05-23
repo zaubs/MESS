@@ -1963,7 +1963,7 @@ double  logrho, integrated_density;
                
              integrated_density += 0.01 * pow( 10.0, logrho );
         }
-        printf("Integrated Density = %f", integrated_density);
+        printf("Integrated Density (standard atmosphere) = %f\n", integrated_density);
         return( integrated_density );
 }     
 

@@ -679,6 +679,8 @@ class Ui(QtWidgets.QMainWindow):
         self.Clear_button.clicked.connect(self.clearSpec)
         # Save the plot
         self.SavePlot_button.clicked.connect(self.savePlot)
+        # Save data
+        self.SaveData_button.clicked.connect(self.saveData)
         #MJM
         self.ChooseSavePath_button.clicked.connect(self.chooseSavePath)
 
@@ -2920,6 +2922,10 @@ class Ui(QtWidgets.QMainWindow):
     def clearSpec(self):
         self.PlottedSpectrumNumber = 0
         self.Plot.clear()
+
+    def saveData(self):
+        print('Saving data...')
+        self.GuralSpectral.spectral_library.WriteFullSpectrum2(self, os.path.join(self.SavePath_edit.text(),test.txt))
 
     def savePlot(self):
 

@@ -1612,6 +1612,7 @@ class Ui(QtWidgets.QMainWindow):
 
         if len(fittingElems) == 2:
             try:
+                print('Element 1: %s   Element 2: %s' % (self.elementDeets[0][0], self.elementDeets[1][0]))
                 spectral_library.GuralSpectral.fitMeasSpec(self.spectral, fittingElems[0], fittingElems[1])
             except:
                 print('Could not call fitMeasSpec')

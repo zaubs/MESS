@@ -35,6 +35,9 @@ from sklearn.linear_model import RANSACRegressor
 from sklearn.metrics import (r2_score, mean_absolute_error)
 from scipy.signal import savgol_filter
 from scipy import interpolate
+from astropy.modeling import models
+from astropy import units as u
+from astropy.visualization import quantity_support
 
 #################### PYQT5 LIBRARY/PACKAGE IMPORTS ####################
 
@@ -793,6 +796,12 @@ class Ui(QtWidgets.QMainWindow):
         self.spectral.spcalib.gratinfo[camos_camera_index].camnum = 101
 
         spectral_library.readSpectralCALFile(self.spectral)
+        print(self.spectral.spcalib.wavelength_nm[1000], self.spectral.spcalib.cumm_resp_spec[1000])
+        plt.figure()
+        # plt.plot(self.spectral.spcalib.wavelength_nm[0:1000], self.spectral.spcalib.cumm_resp_spec[0:1000])
+        # plt.plot(self.spectral.spcalib.wavelength_nm[0:1000], self.spectral.spcalib.modl_resp_spec[0:1000])
+        plt.plot(self.spectral.spcalib.wavelength_nm[0:1000], self.spectral.spcalib.cumm_extn_spec[0:1000])
+        plt.show()
 
         spectral_library.loadElementsData(self.spectral)
 
@@ -2978,7 +2987,8 @@ class Ui(QtWidgets.QMainWindow):
         if self.ShowActivePlot_check.isChecked():
             for i in range(len(self.elementDeets)):
                 if self.elementDeets[i][1] == 1:
-                    ax.plot(self.elementDeets[i][4], self.elementDeets[i][5], label=self.elementDeets[i][0])
+                    ax2 = ax.twinx()
+                    ax2.plot(self.elementDeets[i][4], self.elementDeets[i][5], label=self.elementDeets[i][0])
         else:
             if self.ShowMgPlot_check.isChecked():
                 print('Showing Mg')
@@ -2989,6 +2999,10 @@ class Ui(QtWidgets.QMainWindow):
 
         if self.ShowBlackbodyPlot_check.isChecked():
             print('Showing blackbody')
+            bb = models.BlackBody(temperature=10000*u.K)
+            wav = np.arange(400,1100)*u.nm
+            flux = bb(wav)
+
 
         plt.savefig(os.path.join(self.SavePath_edit.text(), 'ActiveElements_' + str(self.st[0]) \
             + str(self.st[1]) + str(self.st[2]) + str(self.st[3]) + str(self.st[4]) + str(self.st[5]) \
@@ -2997,6 +3011,11 @@ class Ui(QtWidgets.QMainWindow):
         ax.set_xlim([min(self.spectrumX),max(self.spectrumX)])
 
         plt.show()
+
+        with quantity_support():
+            plt.figure()
+            plt.semilogx(wav,flux)
+            plt.show()
 
     # def updateFlatName(self):
     #     """ update flat structure when FlatName_linedit is selected and enter pressed """

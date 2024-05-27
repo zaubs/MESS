@@ -1,10 +1,10 @@
 Version                             =    1.00
 Spectral Order m for Resp/Extn      =      +1
 Plus/Minus # Integration Rows       =       4
-Min Calib Wavelength (nm)           =   300.0  
+Min Calib Wavelength (nm)           =   350.0  
 Max Calib Wavelength (nm)           =   1100.0
 Step Wavelength (nm)                =     0.6
-Min Fitting Wavelength (nm)         =   300.0  
+Min Fitting Wavelength (nm)         =   350.0  
 Max Fitting Wavelength (nm)         =   1100.0
 Min Bandwidth to use Spectrum (nm)  =   200.0
 Gauss Smoothing Kernel sigma (nm)   =    20.0
@@ -28,7 +28,7 @@ Number of Grating Cameras           =       1
 ----  --------
 Cam#  Lines/mm
 ----  --------
-101    300.00
+101    150.00
 
 
 

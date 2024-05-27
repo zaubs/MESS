@@ -447,7 +447,7 @@ double  mslope, *wave, *wcumR, *prevR, *cummR, *modlR, *prevE, *cummE;
 	  kwave_file = 0;
 
 	  for( kwave=0; kwave< spcalib->nwavelengths; kwave++ )  {
-	  		printf("********** spcalib->nwavelengths %d\n", spcalib->nwavelengths);
+	  		//printf("********** spcalib->nwavelengths %d\n", spcalib->nwavelengths);
 		    //-------- Are we below or above the star spectral wavelength band
 
 		    if( spcalib->wavelength_nm[kwave] < wave[0]  ||
@@ -1341,7 +1341,7 @@ void  ReadElementsData( int     nwavelengths,   // number of user defined wavele
 			Delay_msec(15000);
 			exit(4);
 		}
-		printf("nwave ********** %d\n", elemdata->nwave);
+		//printf("nwave ********** %d\n", elemdata->nwave);
 
 		for (kwave = 0; kwave < elemdata->nwave; kwave++)  els->speclo[kwave] = 0.0;
 		for (kwave = 0; kwave < elemdata->nwave; kwave++)  els->spechi[kwave] = 0.0;
@@ -2828,7 +2828,7 @@ void  ResetOneElementAbundance( int kelem, double Vinfinity, struct elements_dat
 	cvterm = elemdata->els[kelem].c * pow(Vinfinity - elemdata->els[kelem].Vo, 2) * pow(Vinfinity, 0.8);
 	//printf("CVTERM = %e\n", cvterm);
 	elemdata->els[kelem].beta_jones = cvterm / (1.0 + cvterm);
-	printf("Reset single element abundance...");
+	//printf("Reset single element abundance...");
 
 }
 

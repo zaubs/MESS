@@ -1785,30 +1785,30 @@ class Ui(QtWidgets.QMainWindow):
             if mods == QtCore.Qt.ControlModifier:
                 print('Clearing existing spectrum...')
                 self.clearSpec()
-                print('Shifting Left by 10')
-                self.plotMeasuredSpec(-10,0)
+                print('Shifting Left by 5')
+                self.plotMeasuredSpec(-5,0)
             else:
                 print('Clearing existing spectrum...')
                 self.clearSpec()
-                print('Shifting Left by 0.5')
-                self.plotMeasuredSpec(-0.5,0)
+                print('Shifting Left by 0.25')
+                self.plotMeasuredSpec(-0.25,0)
         elif self.elemName == 'ShiftRight':
             if mods == QtCore.Qt.ControlModifier:
                 print('Clearing existing spectrum...')
                 self.clearSpec()
-                print('Shifting Right by 10')
-                self.plotMeasuredSpec(10,0)
+                print('Shifting Right by 5')
+                self.plotMeasuredSpec(5,0)
             else:
                 print('Clearing existing spectrum...')
                 self.clearSpec()
-                print('Shifting Right by 1')
-                self.plotMeasuredSpec(0.5,0)
+                print('Shifting Right by 0.25')
+                self.plotMeasuredSpec(0.25,0)
         elif self.elemName == 'ShiftUp':
             if mods == QtCore.Qt.ControlModifier:
                 print('Clearing existing spectrum...')
                 self.clearSpec()
-                print('Shifting Up by 10')
-                self.plotMeasuredSpec(0,10)
+                print('Shifting Up by 5')
+                self.plotMeasuredSpec(0,5)
             else:
                 print('Clearing existing spectrum...')
                 self.clearSpec()
@@ -1818,8 +1818,8 @@ class Ui(QtWidgets.QMainWindow):
             if mods == QtCore.Qt.ControlModifier:
                 print('Clearing existing spectrum...')
                 self.clearSpec()
-                print('Shifting Down by 10')
-                self.plotMeasuredSpec(0,-10)
+                print('Shifting Down by 5')
+                self.plotMeasuredSpec(0,-5)
             else:
                 print('Clearing existing spectrum...')
                 self.clearSpec()

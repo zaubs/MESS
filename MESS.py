@@ -797,11 +797,11 @@ class Ui(QtWidgets.QMainWindow):
 
         spectral_library.readSpectralCALFile(self.spectral)
         print(self.spectral.spcalib.wavelength_nm[1000], self.spectral.spcalib.cumm_resp_spec[1000])
-        plt.figure()
-        # plt.plot(self.spectral.spcalib.wavelength_nm[0:1000], self.spectral.spcalib.cumm_resp_spec[0:1000])
-        # plt.plot(self.spectral.spcalib.wavelength_nm[0:1000], self.spectral.spcalib.modl_resp_spec[0:1000])
-        plt.plot(self.spectral.spcalib.wavelength_nm[0:1000], self.spectral.spcalib.cumm_extn_spec[0:1000])
-        plt.show()
+        # plt.figure()
+        # # plt.plot(self.spectral.spcalib.wavelength_nm[0:1000], self.spectral.spcalib.cumm_resp_spec[0:1000])
+        # # plt.plot(self.spectral.spcalib.wavelength_nm[0:1000], self.spectral.spcalib.modl_resp_spec[0:1000])
+        # plt.plot(self.spectral.spcalib.wavelength_nm[0:1000], self.spectral.spcalib.cumm_extn_spec[0:1000])
+        # plt.show()
 
         spectral_library.loadElementsData(self.spectral)
 
@@ -1027,6 +1027,8 @@ class Ui(QtWidgets.QMainWindow):
 
         self.dir_x = 0
         self.dir_y = 0
+        print('***********************************************')
+        print(self.dir_x)
 
     ###############################################################################################
     ###################################### /// FUNCTIONS /// ######################################

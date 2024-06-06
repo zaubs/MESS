@@ -713,6 +713,7 @@ class Ui(QtWidgets.QMainWindow):
         self.Hot2WarmRatio_rollbox.valueChanged.connect(lambda: self.updateHot2WarmRatio())
 
         self.MeteorSpeed_rollbox.valueChanged.connect(lambda: self.updateMeteorSpeed())
+        self.ZenithAngle_rollbox.valueChanged.connect(lambda: self.updateZenithAngle())
         self.MeteorHeight_rollbox.valueChanged.connect(lambda: self.updateMeteorHeight())
         self.ColumnDensity_rollbox.valueChanged.connect(lambda: self.updateColumnDensity())
         self.PlasmaRadius_rollbox.valueChanged.connect(lambda: self.updatePlasmaRadius())
@@ -796,10 +797,10 @@ class Ui(QtWidgets.QMainWindow):
         self.spectral.spcalib.gratinfo[camos_camera_index].camnum = 101
 
         spectral_library.readSpectralCALFile(self.spectral)
-        print(self.spectral.spcalib.wavelength_nm[1000], self.spectral.spcalib.cumm_resp_spec[1000])
+        # print(self.spectral.spcalib.wavelength_nm[1000], self.spectral.spcalib.cumm_resp_spec[1000])
         # plt.figure()
-        # # plt.plot(self.spectral.spcalib.wavelength_nm[0:1000], self.spectral.spcalib.cumm_resp_spec[0:1000])
-        # # plt.plot(self.spectral.spcalib.wavelength_nm[0:1000], self.spectral.spcalib.modl_resp_spec[0:1000])
+        # plt.plot(self.spectral.spcalib.wavelength_nm[0:1000], self.spectral.spcalib.cumm_resp_spec[0:1000])
+        # plt.plot(self.spectral.spcalib.wavelength_nm[0:1400], self.spectral.spcalib.modl_resp_spec[0:1400])
         # plt.plot(self.spectral.spcalib.wavelength_nm[0:1000], self.spectral.spcalib.cumm_extn_spec[0:1000])
         # plt.show()
 
@@ -953,8 +954,8 @@ class Ui(QtWidgets.QMainWindow):
 
         # self.vinfinity_kmsec = 40.0     # km/sec
         # self.approach_angle_radians = 55.0 * 3.141592654 / 180.0
-        # self.earth_radius_km = 6378.16  # WGS84
-        # self.site_height_km = 0.2       # Above WGS84 Earth surface
+        self.earth_radius_km = 6378.16  # WGS84
+        self.site_height_km = 0.375       # Above WGS84 Earth surface
         # self.meteor_height_km = 85.0    # Above WGS84 Earth surface
         # self.altitude_deg = 45.0        # elevation angle above horizon
         # Rsin = self.earth_radius_km * math.sin(self.altitude_deg * 3.141592654 / 180.0)
@@ -971,7 +972,7 @@ class Ui(QtWidgets.QMainWindow):
         #========== Set user adjustable values in the elemdata structure to their starting defaults
         #              such as sigma, temperatures, electron density, hot-to-warm, airmass factor
         spectral_library.adjustableParametersDefaults(self.spectral)
-        self.spectral.vinfinity_kmsec = 35.0
+        self.spectral.vinfinity_kmsec = 20.0
         spectral_library.GuralSpectral.resetAllElementalAbundances(self.spectral)
 
         self.PlottedSpectrumNumber = 0
@@ -1339,6 +1340,20 @@ class Ui(QtWidgets.QMainWindow):
         except:
             pass
 
+    def updateZenithAngle(self):
+        print('Updating zenith angle...')
+        try:
+            self.spectral.meteor_height_km = self.MeteorHeight_rollbox.value()
+            self.spectral.altitude_deg = 90.0 - self.ZenithAngle_rollbox.value()
+            self.Rsin = self.earth_radius_km * math.sin(self.spectral.altitude_deg * 3.141592654 / 180.0)
+            self.spectral.meteor_range_km = math.sqrt( self.Rsin * self.Rsin + 2.0 * self.earth_radius_km * self.spectral.meteor_height_km + self.spectral.meteor_height_km * self.spectral.meteor_height_km) - self.Rsin
+
+            self.spectral.computeWarmPlasmaSpectrum()
+            self.spectral.computeHotPlasmaSpectrum()
+            self.refreshPlot()
+        except:
+            pass
+
     def updateColumnDensity(self):
         print('Updating column density...')
         try:
@@ -1562,15 +1577,20 @@ class Ui(QtWidgets.QMainWindow):
         self.spectral.elemdata.plasma_radius_meters = self.PlasmaRadius_rollbox.value()
         self.spectral.meteor_height_km = self.MeteorHeight_rollbox.value()
         self.spectral.vinfinity_kmsec = self.MeteorSpeed_rollbox.value()
+        self.spectral.altitude_deg = 90.0 - self.ZenithAngle_rollbox.value()
+        self.Rsin = self.earth_radius_km * math.sin(self.spectral.altitude_deg * 3.141592654 / 180.0)
+        self.spectral.meteor_range_km = math.sqrt( self.Rsin * self.Rsin + 2.0 * self.earth_radius_km * self.spectral.meteor_height_km + self.spectral.meteor_height_km * self.spectral.meteor_height_km) - self.Rsin
 
-
+        
         spectral_library.GuralSpectral.changeHot2WarmRatio(self.spectral, self.spectral.elemdata.hot2warm)
         spectral_library.GuralSpectral.plasmaVolumes(self.spectral)
-        spectral_library.GuralSpectral.computeWarmPlasmaSpectrum(self.spectral)
-        spectral_library.GuralSpectral.computeHotPlasmaSpectrum(self.spectral)
 
         if self.Extinction_check.isChecked():
             spectral_library.GuralSpectral.extinctionModel(self.spectral)
+
+        # spectral_library.GuralSpectral.resetAllElementalAbundances(self.spectral)
+        spectral_library.GuralSpectral.computeWarmPlasmaSpectrum(self.spectral)
+        spectral_library.GuralSpectral.computeHotPlasmaSpectrum(self.spectral)
 
 
         if self.HotTempOn_button.isChecked() and (self.WarmTempOn_button.isChecked() == False):        
@@ -1700,7 +1720,12 @@ class Ui(QtWidgets.QMainWindow):
         self.spectral.elemdata.Xfactor = self.Extinction_rollbox.value()
         self.spectral.elemdata.plasma_radius_meters = self.PlasmaRadius_rollbox.value()
         self.spectral.meteor_height_km = self.MeteorHeight_rollbox.value()
+        self.spectral.altitude_deg = 90.0 - self.ZenithAngle_rollbox.value()
+        self.Rsin = self.earth_radius_km * math.sin(self.spectral.altitude_deg * 3.141592654 / 180.0)
+        self.spectral.meteor_range_km = math.sqrt( self.Rsin * self.Rsin + 2.0 * self.earth_radius_km * self.spectral.meteor_height_km + self.spectral.meteor_height_km * self.spectral.meteor_height_km) - self.Rsin
         self.spectral.vinfinity_kmsec = self.MeteorSpeed_rollbox.value()
+
+        # spectral_library.GuralSpectral.resetAllElementalAbundances(self.spectral)
 
         #========== If any of the input arguments in the call below to PlasmaVolumes changes
         #              at a later time, you must call PlasmaVolumes again to infill the  
@@ -1942,7 +1967,7 @@ class Ui(QtWidgets.QMainWindow):
     ################# DIRECT FILE CONTROL FUNCTIONS #################
 
     def loadEventFile(self):
-        self.spectral.vinfinity_kmsec = 40.0
+        self.spectral.vinfinity_kmsec = 20.0
         dlg = QFileDialog()
         dlg.setFileMode(QFileDialog.AnyFile)
 
@@ -1974,7 +1999,7 @@ class Ui(QtWidgets.QMainWindow):
                         try:
                             self.spectral.vinfinity_kmsec = float(lines[4].split()[13])
                         except:
-                            self.spectral.vinfinity_kmsec = 35.0
+                            self.spectral.vinfinity_kmsec = 20.0
                         print('Vinf1: %f' % self.spectral.vinfinity_kmsec)
                         for line in lines:
                             if line.split()[0] == 'fit':
@@ -2287,8 +2312,8 @@ class Ui(QtWidgets.QMainWindow):
 
         # Set image levels
         if self.spectral_flat_exists == False:
-            self.minv = np.percentile(self.spectral_frame_img_og, 0.05)
-            self.maxv = np.percentile(self.spectral_frame_img_og, 99.95)
+            self.minv = np.percentile(self.spectral_frame_img_og, 0.5)
+            self.maxv = np.percentile(self.spectral_frame_img_og, 99.5)
         
         gamma = 1
 
@@ -2875,29 +2900,44 @@ class Ui(QtWidgets.QMainWindow):
                 spectral_profile_short.append(spectral_profile[i])
 
         # Interpolate responsivity curve to match scaled_spectral_profile
-        xM = self.responsivityDefault[:,0]
-        # xM = np.linspace(300,1100,800)
-        # print(self.responsivityDefault[:,1])
-        yM = self.responsivityDefault[:,1]/np.max(self.responsivityDefault[:,1])
-        # yM = np.ones(800)
+        # xM = self.responsivityDefault[:,0]
+        # # xM = np.linspace(300,1100,800)
+        # # print(self.responsivityDefault[:,1])
+        # yM = self.responsivityDefault[:,1]/np.max(self.responsivityDefault[:,1])
+        # # yM = np.ones(800)
+        # fM = interpolate.interp1d(xM,yM)
+        # yMnew = 1/fM(scaled_spectral_profile_short)
+
+        #plt.plot(self.spectral.spcalib.wavelength_nm[0:1000], self.spectral.spcalib.modl_resp_spec[0:1000])
+        # print(self.spectral.spcalib.modl_resp_spec[0:1000])
+        # print(np.max(yM))
+        xM = self.spectral.spcalib.wavelength_nm[0:1400]
+        yM = self.spectral.spcalib.modl_resp_spec[0:1400] / np.max(self.spectral.spcalib.modl_resp_spec[0:1400])
         fM = interpolate.interp1d(xM,yM)
-        yMnew = 1/fM(scaled_spectral_profile_short)
+        yMnew = fM(scaled_spectral_profile_short)
 
         # print(len(yMnew))
         # print(np.min(scaled_spectral_profile), np.max(scaled_spectral_profile), len(scaled_spectral_profile))
 
+        # self.plotMax = np.max(np.divide(spectral_profile_short,yMnew))
         self.plotMax = np.max(np.divide(spectral_profile_short,yMnew))
 
         self.spectrumX = scaled_spectral_profile_short
         self.spectrumY = spectral_profile_short / np.max(spectral_profile_short)
         self.spectrumY_resp = np.divide(spectral_profile_short,yMnew)/self.plotMax
 
+        plt.figure()
+        # plt.plot(self.spectrumY_resp)
+        # plt.plot(xM,yM)
+        plt.plot(scaled_spectral_profile_short,yMnew)
+
+        plt.show()
+
         # Set axis titles 
         self.Plot.setLabel('left', 'Intensity')
         self.Plot.setLabel('bottom', 'Wavelength (nm)')
 
         # Create the plot
-        393.4
         self.Plot.plot([393.4,393.4],[0,self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
         self.Plot.plot([396.8,396.8],[0,self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
         self.Plot.plot([518,518],[0,self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))

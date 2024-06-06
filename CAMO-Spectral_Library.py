@@ -1388,6 +1388,9 @@ class GuralSpectral(object):
 		self.spectral_lib.PlasmaVolumes(self.meteor_height_km, self.meteor_range_km, self.approach_angle_radians, \
 			self.elemdata.hot2warm, self.elemdata)
 
+		print('--- Plasma volumes ---')
+		print(self.meteor_height_km, self.meteor_range_km, self.approach_angle_radians, self.elemdata.hot2warm, self.elemdata)
+
 
 	
 	def extinctionModel(self):

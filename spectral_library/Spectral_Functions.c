@@ -2396,7 +2396,6 @@ void    PlasmaVolumes(double height_km, double range_km, double approach_angle, 
 
 	elemdata->range_meteor_meters = 1000.0 * range_km;
 
-
 	elemdata->VolumeDepth = 2.0 * elemdata->plasma_radius_meters * sin(approach_angle);
 
 	elemdata->VolumeTlo = (4.0 / 3.0) * 3.141592654 * pow(elemdata->plasma_radius_meters, 3);  //... m^3
@@ -2826,7 +2825,7 @@ void  ResetOneElementAbundance( int kelem, double Vinfinity, struct elements_dat
 	//========== Initialize the Jones' beta value
 
 	cvterm = elemdata->els[kelem].c * pow(Vinfinity - elemdata->els[kelem].Vo, 2) * pow(Vinfinity, 0.8);
-	//printf("CVTERM = %e\n", cvterm);
+	printf("CVTERM = %e\n", cvterm);
 	elemdata->els[kelem].beta_jones = cvterm / (1.0 + cvterm);
 	//printf("Reset single element abundance...");
 
@@ -2848,7 +2847,7 @@ void  ResetAllElementAbundances(double Vinfinity, struct elements_data *elemdata
 		ResetOneElementAbundance(kelem, Vinfinity, elemdata);
 
 	}
-	printf("Reset single element abundance...");
+	printf("Reset all elemental abundances...\n");
 
 }
 

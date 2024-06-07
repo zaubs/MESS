@@ -435,6 +435,8 @@ double  mslope, *wave, *wcumR, *prevR, *cummR, *modlR, *prevE, *cummE;
 			                                                    &prevE[kwave_file], 
 			                                                    &cummE[kwave_file]  );
 
+		   printf("%lf %lf %lf\n", wcumR[kwave_file], cummR[kwave_file], modlR[kwave_file]);
+
 		   prevR[kwave_file] *= spcalib->resp_normalization;
 		   cummR[kwave_file] *= spcalib->resp_normalization;
 		   modlR[kwave_file] *= spcalib->resp_normalization;
@@ -502,7 +504,6 @@ double  mslope, *wave, *wcumR, *prevR, *cummR, *modlR, *prevE, *cummE;
 			       / (  wave[kwave_file+1]  - wave[kwave_file] );
 
 			spcalib->modl_resp_spec[kwave] = modlR[kwave_file]  +  mslope * (spcalib->wavelength_nm[kwave] - wave[kwave_file] );
-
 
 
 		    mslope = ( prevE[kwave_file+1] - prevE[kwave_file] )

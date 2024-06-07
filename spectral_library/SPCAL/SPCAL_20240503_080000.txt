@@ -2,7 +2,7 @@ Version =  1.64
 NumCams = 1
 Cam     Date       Time        Roll     Pitch       Yaw
 ---  ----------  --------  --------  --------  --------
-101  04/21/2013  08:00:00      0.00     25.00      0.00
+101  05/03/2024  08:00:00      0.00     0.00      0.00
 -------------------------------------------------------
 Extinction Fit: Multi-Day = 2
 Extinction Coef Scale     = 1.008800
@@ -12,7 +12,7 @@ Extinction Coef Ozone     = 0.761201
 Extinction Coef Dust      = 17.575153
 Extinction Coef Water     = 12.857024
 -------------------------------------------------------
-Number of wavelengths      = 1251
+Number of wavelengths      = 1250
 Responsivity normalization = 302172611547.561830
 -------------------------------------------------------
 Wave(nm)	WeightSum	DayResp	CumResp	SmoothResp	DayExtn	CumExtn
@@ -1266,4 +1266,3 @@ Wave(nm)	WeightSum	DayResp	CumResp	SmoothResp	DayExtn	CumExtn
 1098.2	0.084029443	0.052546283	0.052546283	0.052546283	0.892582934	0.892582934
 1098.8	0.084018373	0.05253936	0.05253936	0.05253936	0.879884679	0.879884679
 1099.4	0.084029114	0.052546078	0.052546078	0.052546078	0.86441371	0.86441371
-1100	0.084029114				0.849980876	0.849980876

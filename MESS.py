@@ -1220,7 +1220,7 @@ class Ui(QtWidgets.QMainWindow):
         self.spectral_frame_img = applyFlat(self.spectral_frame_img, self.flat_structure)
 
         # Set image levels
-        minv = np.percentile(self.spectral_frame_img, 0.1)
+        minv = np.percentile(self.spectral_frame_img, 0.2)
         maxv = np.percentile(self.spectral_frame_img, 99.95)
         gamma = 1
 
@@ -2274,7 +2274,7 @@ class Ui(QtWidgets.QMainWindow):
         self.spectral_frame_img = applyFlat(self.spectral_frame_img, self.flat_structure)
 
         # Set image levels
-        self.minv = np.percentile(self.spectral_frame_img, 0.05)
+        self.minv = np.percentile(self.spectral_frame_img, 0.2)
         self.maxv = np.percentile(self.spectral_frame_img, 99.95)
         gamma = 1
 
@@ -2312,9 +2312,13 @@ class Ui(QtWidgets.QMainWindow):
 
         # Set image levels
         if self.spectral_flat_exists == False:
-            self.minv = np.percentile(self.spectral_frame_img_og, 0.5)
-            self.maxv = np.percentile(self.spectral_frame_img_og, 99.5)
-        
+            self.minv = np.percentile(self.spectral_frame_img_og, 0.2)
+            self.maxv = np.percentile(self.spectral_frame_img_og, 99.95)
+        else:
+            # Set image levels
+            self.minv = np.percentile(self.spectral_frame_img, 0.2)
+            self.maxv = np.percentile(self.spectral_frame_img, 99.95)
+
         gamma = 1
 
         # Create an image with properly adjust levels
@@ -2770,7 +2774,7 @@ class Ui(QtWidgets.QMainWindow):
         self.update()
 
         # Set image levels
-        minv = np.percentile(self.spectral_frame_img, 0.05)
+        minv = np.percentile(self.spectral_frame_img, 0.2)
         maxv = np.percentile(self.spectral_frame_img, 99.95)
         gamma = 1
 
@@ -2901,36 +2905,31 @@ class Ui(QtWidgets.QMainWindow):
 
         # Interpolate responsivity curve to match scaled_spectral_profile
         # xM = self.responsivityDefault[:,0]
-        # # xM = np.linspace(300,1100,800)
-        # # print(self.responsivityDefault[:,1])
         # yM = self.responsivityDefault[:,1]/np.max(self.responsivityDefault[:,1])
-        # # yM = np.ones(800)
         # fM = interpolate.interp1d(xM,yM)
         # yMnew = 1/fM(scaled_spectral_profile_short)
+        # yMsg = savgol_filter(yMnew,101,2)
+        # print(len(yMsg), len(yMnew))
 
-        #plt.plot(self.spectral.spcalib.wavelength_nm[0:1000], self.spectral.spcalib.modl_resp_spec[0:1000])
-        # print(self.spectral.spcalib.modl_resp_spec[0:1000])
-        # print(np.max(yM))
-        xM = self.spectral.spcalib.wavelength_nm[0:1400]
-        yM = self.spectral.spcalib.modl_resp_spec[0:1400] / np.max(self.spectral.spcalib.modl_resp_spec[0:1400])
+        xM = self.spectral.spcalib.wavelength_nm[0:1200]
+        yM = self.spectral.spcalib.cumm_resp_spec[0:1200] / np.max(self.spectral.spcalib.cumm_resp_spec[0:1200])
+        YM = savgol_filter(yM, 101, 2)
         fM = interpolate.interp1d(xM,yM)
         yMnew = fM(scaled_spectral_profile_short)
 
-        # print(len(yMnew))
-        # print(np.min(scaled_spectral_profile), np.max(scaled_spectral_profile), len(scaled_spectral_profile))
-
-        # self.plotMax = np.max(np.divide(spectral_profile_short,yMnew))
-        self.plotMax = np.max(np.divide(spectral_profile_short,yMnew))
+        self.plotMax = np.max(spectral_profile_short)
 
         self.spectrumX = scaled_spectral_profile_short
-        self.spectrumY = spectral_profile_short / np.max(spectral_profile_short)
-        self.spectrumY_resp = np.divide(spectral_profile_short,yMnew)/self.plotMax
+        self.spectrumY = spectral_profile_short #/ np.max(spectral_profile_short)
+        self.spectrumY_resp = np.divide(spectral_profile_short,yMnew)
 
         plt.figure()
         # plt.plot(self.spectrumY_resp)
-        # plt.plot(xM,yM)
-        plt.plot(scaled_spectral_profile_short,yMnew)
-
+        plt.plot(xM,yM)
+        # plt.plot(yMnew)
+        # plt.plot(self.spectrumY)
+        # plt.plot(self.spectrumY_resp)
+        # plt.plot(yMnew)
         plt.show()
 
         # Set axis titles 
@@ -2945,23 +2944,29 @@ class Ui(QtWidgets.QMainWindow):
         self.Plot.plot([777,777],[0,self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
         self.Plot.plot([400,1100],[0,0], pen=pg.mkPen(color=(0,0,0), width=2))
 
-        self.Plot.plot(scaled_spectral_profile_short, spectral_profile_short/np.max(spectral_profile_short)*0.0001, pen = pg.mkPen(color=(50,50,50), width = 2))
-        self.Plot.plot(scaled_spectral_profile_short, np.divide(spectral_profile_short,yMnew)/self.plotMax*0.0001, pen=pg.mkPen(color=(0,0,255), width=2)) # Uncomment for responsivity
+        self.Plot.plot(scaled_spectral_profile_short, self.spectrumY, pen = pg.mkPen(color=(50,50,50), width = 2))
+        self.Plot.plot(scaled_spectral_profile_short, self.spectrumY_resp, pen=pg.mkPen(color=(0,0,255), width=2)) # Uncomment for responsivity
 
         # line = pg.InfiniteLine(pos=589, angle=90, pen=pen)
 
-        self.t1 = pg.TextItem('518.2 nm', anchor=(1,1), angle=90)
-        self.t2 = pg.TextItem('589.1 nm', anchor=(1,1), angle=90)
-        self.t3 = pg.TextItem('777.1 nm', anchor=(1,1), angle=90)
-        self.Plot.addItem(self.t1)
-        self.Plot.addItem(self.t2)
+        self.t1 = pg.TextItem('Ca(II) - H', anchor=(1,1), angle=90)
+        self.t2 = pg.TextItem('Ca(II) - K', anchor=(1,1), angle=90)
+        self.t3 = pg.TextItem('Mg', anchor=(1,1), angle=90)
+        self.t4 = pg.TextItem('Na', anchor=(1,1), angle=90)
+        self.t5 = pg.TextItem('O', anchor=(1,1), angle=90)
         self.Plot.addItem(self.t3)
-        self.t1.setPos(518,self.plotMax)
-        self.t2.setPos(589,self.plotMax)
-        self.t3.setPos(777,self.plotMax)
+        self.Plot.addItem(self.t3)
+        self.Plot.addItem(self.t3)
+        self.Plot.addItem(self.t4)
+        self.Plot.addItem(self.t5)
+        self.t1.setPos(393.4,self.plotMax)
+        self.t2.setPos(396.8,self.plotMax)
+        self.t3.setPos(518,self.plotMax)
+        self.t4.setPos(589,self.plotMax)
+        self.t5.setPos(777,self.plotMax)
         
         self.Plot.setXRange(np.min(scaled_spectral_profile_short),np.max(scaled_spectral_profile_short))
-        self.Plot.setYRange(0,np.max(np.divide(spectral_profile_short,yMnew)/self.plotMax*0.0001))
+        self.Plot.setYRange(0, 1.5*self.plotMax)
         self.Plot.setBackground('w')
         # self.Plot.setYRange(0,30000)
         self.CalibrateSpectrum_button.setEnabled(True)

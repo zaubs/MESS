@@ -88,7 +88,7 @@ def readSpectralCALFile(self):
 
 	# Read in the spectral calibration file
 	# self.spectral_lib.ReadSpectralCALfile("spectral_library/SPCAL/SPCAL_20130421_080000.txt".encode('ascii'), self.spconfig, self.spcalib)
-	self.spectral_lib.ReadSpectralCALfile("spectral_library/SPCAL/SPCAL_20240503_080000.txt".encode('ascii'), self.spconfig, self.spcalib)
+	self.spectral_lib.ReadSpectralCALfile("spectral_library/SPCAL/SPCAL_20240605_080000.txt".encode('ascii'), self.spconfig, self.spcalib)
 
 
 def readStarSpectra(self):

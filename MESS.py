@@ -2273,6 +2273,10 @@ class Ui(QtWidgets.QMainWindow):
 
         self.spectral_frame_img = applyFlat(self.spectral_frame_img, self.flat_structure)
 
+        plt.figure()
+        plt.imshow(self.spectral_frame_img)
+        plt.show()
+
         # Set image levels
         self.minv = np.percentile(self.spectral_frame_img, 0.2)
         self.maxv = np.percentile(self.spectral_frame_img, 99.95)
@@ -2866,7 +2870,7 @@ class Ui(QtWidgets.QMainWindow):
 
 
         # spectral_profile = np.mean(self.spectral_array, axis=1)
-        spectral_profile = spectral_profile *100
+        # spectral_profile = spectral_profile *100
 
         # Init array for the scaled profile
         global scaled_spectral_profile
@@ -2912,10 +2916,11 @@ class Ui(QtWidgets.QMainWindow):
         # print(len(yMsg), len(yMnew))
 
         xM = self.spectral.spcalib.wavelength_nm[0:1200]
-        yM = self.spectral.spcalib.cumm_resp_spec[0:1200] / np.max(self.spectral.spcalib.cumm_resp_spec[0:1200])
-        YM = savgol_filter(yM, 101, 2)
+        # yMnorm = self.spectral.spcalib.cumm_resp_spec[0:1200] / np.max(self.spectral.spcalib.cumm_resp_spec[0:1200])
+        yMsg = savgol_filter(self.spectral.spcalib.cumm_resp_spec[0:1200], 101, 2)
+        yM = yMsg / np.min(yMsg)
         fM = interpolate.interp1d(xM,yM)
-        yMnew = fM(scaled_spectral_profile_short)
+        yMnew = 1/fM(scaled_spectral_profile_short)
 
         self.plotMax = np.max(spectral_profile_short)
 
@@ -2926,10 +2931,6 @@ class Ui(QtWidgets.QMainWindow):
         plt.figure()
         # plt.plot(self.spectrumY_resp)
         plt.plot(xM,yM)
-        # plt.plot(yMnew)
-        # plt.plot(self.spectrumY)
-        # plt.plot(self.spectrumY_resp)
-        # plt.plot(yMnew)
         plt.show()
 
         # Set axis titles 
@@ -2937,30 +2938,30 @@ class Ui(QtWidgets.QMainWindow):
         self.Plot.setLabel('bottom', 'Wavelength (nm)')
 
         # Create the plot
-        self.Plot.plot([393.4,393.4],[0,self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
-        self.Plot.plot([396.8,396.8],[0,self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
-        self.Plot.plot([518,518],[0,self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
-        self.Plot.plot([589,589],[0,self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
-        self.Plot.plot([777,777],[0,self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
-        self.Plot.plot([400,1100],[0,0], pen=pg.mkPen(color=(0,0,0), width=2))
+        self.Plot.plot([393.4,393.4],[0,1.5*self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
+        self.Plot.plot([396.8,396.8],[0,1.5*self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
+        self.Plot.plot([518,518],[0,1.5*self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
+        self.Plot.plot([589,589],[0,1.5*self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
+        self.Plot.plot([777,777],[0,1.5*self.plotMax], pen=pg.mkPen(color=(0,0,0), style=QtCore.Qt.DotLine, width=2))
+        self.Plot.plot([350,1100],[0,0], pen=pg.mkPen(color=(0,0,0), width=2))
 
         self.Plot.plot(scaled_spectral_profile_short, self.spectrumY, pen = pg.mkPen(color=(50,50,50), width = 2))
         self.Plot.plot(scaled_spectral_profile_short, self.spectrumY_resp, pen=pg.mkPen(color=(0,0,255), width=2)) # Uncomment for responsivity
 
         # line = pg.InfiniteLine(pos=589, angle=90, pen=pen)
 
-        self.t1 = pg.TextItem('Ca(II) - H', anchor=(1,1), angle=90)
-        self.t2 = pg.TextItem('Ca(II) - K', anchor=(1,1), angle=90)
+        self.t1 = pg.TextItem('Ca(II) - K', anchor=(1,1), angle=90)
+        self.t2 = pg.TextItem('Ca(II) - H', anchor=(1,1), angle=90)
         self.t3 = pg.TextItem('Mg', anchor=(1,1), angle=90)
         self.t4 = pg.TextItem('Na', anchor=(1,1), angle=90)
         self.t5 = pg.TextItem('O', anchor=(1,1), angle=90)
-        self.Plot.addItem(self.t3)
-        self.Plot.addItem(self.t3)
+        self.Plot.addItem(self.t1)
+        self.Plot.addItem(self.t2)
         self.Plot.addItem(self.t3)
         self.Plot.addItem(self.t4)
         self.Plot.addItem(self.t5)
         self.t1.setPos(393.4,self.plotMax)
-        self.t2.setPos(396.8,self.plotMax)
+        self.t2.setPos(410,self.plotMax)
         self.t3.setPos(518,self.plotMax)
         self.t4.setPos(589,self.plotMax)
         self.t5.setPos(777,self.plotMax)

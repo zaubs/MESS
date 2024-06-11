@@ -2826,7 +2826,7 @@ void  ResetOneElementAbundance( int kelem, double Vinfinity, struct elements_dat
 	//========== Initialize the Jones' beta value
 
 	cvterm = elemdata->els[kelem].c * pow(Vinfinity - elemdata->els[kelem].Vo, 2) * pow(Vinfinity, 0.8);
-	printf("CVTERM = %e\n", cvterm);
+	// printf("CVTERM = %e\n", cvterm);
 	elemdata->els[kelem].beta_jones = cvterm / (1.0 + cvterm);
 	//printf("Reset single element abundance...");
 
@@ -3230,7 +3230,7 @@ struct  element_lines_spectrum  *els;
 
 		 solid_angle = 3.141592654 * elemdata->plasma_radius_meters * elemdata->plasma_radius_meters / elemdata->range_meteor_meters / elemdata->range_meteor_meters;
 
-		 for( kwave=0; kwave<elemdata->nwave; kwave++ )  els->spechi[kwave] *= solid_angle * grating_area_scaling / pf;
+		 for( kwave=0; kwave<elemdata->nwave; kwave++ )  els->speclo[kwave] *= solid_angle * grating_area_scaling / pf;
 
 		 /*
 		 for( kwave=0; kwave<elemdata->nwave; kwave++ )  {  // looking for O777 to O844 lines and ratio

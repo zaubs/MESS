@@ -1,0 +1,24 @@
+Number of lines in output : 6
+--------------------------------------------------------------------------------------------------------
+    Wl_vac      Wl_air    E_Photon   log_gf   A-Value   Elem. E_lower_lev.   J   E_upper_lev.   J   Ref.
+     / nm        / nm        / eV              / 1/s   (Code)     / eV     lower     / eV     upper     
+--------------------------------------------------------------------------------------------------------
+   202.6136    202.5483    6.120033  -0.086 3.332e+08  30.01     0.000000   0.5     6.119658   1.5 AS   
+   206.2663    206.2004    6.011653  -0.377 3.290e+08  30.01     0.000000   0.5     6.011283   0.5 AS   
+   210.0604    209.9937    5.903073  -0.032 2.340e+08  30.01     6.119658   1.5    12.022368   2.5 BS   
+   210.2841    210.2174    5.896792  -1.162 2.597e+07  30.01     6.119658   1.5    12.016087   1.5 BS   
+   250.2743    250.1989    4.954571  -0.495 1.703e+08  30.01     6.011283   0.5    10.965549   0.5 AS   
+   255.8715    255.7948    4.846189  -0.194 3.259e+08  30.01     6.119658   1.5    10.965549   0.5 AS   
+
+Number of lines in output : 6
+Parameter set used in search:
+Lower wavelength limit: 200.0000 nm
+Upper wavelength limit: 2000.0000 nm
+Lower limit on log gf: -5.000 Upper limit on log gf: 3.000 Lower limit on energy for lower level: 0.000 cm^-1
+Upper limit on energy for lower level: 1000000.000 cm^-1
+Lower limit on energy for upper level: 0.000 cm^-1
+Upper limit on energy for upper level: 1000000.000 cm^-1
+Element list:
+Zn II ( = 30.01 )
+Search program by Claas Heise (heise@fz.telekom.de), Jan 17, 1996
+

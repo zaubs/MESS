@@ -1,6 +1,6 @@
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-//     Spectral functions  -  Header fileel
+//     Spectral functions  -  Header file
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 //
 // Input functions for reading configs, element emission lines, partition functions.
@@ -81,6 +81,7 @@ struct specconfiguration
 	double   default_yaw_deg;         // Default grating yaw angle in deg
 	double   default_ne;              // Default density of electrons
 	double   default_hot2warm;        // Default hot to warm plasma contribution ratio
+	long     beta_flag;               // Use:  1-PJs C values,  2-ne iteration
 	long     ncams_grating;           // Number of cameras with gratings
 	long     camnum[MAXGRATINGS];     // Camera numbers for each grating camera
 	double   linespermm[MAXGRATINGS]; // Lines per mm for each grating camera
@@ -214,7 +215,8 @@ struct  element_lines_spectrum
 	double       partfunc[MAXTPF]; // partition function values
 	double       partfuncTlo;      // partition function at Tlo
 	double       partfuncThi;      // partition function at Thi
-	double       beta_jones;       // Fraction ionized n+ / (n+ + no) from Jones 1997
+	double       beta_jones;       // Fraction ionized n+ / (n+ + no) from PJ's C list
+	double       beta_ne_iter;     // Fraction ionized n+ / (n+ + no) from ne iteration
 	double       init_abundance;   // Starting abundance setting
 	double       abundance;        // Actual abundance relative to first fit element
 	double       ionenergy;        // Eion
@@ -272,7 +274,7 @@ struct  meas_fit_spectra      // Measured and fit are at the user defined wavele
 
 struct  StarInfo
 {
-	long      hip;             // Hipparcos star identifier
+	int      hip;             // Hipparcos star identifier
 	int      userID;          // Reserved for user specific identifier
 	char     specType[8];     // Assigned spectral type from Gunn-Stryker catalog
 	double   ra_deg;          // RA in degrees (J2000)
@@ -336,17 +338,6 @@ int          GetMostRecentSPCAL( char                     *folder_pathname,
 								 double                    jdtlast, 
 								 char                     *latest_filename );
 
-
-//=========================================================================================
-//                   General purpose spectral file IO functions
-//=========================================================================================
-void  WriteSpectrum(const char *pathname,
-					int nwavelengths,
-					double *wavelength,
-					double *spectrum1,
-					double *spectrum2);
-
-
 //=========================================================================================
 //                      Star Spectra functions
 //=========================================================================================
@@ -360,12 +351,12 @@ int     GetStarIndexFromSPType( struct StarSpectraInfo    *starspectra,
 int     GetStarIndexFromUserID( struct StarSpectraInfo    *starspectra,
 	                            int                        userID);
 
-long        GetStarIndexFromHIP( struct StarSpectraInfo    *starspectra, 
-	                            long                        HIP             );
+int        GetStarIndexFromHIP( struct StarSpectraInfo    *starspectra, 
+	                            int                        HIP             );
 
 
 void   InterpolateStarSpectrum( struct StarSpectraInfo    *starspectra,
-	                            long                       kstar, 
+	                            int                        kstar, 
 	                            int                        nwave_desired,             
 	                            double                    *wavelengths_desired, 
 	                            double                    *spectrum_desired  );
@@ -470,11 +461,13 @@ int     GetElementIndex(int atomicNumber, int ionization, struct elements_data *
 
 int     GetPrimaryNeutralElement(struct elements_data *elemdata);
 
+int     SetPrimaryNeutralElement(int atomicNumber, struct elements_data *elemdata);
+
 double  JonesElectronDensity(struct elements_data *elemdata, int kneutral_primary);
 
 double  IterativeElectronDensity(struct elements_data *elemdata, int kneutral_primary, double ne_guess);
 
-void    ColumnDensities_NumberAtoms(struct elements_data *elemdata, double ne);
+void    ColumnDensities_NumberAtoms(struct elements_data *elemdata, double ne, long beta_flag);
 
 
 //=========================================================================================
@@ -548,6 +541,19 @@ void                       svd_NxN( double   *A,
 								    double   *V, 
 								    int       n, 
 								    int    maxn );
+
+void                svd_NxN_solver( double **QtQ, 
+	                                double  *Qts, 
+	                                double    *x, 
+	                                int        n, 
+	                                int     maxn );
+
+void       NonNegativeLeastSquares( int       nrows, 
+	                                int       ncols, 
+	                                double      **C, 
+	                                double       *d, 
+	                                double       *x, 
+	                                double *resnorm );
 
 
 //=========================================================================================

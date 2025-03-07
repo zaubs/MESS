@@ -21,7 +21,7 @@
 #include "System_FileFunctions.h"
 
 
-void  WriteSpectrum(const char *pathname, int nwavelengths, double *wavelength, double *spectrum1, double *spectrum2);
+void  WriteSpectrumFile(const char *pathname, int nwavelengths, double *wavelength, double *spectrum1, double *spectrum2);
 
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -35,16 +35,13 @@ int main(int argc, char *argv[])
 	struct specconfiguration  spconfig;
 	struct speccalibration    spcalib;
 	struct elements_data      elemdata;
-	struct meas_fit_spectra   spectra;
+	struct meas_fit_spectra   spectra, subspectra;
 	struct StarSpectraInfo    starspectra;
 
 
-	// Noise magnitude (0.1 = defaults, 0 = no noise)
-	double noise_multiplier = 0.0;
-
 	//======== Read the spectral configuration file parameters
 
-	ReadSpectralConfigfile("DriverInputFiles/SpectralConfig.txt", &spconfig);
+	ReadSpectralConfigfile("SpectralConfig.txt", &spconfig);
 
 	/*
 	printf("config camera number %ld\n", spconfig.camnum[0]);
@@ -70,15 +67,22 @@ int main(int argc, char *argv[])
 
 	AllocMemorySpectralCalWavelengths(&spcalib, ncameras, nwave, startwave, deltawave);
 
+	WriteSpectrumFile("Wave_1.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.wavelength_nm, spcalib.wavelength_nm);
+
+
+
 	int camos_camera_index = 0;
-	
+
 	spcalib.gratinfo[camos_camera_index].camnum = 101;
 
-	// Read the spectral configuration file
-	ReadSpectralCALfile( "SPCAL/SPCAL_20130421_080000.txt", &spconfig, &spcalib );
+
+	ReadSpectralCALfile( "SPCAL\\SPCAL_20130421_080000.txt", &spconfig, &spcalib );
+
+	WriteSpectrumFile("Wave_2.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.wavelength_nm, spcalib.wavelength_nm);
+
 
 	/*
-	printf("nwave %d\n", spcalib.nwavelengths);
+	printf("nwave %ld\n", spcalib.nwavelengths);
 	for (int k = 0; k < 501; k++) {
 		printf("%lf  %lf  %lf  %lf  %lf  %lf  %lf\n",
 			spcalib.wavelength_nm[k],
@@ -94,7 +98,7 @@ int main(int argc, char *argv[])
 
 	//========== Read the elements and molecules files
 
-	ReadElementsData(spcalib.nwavelengths, spcalib.wavelength_nm, "ElementsData/", &elemdata);
+	ReadElementsData(spcalib.nwavelengths, spcalib.wavelength_nm, "ElementsData\\", &elemdata);
 
 
     //========== Allocate memeory for measured and fit spectra, column densities
@@ -102,6 +106,8 @@ int main(int argc, char *argv[])
 	//                  of elements from ReadElementsData.
 
 	AllocMemorySpectrum(spcalib.nwavelengths, elemdata.nelements, &spectra);
+
+	AllocMemorySpectrum(spcalib.nwavelengths, elemdata.nelements, &subspectra);
 
 
 	//============================================================================
@@ -139,8 +145,6 @@ int main(int argc, char *argv[])
 	//           CAMO-S has one grating camera so only index [0] is set. 
 	//           On other systems this scaling factor varies with each event due the different angle
 	//              of incidence of the light path onto the grating.
-
-	//int camos_camera_index = 0;
 
 	spcalib.gratinfo[camos_camera_index].grating_area_scale = cos(spconfig.grating_offnormal_deg * 3.141592654 / 180.0);
 
@@ -182,6 +186,8 @@ int main(int argc, char *argv[])
 
 	int kelem_Fe = GetElementIndex(26, 0, &elemdata);  //... neutral Iron
 
+	int kelem_C  = GetElementIndex( 6, 0, &elemdata);  //... neutral Carbon
+
 
 	//========== Obtain model spectra for Iron for warm and hot temperature plasmas
 
@@ -200,7 +206,7 @@ int main(int argc, char *argv[])
 		                      spcalib.gratinfo[camos_camera_index].grating_area_scale,
                               spcalib.modl_extn_spec); 
 	
-	WriteSpectrum("DriverOutputFiles/FeModelSpectra_LoHi.txt", spcalib.nwavelengths, spcalib.wavelength_nm, elemdata.els[kelem_Fe].speclo, elemdata.els[kelem_Fe].spechi);
+	WriteSpectrumFile("FeModelSpectra_LoHi.txt", spcalib.nwavelengths, spcalib.wavelength_nm, elemdata.els[kelem_Fe].speclo, elemdata.els[kelem_Fe].spechi);
 
 
 	//========== Obtain new warm temperature model spectra for Iron because Tlo changed
@@ -224,7 +230,7 @@ int main(int argc, char *argv[])
 		                      spcalib.gratinfo[camos_camera_index].grating_area_scale,
                               spcalib.modl_extn_spec);		                      
 
-	WriteSpectrum("DriverOutputFiles/FeModelSpectra_TempChg.txt", spcalib.nwavelengths, spcalib.wavelength_nm, elemdata.els[kelem_Fe].speclo, elemdata.els[kelem_Fe].spechi);
+	WriteSpectrumFile("FeModelSpectra_TempChg.txt", spcalib.nwavelengths, spcalib.wavelength_nm, elemdata.els[kelem_Fe].speclo, elemdata.els[kelem_Fe].spechi);
 
 
 	//========== Obtain new plasma volumes and hot temperature model spectra for Iron 
@@ -232,7 +238,7 @@ int main(int argc, char *argv[])
 
 	elemdata.hot2warm *= 2.0;  //... doubled the hot-to-warm ratio
 
-	PlasmaVolumes(meteor_height_km, meteor_range_km, approach_angle_radians, spconfig.default_hot2warm, &elemdata);
+	PlasmaVolumes(meteor_height_km, meteor_range_km, approach_angle_radians, elemdata.hot2warm, &elemdata);
 
 
 	ActiveElementsSpectraThi( &elemdata,
@@ -241,7 +247,7 @@ int main(int argc, char *argv[])
 		                      spcalib.gratinfo[camos_camera_index].grating_area_scale,
                               spcalib.modl_extn_spec);		                      
 
-	WriteSpectrum("DriverOutputFiles/FeModelSpectra_Warm2HotChg.txt", spcalib.nwavelengths, spcalib.wavelength_nm, elemdata.els[kelem_Fe].speclo, elemdata.els[kelem_Fe].spechi);
+	WriteSpectrumFile("FeModelSpectra_Warm2HotChg.txt", spcalib.nwavelengths, spcalib.wavelength_nm, elemdata.els[kelem_Fe].speclo, elemdata.els[kelem_Fe].spechi);
 
 
 	//========== Obtain new model spectra for Iron because the broadening doubled
@@ -260,7 +266,7 @@ int main(int argc, char *argv[])
 		                      spcalib.gratinfo[camos_camera_index].grating_area_scale,
                               spcalib.modl_extn_spec);		                      
 
-	WriteSpectrum("DriverOutputFiles/FeModelSpectra_SigmaChg.txt", spcalib.nwavelengths, spcalib.wavelength_nm, elemdata.els[kelem_Fe].speclo, elemdata.els[kelem_Fe].spechi);
+	WriteSpectrumFile("FeModelSpectra_SigmaChg.txt", spcalib.nwavelengths, spcalib.wavelength_nm, elemdata.els[kelem_Fe].speclo, elemdata.els[kelem_Fe].spechi);
 
 
 	//========== Obtain new model spectra for Iron becasue the airmass factor changed and this 
@@ -282,7 +288,7 @@ int main(int argc, char *argv[])
 		                      spcalib.gratinfo[camos_camera_index].grating_area_scale,
                               spcalib.modl_extn_spec);		                      
 
-	WriteSpectrum("DriverOutputFiles/FeModelSpectra_XfactorChg.txt", spcalib.nwavelengths, spcalib.wavelength_nm, elemdata.els[kelem_Fe].speclo, elemdata.els[kelem_Fe].spechi);
+	WriteSpectrumFile("FeModelSpectra_XfactorChg.txt", spcalib.nwavelengths, spcalib.wavelength_nm, elemdata.els[kelem_Fe].speclo, elemdata.els[kelem_Fe].spechi);
 
 
 	//========== Obtain new model spectra for both Magnesium and Sodium because the fitting
@@ -307,18 +313,21 @@ int main(int argc, char *argv[])
 		                      spcalib.ord1_resp_spec, 
 		                      spcalib.ord2_resp_spec, 
 		                      spcalib.gratinfo[camos_camera_index].grating_area_scale,
-                              spcalib.modl_extn_spec);		                      
+                              spcalib.modl_extn_spec);
 
-	WriteSpectrum("DriverOutputFiles/MgModelSpectra_LoHi.txt", spcalib.nwavelengths, spcalib.wavelength_nm, elemdata.els[kelem_Mg].speclo, elemdata.els[kelem_Mg].spechi);
+	WriteSpectrumFile("MgModelSpectra_LoHi.txt", spcalib.nwavelengths, spcalib.wavelength_nm, elemdata.els[kelem_Mg].speclo, elemdata.els[kelem_Mg].spechi);
 
-	WriteSpectrum("DriverOutputFiles/NaModelSpectra_LoHi.txt", spcalib.nwavelengths, spcalib.wavelength_nm, elemdata.els[kelem_Na].speclo, elemdata.els[kelem_Na].spechi);
+	WriteSpectrumFile("NaModelSpectra_LoHi.txt", spcalib.nwavelengths, spcalib.wavelength_nm, elemdata.els[kelem_Na].speclo, elemdata.els[kelem_Na].spechi);
 
 
 	//========== Set the reference element for relative abundances
 
-	elemdata.kelem_ref = GetPrimaryNeutralElement(&elemdata);   //... Selects first active fitting element in the order of Mg, Na, Fe
+	elemdata.kelem_ref = GetPrimaryNeutralElement(&elemdata);   //... Selects first "active" fitting element in the order of Mg, Fe, Na
 
-	elemdata.kelem_ref = kelem_Mg;  //... OR user specific selection (should be a neutral)
+	elemdata.kelem_ref = SetPrimaryNeutralElement(12, &elemdata);;  //... OR user specific selection (Mg = atomic number 12)
+
+	//  if kelem_ref returned is -1, then either there is no element in the data base or element is not active (FITTING or FITLOCK)
+
 
 
 	//========== Compute the full spectrum which requires column densities for warm, hot, neutrals, ions
@@ -330,18 +339,23 @@ int main(int argc, char *argv[])
 
 	elemdata.els[kelem_Mg].N_warm = 3.0e+12;  //... normally get col density from a fit (see later)
 
-	elemdata.els[kelem_Na].N_warm = 1.2e+09;  //... normally get col density from a fit (see later)
+	elemdata.els[kelem_Na].N_warm = 2.0e+09;  //... normally get col density from a fit (see later)
 
 	double ne_guess = JonesElectronDensity(&elemdata, elemdata.kelem_ref);          //... sets ne_jones
 
+	printf("ne guess jones  %le\n", ne_guess);
+
 	double ne = IterativeElectronDensity(&elemdata, elemdata.kelem_ref, ne_guess);  //... sets ne_iter
 
-	ColumnDensities_NumberAtoms(&elemdata, ne);
+	printf("ne   %le\n", ne);
+
+	ColumnDensities_NumberAtoms(&elemdata, ne, spconfig.beta_flag);
 
 	SpectrumGivenAllCoefs(&elemdata, spectra.fit_spectrum);
 
-	WriteSpectrum("DriverOutputFiles/MgNaComboSpectra_WithColDens.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spectra.fit_spectrum, NULL);
+	WriteSpectrumFile("MgNaComboSpectra_KnownColDens.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spectra.fit_spectrum, NULL);
 
+	printf("ne  %le\n", ne);
 
 
 
@@ -356,7 +370,7 @@ int main(int argc, char *argv[])
 	}
 
 	for (int kwave = 0; kwave < spcalib.nwavelengths; kwave++) {
-		double noise_component = noise_multiplier * spectrum_max * (2.0 * (double)rand() / (double)RAND_MAX - 1.0);
+		double noise_component = 0.00 * spectrum_max * (2.0 * (double)rand() / (double)RAND_MAX - 1.0);
 		spectra.meas_spectrum[kwave] = spectra.fit_spectrum[kwave] + noise_component;
 	}
 
@@ -369,23 +383,24 @@ int main(int argc, char *argv[])
 
 	FitSpectralCoefficients(spcalib.nwavelengths, spcalib.wavelength_nm, spectra.meas_spectrum, &elemdata, &spconfig);
 
-	printf("Fit warm column densities:  Mg = %le   Na = %le\n", elemdata.els[kelem_Mg].N_warm, elemdata.els[kelem_Na].N_warm);
+	printf("FIT warm column densities:  Mg = %le   Na = %le\n", elemdata.els[kelem_Mg].N_warm, elemdata.els[kelem_Na].N_warm);
 
-	ColumnDensities_NumberAtoms(&elemdata, ne);
+	ColumnDensities_NumberAtoms(&elemdata, ne, spconfig.beta_flag);
 
 	SpectrumGivenAllCoefs(&elemdata, spectra.fit_spectrum);
 
-	WriteSpectrum("DriverOutputFiles/MgNaFitSpectra.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spectra.meas_spectrum, spectra.fit_spectrum);
+	WriteSpectrumFile("MgNaFitSpectra.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spectra.meas_spectrum, spectra.fit_spectrum);
+
 
 	//========== Scale up the warm column density for Mg by 20%
 
 	elemdata.els[kelem_Mg].N_warm *= 1.20;
 
-	ColumnDensities_NumberAtoms(&elemdata, ne);
+	ColumnDensities_NumberAtoms(&elemdata, ne, spconfig.beta_flag);
 
 	SpectrumGivenAllCoefs(&elemdata, spectra.fit_spectrum);
 
-	WriteSpectrum("DriverOutputFiles/MgNaFitSpectra_ChangedMgNwarm.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spectra.meas_spectrum, spectra.fit_spectrum);
+	WriteSpectrumFile("MgNaFitSpectra_ChangedMgNwarm.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spectra.meas_spectrum, spectra.fit_spectrum);
 
 
 	//========== Spectral fit with FITLOCK on Na but free FITTING on Mg.
@@ -400,13 +415,177 @@ int main(int argc, char *argv[])
 
 	FitSpectralCoefficients(spcalib.nwavelengths, spcalib.wavelength_nm, spectra.meas_spectrum, &elemdata, &spconfig);
 
-	printf("Fit warm column densities:  Mg = %le   Na = %le\n", elemdata.els[kelem_Mg].N_warm, elemdata.els[kelem_Na].N_warm);
+	printf("FIT warm column densities:  Mg = %le   Na = %le\n", elemdata.els[kelem_Mg].N_warm, elemdata.els[kelem_Na].N_warm);
 
-	ColumnDensities_NumberAtoms(&elemdata, ne);
+	ColumnDensities_NumberAtoms(&elemdata, ne, spconfig.beta_flag);
 
 	SpectrumGivenAllCoefs(&elemdata, spectra.fit_spectrum);
 
-	WriteSpectrum("DriverOutputFiles/MgNaFitSpectra_NaFixed.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spectra.meas_spectrum, spectra.fit_spectrum);
+	WriteSpectrumFile("MgNaFitSpectra_NaFixed.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spectra.meas_spectrum, spectra.fit_spectrum);
+
+
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+/*
+	int kelem_xx = GetElementIndex(28, 0, &elemdata);  //... neutral Nickel
+
+	for (int kwave = 0; kwave < spcalib.nwavelengths; kwave++) {
+		spcalib.ord1_resp_spec[kwave] = 1.0;
+		spcalib.ord2_resp_spec[kwave] = 1.0;
+		spcalib.modl_extn_spec[kwave] = 1.0;
+	}
+*/
+
+	//========== Obtain new model spectra for Iron, Magnesium and Sodium 
+
+	elemdata.els[kelem_Fe].user_fitflag = FITTING;    //... turn ON iron
+
+	elemdata.els[kelem_Mg].user_fitflag = FITTING;    //... turn ON magnesium
+
+	elemdata.els[kelem_Na].user_fitflag = FITTING;    //... turn ON sodium
+
+	elemdata.Tlo = spconfig.nominal_lo_exc_temp;
+	elemdata.Thi = spconfig.nominal_hi_exc_temp;
+
+	ActiveElementsSpectraTlo(&elemdata,
+		spcalib.ord1_resp_spec,
+		spcalib.ord2_resp_spec,
+		spcalib.gratinfo[camos_camera_index].grating_area_scale,
+		spcalib.modl_extn_spec);
+
+	ActiveElementsSpectraThi(&elemdata,
+		spcalib.ord1_resp_spec,
+		spcalib.ord2_resp_spec,
+		spcalib.gratinfo[camos_camera_index].grating_area_scale,
+		spcalib.modl_extn_spec);
+
+
+	//========== Set the reference element for relative abundances
+
+	elemdata.kelem_ref = GetPrimaryNeutralElement(&elemdata);   //... Selects first active fitting element in the order of Mg, Na, Fe
+
+	elemdata.kelem_ref = SetPrimaryNeutralElement(12, &elemdata);;  //... OR user specific selection (Mg = atomic number 12)
+
+
+	//========== Compute the full spectrum which requires column densities for warm, hot, neutrals, ions
+	//              Artificially set the neutral warm column densities of the 2 elements
+	//              Get a first guess at the electron density from Jones
+	//              Iteratively refine the electron density via Jenniskens method
+	//              Get the remaining column densities for warm-ions, hot-neutrals, hot-ions
+	//              Compute spectrum for all active elements
+
+	elemdata.els[kelem_Fe].N_warm = 4.0e+12;  //... normally get col density from a fit (see later)
+
+	elemdata.els[kelem_Mg].N_warm = 3.0e+12;  //... normally get col density from a fit (see later)
+
+	elemdata.els[kelem_Na].N_warm = 2.0e+09;  //... normally get col density from a fit (see later)
+
+	ne_guess = JonesElectronDensity(&elemdata, elemdata.kelem_ref);          //... sets ne_jones
+
+	printf("ne guess jones  %le\n", ne_guess);
+
+	ne = IterativeElectronDensity(&elemdata, elemdata.kelem_ref, ne_guess);  //... sets ne_iter
+
+	printf("ne   %le\n", ne);
+
+	ColumnDensities_NumberAtoms(&elemdata, ne, spconfig.beta_flag);
+
+	SpectrumGivenAllCoefs(&elemdata, spectra.fit_spectrum);
+
+	WriteSpectrumFile("FeMgNaComboSpectra_KnownColDens.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spectra.fit_spectrum, NULL);
+
+	printf("ne  %le\n", ne);
+
+
+	//========== Get component by component subspectra for Na 
+
+	elemdata.els[kelem_Fe].user_fitflag = FITTING;    //... turn ON iron
+	elemdata.els[kelem_Mg].user_fitflag = FITLESS;    //... turn OFF magnesium
+	elemdata.els[kelem_Na].user_fitflag = FITLESS;    //... turn OFF sodium
+
+	SpectrumGivenAllCoefs_Subset(&elemdata, subspectra.fit_spectrum, 1, 1);  // Neutral warm
+	SpectrumGivenAllCoefs_Subset(&elemdata, subspectra.meas_spectrum, 1, 2);  // Neutral hot
+
+	WriteSpectrumFile("FeNeuWarmHotSpectra_KnownColDens.txt", spcalib.nwavelengths, spcalib.wavelength_nm, subspectra.fit_spectrum, subspectra.meas_spectrum);
+
+	SpectrumGivenAllCoefs_Subset(&elemdata, subspectra.fit_spectrum, 2, 1);  // Ion warm
+	SpectrumGivenAllCoefs_Subset(&elemdata, subspectra.meas_spectrum, 2, 2);  // Ion hot
+
+	WriteSpectrumFile("FeIonWarmHotSpectra_KnownColDens.txt", spcalib.nwavelengths, spcalib.wavelength_nm, subspectra.fit_spectrum, subspectra.meas_spectrum);
+
+
+	//========== Get component by component subspectra for Na 
+
+	elemdata.els[kelem_Fe].user_fitflag = FITLESS;    //... turn OFF iron
+	elemdata.els[kelem_Mg].user_fitflag = FITLESS;    //... turn OFF magnesium
+	elemdata.els[kelem_Na].user_fitflag = FITTING;    //... turn ON sodium
+
+	SpectrumGivenAllCoefs_Subset(&elemdata, subspectra.fit_spectrum, 1, 1);  // Neutral warm
+	SpectrumGivenAllCoefs_Subset(&elemdata, subspectra.meas_spectrum, 1, 2);  // Neutral hot
+
+	WriteSpectrumFile("NaNeuWarmHotSpectra_KnownColDens.txt", spcalib.nwavelengths, spcalib.wavelength_nm, subspectra.fit_spectrum, subspectra.meas_spectrum);
+
+	SpectrumGivenAllCoefs_Subset(&elemdata, subspectra.fit_spectrum, 2, 1);  // Ion warm
+	SpectrumGivenAllCoefs_Subset(&elemdata, subspectra.meas_spectrum, 2, 2);  // Ion hot
+
+	WriteSpectrumFile("NaIonWarmHotSpectra_KnownColDens.txt", spcalib.nwavelengths, spcalib.wavelength_nm, subspectra.fit_spectrum, subspectra.meas_spectrum);
+
+
+	//========== Get component by component subspectra for Mg  (Mg and Na were only two turned on at this point)
+
+	elemdata.els[kelem_Fe].user_fitflag = FITLESS;    //... turn OFF iron
+	elemdata.els[kelem_Mg].user_fitflag = FITTING;    //... turn ON magnesium
+	elemdata.els[kelem_Na].user_fitflag = FITLESS;    //... turn OFF sodium
+
+	SpectrumGivenAllCoefs_Subset(&elemdata, subspectra.fit_spectrum, 1, 1);  // Neutral warm
+	SpectrumGivenAllCoefs_Subset(&elemdata, subspectra.meas_spectrum, 1, 2);  // Neutral hot
+
+	WriteSpectrumFile("MgNeuWarmHotSpectra_KnownColDens.txt", spcalib.nwavelengths, spcalib.wavelength_nm, subspectra.fit_spectrum, subspectra.meas_spectrum);
+
+	SpectrumGivenAllCoefs_Subset(&elemdata, subspectra.fit_spectrum, 2, 1);  // Ion warm
+	SpectrumGivenAllCoefs_Subset(&elemdata, subspectra.meas_spectrum, 2, 2);  // Ion hot
+
+	WriteSpectrumFile("MgIonWarmHotSpectra_KnownColDens.txt", spcalib.nwavelengths, spcalib.wavelength_nm, subspectra.fit_spectrum, subspectra.meas_spectrum);
+
+
+	elemdata.els[kelem_Fe].user_fitflag = FITTING;    //... turn ON iron
+	elemdata.els[kelem_Mg].user_fitflag = FITTING;    //... turn ON magnesium
+	elemdata.els[kelem_Na].user_fitflag = FITTING;    //... turn ON sodium
+
+
+
+	//========== Create a measured spectrum from the Mg, Na model with 
+	//              added random noise scaled by 10% of the peak spectral magnitude
+
+	spectrum_max = 0.0;
+
+	for (int kwave = 0; kwave < spcalib.nwavelengths; kwave++) {
+		if (spectrum_max < spectra.fit_spectrum[kwave])
+			spectrum_max = spectra.fit_spectrum[kwave];
+	}
+
+	for (int kwave = 0; kwave < spcalib.nwavelengths; kwave++) {
+		double noise_component = 0.00 * spectrum_max * (2.0 * (double)rand() / (double)RAND_MAX - 1.0);
+		spectra.meas_spectrum[kwave] = spectra.fit_spectrum[kwave] + noise_component;
+	}
+
+
+	//========== Now fit the measured spectrum to the active elements of Mg and Na.
+	//           Note that the active elements were previously set to fitting and
+	//               the active element's model spectra have been calculated.
+	//           First computes the coefficients for the warm column densities.
+	//           Next computes the remaining column densities.
+
+	FitSpectralCoefficients(spcalib.nwavelengths, spcalib.wavelength_nm, spectra.meas_spectrum, &elemdata, &spconfig);
+
+	printf("FIT warm column densities:  Fe = %le   Mg = %le   Na = %le\n", elemdata.els[kelem_Fe].N_warm, elemdata.els[kelem_Mg].N_warm, elemdata.els[kelem_Na].N_warm);
+
+	ColumnDensities_NumberAtoms(&elemdata, ne, spconfig.beta_flag);
+
+	SpectrumGivenAllCoefs(&elemdata, spectra.fit_spectrum);
+
+	WriteSpectrumFile("FeMgNaFitSpectra.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spectra.meas_spectrum, spectra.fit_spectrum);
+
+
 
 
 	//========== Compute and report on relative abundances
@@ -432,31 +611,31 @@ int main(int argc, char *argv[])
 
 	//---------- Plot files for existing responsivity and extinction
 
-	WriteSpectrum("DriverOutputFiles/ResponsivityExisting.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.prev_resp_spec, spcalib.cumm_resp_spec);
+	WriteSpectrumFile("ResponsivityExisting.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.prev_resp_spec, spcalib.cumm_resp_spec);
 
-	WriteSpectrum("DriverOutputFiles/ExtinctionExisting.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.prev_extn_spec, spcalib.cumm_extn_spec);
+	WriteSpectrumFile("ExtinctionExisting.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.prev_extn_spec, spcalib.cumm_extn_spec);
 
 	FitExtinctionCoefs(spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.cumm_extn_spec, &spcalib);
 
 	ExtinctionModel(spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.modl_extn_spec, elemdata.Xfactor * altitude_deg, earth_radius_km + site_height_km, &spcalib);
 
-	WriteSpectrum("DriverOutputFiles/RespExtnModelExisting.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.modl_resp_spec, spcalib.modl_extn_spec);
+	WriteSpectrumFile("RespExtnModelExisting.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.modl_resp_spec, spcalib.modl_extn_spec);
 
 
 	//========== Read the star catalog, get the index for the star Canopus, then show function
 	//             call to interpolate its cataloged spectrum to the user defined wavelengths.
 	
-	ReadStarSpectra("DriverInputFiles/StarSpectra_V5.0_RA_0_360_DEC_56_90.txt", &starspectra);
+	ReadStarSpectra("StarSpectra_V5.0_RA_0_360_DEC_56_90.txt", &starspectra);
 
-	long hip = 11767;
+	int hip = 11767;
 
-	long star_index = GetStarIndexFromHIP(&starspectra, hip);
+	int star_index = (int)GetStarIndexFromHIP(&starspectra, (long)hip);
 
 	InterpolateStarSpectrum(&starspectra, star_index, spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.ref_star_spec);
 
 	printf("Hipparcos %ld is index %ld\n", hip, star_index);
 
-	WriteSpectrum("DriverOutputFiles/StarSpectrum.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.ref_star_spec, spcalib.ref_star_spec);
+	WriteSpectrumFile("StarSpectrum.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.ref_star_spec, spcalib.ref_star_spec);
 
 	Delay_msec(10000);
 
@@ -470,9 +649,7 @@ int main(int argc, char *argv[])
 	//========== Loop over e.g. three stars to update the responsivity and extinction for the night
 	//           Find the star's index by its name (we will just use the first three indices 0, 1, 2)
 
-	long starcounter = 0;
-
-	//printf(starspectra.star[star_index]);
+	int starcounter = 0;
 
 	while (starcounter < 3) {
 
@@ -491,7 +668,7 @@ int main(int argc, char *argv[])
 		//         NOTE: Normally you would extract the star spectrum from a star collection.
 
 		for (int kwave = 0; kwave < spcalib.nwavelengths; kwave++) {
-			double noise_component = noise_multiplier * starspectra.star[star_index].specmax * (2.0 * (double)rand() / (double)RAND_MAX - 1.0);
+			double noise_component = 0.00 * starspectra.star[star_index].specmax * (2.0 * (double)rand() / (double)RAND_MAX - 1.0);
 			spectra.meas_spectrum[kwave] = spcalib.ref_star_spec[kwave] * spcalib.ord1_resp_spec[kwave] * spcalib.modl_extn_spec[kwave] + noise_component;
 		}
 
@@ -554,21 +731,21 @@ int main(int argc, char *argv[])
 
 	double  jdt = JulianDateAndTime(2013, 4, 30, 8, 0, 0, 0);
 
-	WriteSpectralCALfile("SPCAL/", jdt, &spcalib);
+	WriteSpectralCALfile("SPCAL\\", jdt, &spcalib);
 
 
 	//---------- Plot files for updated responsivity and extinction
 
-	WriteSpectrum("DriverOutputFiles/ResponsivityUpdated.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.prev_resp_spec, spcalib.cumm_resp_spec);
+	WriteSpectrumFile("ResponsivityUpdated.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.prev_resp_spec, spcalib.cumm_resp_spec);
 
-	WriteSpectrum("DriverOutputFiles/ExtinctionUpdated.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.prev_extn_spec, spcalib.cumm_extn_spec);
+	WriteSpectrumFile("ExtinctionUpdated.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.prev_extn_spec, spcalib.cumm_extn_spec);
 
 
 	//---------- Plot files for model fit extinction
 
 	ExtinctionModel(spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.modl_extn_spec, elemdata.Xfactor * altitude_deg, earth_radius_km + site_height_km, &spcalib);
 
-	WriteSpectrum("DriverOutputFiles/RespExtnModelFit.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.modl_resp_spec, spcalib.modl_extn_spec);
+	WriteSpectrumFile("RespExtnModelFit.txt", spcalib.nwavelengths, spcalib.wavelength_nm, spcalib.modl_resp_spec, spcalib.modl_extn_spec);
 
 
 	//=========================================================================================
@@ -607,7 +784,7 @@ int main(int argc, char *argv[])
 		spcalib.aver_extn_spec[kheight_km] = PlasmaRadius((double)kheight_km);
 	}
 
-	WriteSpectrum("PlasmaRadius.txt", nheights, spcalib.wavelength_nm, spcalib.aver_resp_spec, spcalib.aver_extn_spec);
+	WriteSpectrumFile("PlasmaRadius.txt", nheights, spcalib.wavelength_nm, spcalib.aver_resp_spec, spcalib.aver_extn_spec);
 	*/
 
 	//=========================================================================================
@@ -625,8 +802,30 @@ int main(int argc, char *argv[])
 
 	printf("Done\n");
 
-	// Delay_msec(30000);
+	Delay_msec(30000);
 
 }
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+void  WriteSpectrumFile(const char *pathname, int nwavelengths, double *wavelength, double *spectrum1, double *spectrum2)
+{
+	FILE *outfile;
+
+	if ((outfile = fopen(pathname, "wt")) == NULL) {
+		printf(" Cannot open output spectra file %s for writing\n", pathname);
+		return;
+	}
+
+	fprintf(outfile, "%ld\n", nwavelengths);
+	
+	for (int kwave = 0; kwave < nwavelengths; kwave++) {
+
+		if( spectrum2 == NULL ) fprintf(outfile, "%8.3lf  %15.6le\n", wavelength[kwave], spectrum1[kwave] );
+		else                    fprintf(outfile, "%8.3lf  %15.6le  %15.6le\n", wavelength[kwave], spectrum1[kwave], spectrum2[kwave]);
+	
+	}
+
+	fclose(outfile);
+
+}

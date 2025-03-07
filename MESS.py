@@ -293,7 +293,7 @@ def loadImage(img_path, flatten=-1):
         flatten: [int] Convert color image to grayscale if -1. -1 by default.
     """
 
-    img = imageio.imread(img_path, as_gray=bool(flatten))
+    img = imageio.v2.imread(img_path, mode = 'L')
 
     return img
 
@@ -607,7 +607,7 @@ class Ui(QtWidgets.QMainWindow):
         #     self.flat_structure  = loadFlat(flat_path, flat_name)
 
         # initialize the GuralSpectral object
-        self.spectral = spectral_library.GuralSpectral(10000, 4500, None, None, None, None)
+        self.spectral = spectral_library.GuralSpectral(10000, 4500, None, None, None, None)        
 
         ###########################################################################################
         ################################# /// BUTTON TRIGGERS /// #################################
@@ -792,7 +792,7 @@ class Ui(QtWidgets.QMainWindow):
         for i in range(spectral_library.MAXGRATINGS):
             self.spectral.spcalib.gratinfo[i].camnum = self.spectral.spconfig.camnum[i]
 
-        camos_camera_index = 0;
+        camos_camera_index = 0
         self.spectral.spcalib.gratinfo[camos_camera_index].grating_area_scale = math.cos(self.spectral.spconfig.grating_offnormal_deg * 3.141592654 / 180.0)
         self.spectral.spcalib.gratinfo[camos_camera_index].camnum = 101
 
@@ -960,6 +960,11 @@ class Ui(QtWidgets.QMainWindow):
         # self.altitude_deg = 45.0        # elevation angle above horizon
         # Rsin = self.earth_radius_km * math.sin(self.altitude_deg * 3.141592654 / 180.0)
         # self.meteor_range_km = math.sqrt( Rsin * Rsin + 2.0 * self.earth_radius_km * self.meteor_height_km + self.meteor_height_km * self.meteor_height_km) - Rsin
+        self.event_date = None
+        self.event_time = None
+        self.meteor_speed = None
+        self.meteor_height = None
+
 
         #========== Set the grating camera with its scaling factor based off the config file input. 
         #           CAMO-S has one grating camera so only index [0] is set. 
@@ -1110,6 +1115,7 @@ class Ui(QtWidgets.QMainWindow):
         pen = pg.mkPen(width = 2)
         self.Plot.plot(star_x, star_y, pen = pen)
 
+        
     def stellarCalibrationClicked(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_StellarCalibrationDialog()
@@ -1118,11 +1124,12 @@ class Ui(QtWidgets.QMainWindow):
         self.window.show()
 
     def columnDensityClicked(self):
-        self.window = QtWidgets.QMainWindow()
-        self.ui = Ui_ColumnDensityDialog()
-        self.ui.setupUi(self.window)
-        self.ui.columnDensityAccept_button.clicked.connect(self.columnDensitySet)
-        self.window.show()
+        #self.window = QtWidgets.QMainWindow()
+        #self.ui = Ui_ColumnDensityDialog()
+        #self.ui.setupUi(self.window)
+        #self.ui.columnDensityAccept_button.clicked.connect(self.columnDensitySet)
+        #self.window.show()
+        print(":3")
 
     def columnDensitySet(self):
         self.spectral.elemdata.els[self.elemIndex].N_warm = float(self.ui.columnDensity_edit.text()) * (10 ** self.ui.exponent_rollbox.value())
@@ -1309,6 +1316,11 @@ class Ui(QtWidgets.QMainWindow):
         pen = pg.mkPen('r', width=2)
         self.Plot.plot(scaled_spectral_profile, self.spectral_profile, pen = pen)
         self.Plot.setXRange(np.min(scaled_spectral_profile),np.max(scaled_spectral_profile))
+
+        with open(os.path.join(self.SavePath_edit.text(),'starspectrum.txt'), 'w') as f:
+            for w in range(len(scaled_spectral_profile)):
+                f.write('%f %f\n' % (scaled_spectral[w], star_y[w]))
+       
 
     def calculateScale(self):
 
@@ -1635,6 +1647,7 @@ class Ui(QtWidgets.QMainWindow):
             4. Column densities are then calculated with ColumnDensities_NumberAtoms
             5. The model spectrum is then calculated with SpectrumGivenAllCoefs
         """
+        ## density? No idea what Volume it is 
         self.kelem_ref = spectral_library.GuralSpectral.setReferenceElem(self.spectral)
 
         fittingElems = []
@@ -1643,14 +1656,33 @@ class Ui(QtWidgets.QMainWindow):
             if (self.elementDeets[i][1] == 1):
                 fittingElems.append(self.elementDeets[i][3])
 
+        print("\n=== DEBUGGING fitMeasuredSpectrum ===")
+        num_elements = self.spectral.elemdata.nelements
+
+        for i in range(num_elements):
+            if not hasattr(self.spectral.elemdata.els[i], 'N_warm'):
+                continue  # Skip if the attribute doesn't exist
+
+            N_warm_value = self.spectral.elemdata.els[i].N_warm
+
+            # Print raw values before scaling
+            print(f"Raw N_warm for element {i} ({self.spectral.elemdata.els[i].elementcode}): {N_warm_value:e}")
+
+            # If the value is abnormally high, check if it's being scaled incorrectly
+            if N_warm_value > 1e50:
+                print(f"[ERROR] Unreasonably high N_warm detected for element {i} ({self.spectral.elemdata.els[i].elementcode}): {N_warm_value:e}")
+                print("    - Possible cause: Incorrect memory allocation, missing scaling factor, or data corruption.")
+
+        print("=== END DEBUGGING ===\n")
         if len(fittingElems) == 2:
-            try:
+            try:               
                 print('Element 1: %s   Element 2: %s' % (self.elementDeets[0][0], self.elementDeets[1][0]))
                 spectral_library.GuralSpectral.fitMeasSpec(self.spectral, fittingElems[0], fittingElems[1])
             except:
                 print('Could not call fitMeasSpec')
         else:
             try:
+                print('Element 1: %s   Element 2: %s   Element 3: %s' % (self.elementDeets[0][0], self.elementDeets[1][0], self.elementDeets[2][0]))
                 spectral_library.GuralSpectral.fitMeasSpec(self.spectral, fittingElems[0], fittingElems[1], fittingElems[2])
             except:
                 print('Could not call fitMeasSpec.')
@@ -1682,6 +1714,9 @@ class Ui(QtWidgets.QMainWindow):
             self.fullspec_array[i][0] = self.spectral.spcalib.wavelength_nm[i]
             self.fullspec_array[i][1] = self.spectral.spectra.fit_spectrum[i]
 
+        #plt.plot(self.fullspec_array[:,1])
+        #plt.show()
+
         try:
             self.fullSpecScaler = self.plotMax / np.max(self.fullspec_array[:,1])
         except:
@@ -1691,8 +1726,6 @@ class Ui(QtWidgets.QMainWindow):
         self.plotFullSpectrum()
 
         spectral_library.GuralSpectral.writeFullSpectrum2(self.spectral, './FullSpectrumTest.txt')
-
-        print("self.spectral.ne %e" % self.spectral.ne)
 
     def plotFullSpectrum(self):
 
@@ -1705,9 +1738,8 @@ class Ui(QtWidgets.QMainWindow):
 
         if globals()[plotName] is None:
             self.Plot.addLegend()
-            globals()[plotName] = self.Plot.plot(self.fullspec_array[:,0], self.fullspec_array[:,1]*self.fullSpecScaler, pen=pg.mkPen('k', width=4), name='Full')
-        else:
-            globals()[plotName].setData(self.fullspec_array[:,0], self.fullspec_array[:,1])
+        globals()[plotName] = self.Plot.plot(self.fullspec_array[:,0], self.fullspec_array[:,1]*self.fullSpecScaler, pen=pg.mkPen('k', width=4), name='Full')
+    
         
     def calculateElementSpectrum(self):
         print('MESS.py - calculateElementSpectrum')
@@ -1973,29 +2005,30 @@ class Ui(QtWidgets.QMainWindow):
 
         if dlg.exec():
             event_file_name = dlg.selectedFiles()
-            print(event_file_name)
 
             if event_file_name[0].endswith('.txt'):
                 file_path = os.path.split(event_file_name[0])[0]
                 file_name = os.path.split(event_file_name[0])[1]
 
-                if event_file_name == 'event.txt':            
+                if file_name == 'event.txt':            
                     event_name = file_path.split('/')[-1]
+                    
                 else:
                     event_name = file_name.split('.')[0]
-
-
+                    
                 with open(os.path.join(file_path,file_name)) as f:
                     lines = f.readlines()
 
-                    print(lines[2].split())
                     print(lines[3].split())
                     print(lines[4].split())
                     
                     
                     if lines[3].split()[13] == "'KTJ'" or lines[3].split()[15] == "'KTJ'" or lines[4].split()[15] == "'KTJ'":
                         height = []
-                        event_date = event_name.split('_')[0]
+                        vel = []
+                        self.event_date = event_name.split('_')[0]
+                        self.event_time = event_name.split('_')[1]
+
                         try:
                             self.spectral.vinfinity_kmsec = float(lines[4].split()[13])
                         except:
@@ -2003,16 +2036,23 @@ class Ui(QtWidgets.QMainWindow):
                         print('Vinf1: %f' % self.spectral.vinfinity_kmsec)
                         for line in lines:
                             if line.split()[0] == 'fit':
-                                theta = float(line.split()[11])
-                                mag = float(line.split()[23]) # Magnitude
+                                #theta = float(line.split()[11])
+                                #mag = float(line.split()[23]) # Magnitude
                                 try:
-                                    height = float(line.split()[31])
+                                    height.append(float(line.split()[31]))
                                 except:
-                                    height = 85.0
-                                # print(theta, mag, height)
+                                    height.append(85)
+                                try:
+                                    vel.append(float(line.split()[29]))
+                                except:
+                                    vel.append(0)
+                            
+                        self.meteor_height = np.average(height)
+                        self.meteor_speed = np.average(vel[1:int(len(vel)/2)])
+                        
 
                         ### Now, use the event_name to open the vid file. Will need to decompress bz2, first
-                        with bz2.open('/srv/meteor/klingon/events/' + event_date + '/ev_' + event_name + '_02I.vid.bz2') as f:
+                        with bz2.open('/srv/meteor/klingon/events/' + self.event_date + '/ev_' + event_name + '_02I.vid.bz2') as f:
                             spectral_vid = f.read()
 
                         spectral_file_name = '/tmp/ev_%s_02I.vid' % event_name
@@ -2020,7 +2060,7 @@ class Ui(QtWidgets.QMainWindow):
                             f.write(spectral_vid)
                             print('Spectral file written to /tmp ...')
 
-                        with bz2.open('/srv/meteor/klingon/events/' + event_date + '/ev_' + event_name + '_02J.vid.bz2') as f:
+                        with bz2.open('/srv/meteor/klingon/events/' + self.event_date + '/ev_' + event_name + '_02J.vid.bz2') as f:
                             direct_vid = f.read()
                             # print(type(test_vid))
 
@@ -2029,11 +2069,10 @@ class Ui(QtWidgets.QMainWindow):
                             f.write(direct_vid)
                             print('Direct file written to /tmp ...')
 
-
                         event_split = event_name.split('_')
                         
-                        self.uploadDirectVid(direct_file_name)
-                        # self.uploadSpectralVid(spectral_file_name)
+                        #self.uploadDirectVid(direct_file_name)
+                        self.uploadSpectralVid(spectral_file_name)
 
                         os.remove(direct_file_name)
                         print('Direct file removed from /tmp ...')
@@ -2090,7 +2129,6 @@ class Ui(QtWidgets.QMainWindow):
                     self.spectral_vidlength = len(self.spectral_vid.frames)
 
                     self.updateSpectralFrames()
-
                     ### Enable some buttons ###
                     self.AutoPick_button.setEnabled(True)
                     self.SelectSpectralRegion_button.setEnabled(True)
@@ -2119,18 +2157,18 @@ class Ui(QtWidgets.QMainWindow):
                 self.spectral_vidlength = len(self.spectral_vid.frames)
 
                 self.updateSpectralFrames()
-
                 ### Enable some buttons ###
-                self.FlattenSpectral_button.setEnabled(True)
+                #self.FlattenSpectral_button.setEnabled(True)
                 self.AutoPick_button.setEnabled(True)
                 self.SelectSpectralRegion_button.setEnabled(True)
                 self.ClearSpectralRegion_button.setEnabled(True)
-                self.CheckSpectralRegion_button.setEnabled(True)
-                self.CheckSpectralBackground_button.setEnabled(True)
-                self.UploadSpectralBias_button.setEnabled(True)
+                #self.CheckSpectralRegion_button.setEnabled(True)
+                #self.CheckSpectralBackground_button.setEnabled(True)
+                #self.UploadSpectralBias_button.setEnabled(True)
                 self.UploadSpectralFlat_button.setEnabled(True)
                 self.AutoSpectralFlat_button.setEnabled(True)
                 self.AutoPick_button.setEnabled(True)
+
 
 
     def rotateVid(self):
@@ -2258,6 +2296,27 @@ class Ui(QtWidgets.QMainWindow):
                 # Init a new Flat structure
                 self.flat_structure = FlatStruct(flat_img, dark=dark)
                 self.spectral_flat_exists = True
+
+                self.spectral_frame_img = applyFlat(self.spectral_frame_img, self.flat_structure)
+
+                 # Set image levels
+                #self.minv = np.percentile(self.spectral_frame_img, 0.2)
+                #self.maxv = np.percentile(self.spectral_frame_img, 99.95)
+                #gamma = 1
+
+                # Create an image with properly adjust levels
+                #spectral_frame_img = adjustLevels(self.spectral_frame_img, self.minv, gamma, self.maxv, scaleto8bits=True)
+
+                # Set spectral image
+                self.spectral_image.setImage(self.spectral_frame_img.T)
+                self.spectral_flat_exists = True
+
+                plt.figure()
+                plt.imshow(self.spectral_frame_img)
+                plt.show()
+
+                self.spectral_image.save("afterFlat_flat1nob.png")
+
             else:
                 pass
 
@@ -2266,16 +2325,18 @@ class Ui(QtWidgets.QMainWindow):
         flats = [self.spectral_vid.frames[i].img_data for i in range(len(self.spectral_vid.frames))]
         flat_stack = np.stack(flats)
 
-        # auto_flat = np.median(flat_stack, axis=0)
-        auto_flat = np.ones(np.shape(self.spectral_vid.frames[0].img_data))
+#a test of intensity cut vertically and horizontally 
+
+        auto_flat = np.median(flat_stack, axis=0)
+        #auto_flat = np.ones(np.shape(self.spectral_vid.frames[0].img_data))
 
         self.flat_structure = FlatStruct(auto_flat, dark=None)
 
         self.spectral_frame_img = applyFlat(self.spectral_frame_img, self.flat_structure)
 
-        plt.figure()
-        plt.imshow(self.spectral_frame_img)
-        plt.show()
+        #plt.figure()
+        #plt.imshow(self.spectral_frame_img)
+        #plt.show()
 
         # Set image levels
         self.minv = np.percentile(self.spectral_frame_img, 0.2)
@@ -2520,107 +2581,145 @@ class Ui(QtWidgets.QMainWindow):
 
     def autoPickROI(self):
 
-       # image = imageio.imread('TestSpectrum1.png', as_gray=True)
-        image = self.spectral_frame_img
+       
+        # Ensure input is a NumPy array and convert to float for processing
 
-        # fig = plt.figure(figsize=(10,6))
-        # ax = fig.add_subplot(111)
+        """
+        Automatically detects a faint horizontal spectral line.
+        Ensures it works even when the line is at the bottom of the image.
+        """
 
-        y,x = np.indices(image.shape)
+        image = self.spectral_frame_img.astype(np.float32)
+        y, x = np.indices(image.shape)
 
-        mae = []
-        scores = []
-        roll_ransac = []
-        m_ransac = []
-        b_ransac = []
+        # Compute sum intensity per row
+        row_sums = np.sum(image, axis=1)
 
-        # print(np.amax(image))
+        peak_y = np.argmax(row_sums)
+        peak_y = int(np.clip(peak_y, 5, image.shape[0] - 5))
 
-        for i in range(1,np.amax(image),int(np.amax(image)*0.02)):
-            # print(i)
-            # axins = ax.inset_axes([-0.1,0.8,0.3,0.3])
-            # ax.set_xlim(0,image.shape[1])
-            # ax.set_ylim(0,image.shape[0])
-            # plt.gca().invert_yaxis()
+        mask = (y == peak_y)
+        x_valid, y_valid = x[mask], y[mask]
 
-            valid_z = (y.ravel()>0) & (image.ravel()>(50+i))
-            x_valid = x.ravel()[valid_z]
-            y_valid = y.ravel()[valid_z]
-            z_valid = image.ravel()[valid_z]
+        if len(x_valid) > 200:  
+            try:
+                ransac = RANSACRegressor(residual_threshold=3).fit(
+                    x_valid.reshape(-1, 1), y_valid.reshape(-1, 1)
+                )
+                best_y = np.mean(ransac.predict(x_valid.reshape(-1, 1)))
+            except:
+                print("[WARNING] RANSAC failed, falling back to peak_y detection.")
+                best_y = peak_y  # Use direct max-intensity row if RANSAC fails
+        else:
+            best_y = peak_y  # Directly use peak_y if not enough points
 
-            if len(z_valid) > 200:
-                # sc1 = ax.scatter(x_valid,y_valid, color='yellowgreen', marker='.')
-                # sc2 = ax.scatter(x_valid,y_valid, color='gold', marker='.')
+        # Define spectral region width
+        line_width = 10  # Default spectral width
+        # Auto-set the ROI using detected horizontal line
+        self.spectralAutoROI(image.shape[1], line_width, 0, best_y)
 
-                ransac = RANSACRegressor(residual_threshold=5).fit(x_valid.reshape(-1,1), y_valid.reshape(-1,1), sample_weight=z_valid)
-                # ransac.fit(x_valid.reshape(-1,1), y_valid.reshape(-1,1), sample_weight=z_valid**2)
-                inlier_mask = ransac.inlier_mask_
-                outlier_mask = np.logical_not(inlier_mask)
 
-                line_X = np.arange(x_valid.min(), x_valid.max())[:,np.newaxis]
-                line_y_ransac = ransac.predict(line_X)
-
-                prediction = ransac.predict(x_valid.reshape(-1,1))
-
-                mae.append(mean_absolute_error(y_valid,prediction))
-                scores.append(ransac.score(x_valid.reshape(-1,1), y_valid.reshape(-1,1)))
-
-                # sc1.set_offsets(np.c_[x_valid[inlier_mask], y_valid[inlier_mask]])
-                # sc2.set_offsets(np.c_[x_valid[outlier_mask], y_valid[outlier_mask]])
-
-                z = np.polyfit(x_valid,y_valid, w=z_valid, deg=1)
-                p = np.poly1d(z)
-
-                x_plot = np.linspace(x_valid.min(), x_valid.max(), 100)
-                y_plot = p(x_plot)
-
-                # ax.plot(x_plot, y_plot, '-r', lw=2, label='LR')
-                # ax.plot(line_X, line_y_ransac, label='RANSAC')
-
-                # axins.plot(mae, label='MAE')
-
-                # ax.legend(loc='upper right')
-                # axins.legend(loc='upper right')
-
-                this_roll = -1*math.degrees(math.atan2((line_y_ransac.max()-line_y_ransac.min()),(line_X.max()-line_X.min())))                
-                roll_ransac.append(this_roll)
-
-                this_b = line_y_ransac.max()-((line_y_ransac.max()-line_y_ransac.min())/(line_X.max()-line_X.min()))*line_X.max()
-                b_ransac.append(this_b)
-                
-                # ax.text(int(image.shape[1]/4),-10,f'This roll = {this_roll:.3} degrees')
-
-                if len(mae) > 1:
-                    best_roll = roll_ransac[np.argmin(mae)]
-                    # ax.text(int(image.shape[1]/2),-10,f'Best roll = {best_roll:.3} degrees')
-
-                    self.Roll_rollbox.setValue(best_roll)
-
-                    # x_vals = np.linspace(0,image.shape[1],2)
-                    # y_vals = b_ransac[np.argmin(mae)]+20+ np.tan(math.radians(best_roll))*x_vals
-                    # ax.plot(x_vals, y_vals, '--')
-
-                    if self.spectral_roi is not None:
-                        self.spectral_roi.deleteLater()
-                        self.spectral_roi = None
-
-                    self.spectralAutoROI(image.shape[1],10,best_roll,b_ransac[np.argmin(mae)])
-
-            else:
-                break
-            # # print(line_y_ransac.max()-((line_y_ransac.max()-line_y_ransac.min())/(line_X.max()-line_X.min()))*line_X.max())
-            # plt.axis('equal')
-
-            # fig.canvas.draw_idle()
-            # plt.pause(0.01)
-            # ax.cla()
-
-            # plt.show()
-
-        # print(self.dir_x, self.dir_y)
-        # plt.waitforbuttonpress()
-
-        # self.spectralAutoROI(image.shape[1],20,best_roll,b_ransac[np.argmin(mae)])
+####old massive loop method 
+### image = imageio.imread('TestSpectrum1.png', as_gray=True)
+##        image = self.spectral_frame_img
+##
+##        # fig = plt.figure(figsize=(10,6))
+##        # ax = fig.add_subplot(111)
+##
+##        y,x = np.indices(image.shape)
+##
+##        mae = []
+##        scores = []
+##        roll_ransac = []
+##        b_ransac = []
+##        # print(np.amax(image))
+##
+##        for i in range(1,np.amax(image),int(np.amax(image)*0.02)):
+##            # print(i)
+##            # axins = ax.inset_axes([-0.1,0.8,0.3,0.3])
+##            # ax.set_xlim(0,image.shape[1])
+##            # ax.set_ylim(0,image.shape[0])
+##            # plt.gca().invert_yaxis()
+##
+##            valid_z = (y.ravel()>0) & (image.ravel()>(50+i))
+##            x_valid = x.ravel()[valid_z]
+##            y_valid = y.ravel()[valid_z]
+##            z_valid = image.ravel()[valid_z]
+##
+##            if len(z_valid) > 200:
+##                # sc1 = ax.scatter(x_valid,y_valid, color='yellowgreen', marker='.')
+##                # sc2 = ax.scatter(x_valid,y_valid, color='gold', marker='.')
+##
+##                ransac = RANSACRegressor(residual_threshold=5).fit(x_valid.reshape(-1,1), y_valid.reshape(-1,1), sample_weight=z_valid)
+##                # ransac.fit(x_valid.reshape(-1,1), y_valid.reshape(-1,1), sample_weight=z_valid**2)
+##                inlier_mask = ransac.inlier_mask_
+##                outlier_mask = np.logical_not(inlier_mask)
+##
+##                line_X = np.arange(x_valid.min(), x_valid.max())[:,np.newaxis]
+##                line_y_ransac = ransac.predict(line_X)
+##
+##                prediction = ransac.predict(x_valid.reshape(-1,1))
+##
+##                mae.append(mean_absolute_error(y_valid,prediction))
+##                scores.append(ransac.score(x_valid.reshape(-1,1), y_valid.reshape(-1,1)))
+##
+##                # sc1.set_offsets(np.c_[x_valid[inlier_mask], y_valid[inlier_mask]])
+##                # sc2.set_offsets(np.c_[x_valid[outlier_mask], y_valid[outlier_mask]])
+##
+##                z = np.polyfit(x_valid,y_valid, w=z_valid, deg=1)
+##                p = np.poly1d(z)
+##
+##                x_plot = np.linspace(x_valid.min(), x_valid.max(), 100)
+##                y_plot = p(x_plot)
+##
+##                # ax.plot(x_plot, y_plot, '-r', lw=2, label='LR')
+##                # ax.plot(line_X, line_y_ransac, label='RANSAC')
+##
+##                # axins.plot(mae, label='MAE')
+##
+##                # ax.legend(loc='upper right')
+##                # axins.legend(loc='upper right')
+##
+##                this_roll = -1*math.degrees(math.atan2((line_y_ransac.max()-line_y_ransac.min()),(line_X.max()-line_X.min())))                
+##                roll_ransac.append(this_roll)
+##
+##                this_b = line_y_ransac.max()-((line_y_ransac.max()-line_y_ransac.min())/(line_X.max()-line_X.min()))*line_X.max()
+##                b_ransac.append(this_b)
+##                
+##                # ax.text(int(image.shape[1]/4),-10,f'This roll = {this_roll:.3} degrees')
+##
+##                if len(mae) > 1:
+##                    best_roll = roll_ransac[np.argmin(mae)]
+##                    # ax.text(int(image.shape[1]/2),-10,f'Best roll = {best_roll:.3} degrees')
+##
+##                    self.Roll_rollbox.setValue(best_roll)
+##    
+##                    # x_vals = np.linspace(0,image.shape[1],2)
+##                    # y_vals = b_ransac[np.argmin(mae)]+20+ np.tan(math.radians(best_roll))*x_vals
+##                    # ax.plot(x_vals, y_vals, '--')
+##
+##                    if self.spectral_roi is not None:
+##                        self.spectral_roi.deleteLater()
+##                        self.spectral_roi = None
+##                        
+##                        
+##                    self.spectralAutoROI(image.shape[1],10,best_roll,b_ransac[np.argmin(mae)])
+##
+##            else:
+##                break
+##            # # print(line_y_ransac.max()-((line_y_ransac.max()-line_y_ransac.min())/(line_X.max()-line_X.min()))*line_X.max())
+##            # plt.axis('equal')
+##
+##            # fig.canvas.draw_idle()
+##            # plt.pause(0.01)
+##            # ax.cla()
+##
+##            # plt.show()
+##
+##        # print(self.dir_x, self.dir_y)
+##        # plt.waitforbuttonpress()
+##
+##        # self.spectralAutoROI(image.shape[1],20,best_roll,b_ransac[np.argmin(mae)])
 
     # Check image background
     def checkSpectralBackground(self):
@@ -2697,6 +2796,7 @@ class Ui(QtWidgets.QMainWindow):
 
         # Get array region from ROI
         self.spectral_array = self.spectral_roi.getArrayRegion(spectral_frame_img.T, self.spectral_image)
+        
 
     # Makes ROI appear in a new window
     def showSpectralRegion(self):
@@ -2812,6 +2912,8 @@ class Ui(QtWidgets.QMainWindow):
         # Get equation of line using the two points
         m = (scale_handle_position.y() - translate_handle_position.y() ) / (scale_handle_position.x() - translate_handle_position.x() )
 
+        if m == 0:
+            m = 1e-6
         b1 = scale_handle_position.y() - m*scale_handle_position.x()
 
 
@@ -2889,12 +2991,10 @@ class Ui(QtWidgets.QMainWindow):
             nmt = (((i - self.x) / s) + nm0)
             scaled_spectral_profile = np.append(scaled_spectral_profile, nmt)
 
-        
-
+    
         # Take the part of the array with the desired values
         length = len(scaled_spectral_profile)
         middle_index = length//2
-        
         # Reset array
         scaled_spectral_profile = scaled_spectral_profile[middle_index:]
 
@@ -2907,31 +3007,26 @@ class Ui(QtWidgets.QMainWindow):
                 scaled_spectral_profile_short.append(scaled_spectral_profile[i])
                 spectral_profile_short.append(spectral_profile[i])
 
-        # Interpolate responsivity curve to match scaled_spectral_profile
-        # xM = self.responsivityDefault[:,0]
-        # yM = self.responsivityDefault[:,1]/np.max(self.responsivityDefault[:,1])
-        # fM = interpolate.interp1d(xM,yM)
-        # yMnew = 1/fM(scaled_spectral_profile_short)
-        # yMsg = savgol_filter(yMnew,101,2)
-        # print(len(yMsg), len(yMnew))
-
+        ##Interpolate responsivity curve to match scaled_spectral_profile
+        #xM = self.responsivityDefault[:,0]SS
+        #yM = self.responsivityDefault[:,1] /np.max(self.responsivityDefault[:,1])
+        #fM = interpolate.interp1d(xM,yM)
+        #yMnew = 1/fM(scaled_spectral_profile_short)
+        #yMsg = savgol_filter(yMnew,101,2)
+        
         xM = self.spectral.spcalib.wavelength_nm[0:1200]
-        # yMnorm = self.spectral.spcalib.cumm_resp_spec[0:1200] / np.max(self.spectral.spcalib.cumm_resp_spec[0:1200])
+        yMnorm = self.spectral.spcalib.cumm_resp_spec[0:1200] / np.max(self.spectral.spcalib.cumm_resp_spec[0:1200])
         yMsg = savgol_filter(self.spectral.spcalib.cumm_resp_spec[0:1200], 101, 2)
-        yM = yMsg / np.min(yMsg)
-        fM = interpolate.interp1d(xM,yM)
-        yMnew = 1/fM(scaled_spectral_profile_short)
+        #yM = yMsg/ np.min(yMsg)
+        #fM = interpolate.interp1d(xM,yM)
+        fM = interpolate.interp1d(xM,yMnorm)
+        #yMnew = 1/fM(scaled_spectral_profile_short) 
+        yMnew = 1 / np.clip(fM(scaled_spectral_profile_short), 1e-10, None)
 
         self.plotMax = np.max(spectral_profile_short)
-
         self.spectrumX = scaled_spectral_profile_short
-        self.spectrumY = spectral_profile_short #/ np.max(spectral_profile_short)
-        self.spectrumY_resp = np.divide(spectral_profile_short,yMnew)
-
-        plt.figure()
-        # plt.plot(self.spectrumY_resp)
-        plt.plot(xM,yM)
-        plt.show()
+        self.spectrumY = np.array(spectral_profile_short) #/np.max(spectral_profile_short) 
+        self.spectrumY_resp = np.divide(spectral_profile_short,yMnew/np.max(yMnew))
 
         # Set axis titles 
         self.Plot.setLabel('left', 'Intensity')
@@ -2947,6 +3042,13 @@ class Ui(QtWidgets.QMainWindow):
 
         self.Plot.plot(scaled_spectral_profile_short, self.spectrumY, pen = pg.mkPen(color=(50,50,50), width = 2))
         self.Plot.plot(scaled_spectral_profile_short, self.spectrumY_resp, pen=pg.mkPen(color=(0,0,255), width=2)) # Uncomment for responsivity
+
+        ##put them into meas_spec 
+        import ctypes
+        spec_ptr = self.spectrumY_resp.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+        for i in range (len(self.spectrumY_resp)):
+            self.spectral.spectra.meas_spectrum[i] = spec_ptr[i]
+
 
         # line = pg.InfiniteLine(pos=589, angle=90, pen=pen)
 
@@ -2985,7 +3087,42 @@ class Ui(QtWidgets.QMainWindow):
 
     def saveData(self):
         print('Saving data...')
-        spectral_library.GuralSpectral.writeFullSpectrum2(self, os.path.join(self.SavePath_edit.text(),'test.txt'))
+        #
+        #measure = []
+        #fitted = []
+        #for w in range(len(self.spectrumY_resp)):
+        #    measure.append(self.spectral.spectra.meas_spectrum[w])
+        #    print(self.spectrumY_resp[w], self.spectral.spectra.meas_spectrum[w] ,self.spectral.spectra.fit_spectrum[w])
+        #    fitted.append(self.spectral.spectra.fit_spectrum[w])
+
+        #plt.plot(measure,color = 'orange')
+        #plt.plot(fitted,color = 'green')
+        #plt.plot(self.spectrumY_resp,color = 'blue')
+        #plt.show()
+        #spectral_library.GuralSpectral.writeFullSpectrum2(self, os.path.join(self.SavePath_edit.text(),'test.txt'))
+        with open(os.path.join(self.SavePath_edit.text(),self.event_date+"_"+self.event_time+'.txt'), 'w') as f:
+        #wavelength index, the wavelength, and the intensity
+        #Basically go see what the two variables are
+			### Write file header
+			#date, time, element
+			# file_id / name
+			# 
+		    #for w in range(self.spcalib.nwavelengths):
+			#	f.write('%f %f %f\n' % (w, self.spcalib.wavelength_nm[w], self.spectra.fit_spectrum[w]))
+            #if self.event_date != None and self.event_time != None: 
+            #    f.write("Event Date:{date} Event Time: {time}\n".format(date = self.event_date, time = self.event_time[:-1]))
+            #    f.write("Average Height(unit??):%f Average Velocity: %f\n" % (self.meteor_height, self.meteor_speed))
+            #else: 
+            #    f.write("------------------------------------------\n")
+            #    f.write("------------------------------------------\n")
+            #f.write("------------------------------------------\n")
+            #f.write("------------------------------------------\n")
+            #f.write("Wavelength Intensity Corrected Intensity\n")
+            for w in range(len(self.spectrumX)):
+                f.write('%f %f\n' % (self.spectrumX[w], self.spectrumY[w]))
+        
+        print("Data Saved!")
+
 
     def savePlot(self):
 
@@ -3062,7 +3199,7 @@ class Ui(QtWidgets.QMainWindow):
         ax.set_xlim([min(self.spectrumX),max(self.spectrumX)])
 
         plt.show()
-
+        
         with quantity_support():
             plt.figure()
             plt.semilogx(wav,flux)

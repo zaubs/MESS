@@ -151,8 +151,8 @@ char   text[128];
 
       fscanf( spconfigfile, "%[^=]= %lf", text, &spconfig->version               );
 
-	  if( spconfig->version != 1.00 )  {
-           printf(" Spectral config file %s must be version 1.00 \n", pathname);
+	  if( spconfig->version != 1.10 )  {
+           printf(" Spectral config file %s must be version 1.10 \n", pathname);
 		   fclose( spconfigfile );
 		   Delay_msec(15000);
 		   exit(1);
@@ -189,6 +189,7 @@ char   text[128];
       fscanf( spconfigfile, "%[^=]= %lf", text, &spconfig->default_yaw_deg       );
       fscanf( spconfigfile, "%[^=]= %lf", text, &spconfig->default_ne            );
       fscanf( spconfigfile, "%[^=]= %lf", text, &spconfig->default_hot2warm      );
+      fscanf( spconfigfile, "%[^=]= %ld", text, &spconfig->beta_flag             );
 
       fscanf( spconfigfile, "%[^=]= %ld", text, &spconfig->ncams_grating         );
       fscanf( spconfigfile, "\n"                                                 );
@@ -324,8 +325,8 @@ double  mslope, *wave, *wcumR, *prevR, *cummR, *modlR, *prevE, *cummE;
       //         has an assignment of camera numbers. The only assigned camera specific info will
       //         be defined for the number of cameras "ncams_spcalib" and their camera numbers
       //         specified in spcalib->gratinfo[*].camnum.
-      //==========================================================================================
-                           
+      //==========================================================================================                           
+
       //========== open calibration file
 
 	 
@@ -435,8 +436,6 @@ double  mslope, *wave, *wcumR, *prevR, *cummR, *modlR, *prevE, *cummE;
 			                                                    &prevE[kwave_file], 
 			                                                    &cummE[kwave_file]  );
 
-		   printf("%lf %lf %lf\n", wcumR[kwave_file], cummR[kwave_file], modlR[kwave_file]);
-
 		   prevR[kwave_file] *= spcalib->resp_normalization;
 		   cummR[kwave_file] *= spcalib->resp_normalization;
 		   modlR[kwave_file] *= spcalib->resp_normalization;
@@ -504,6 +503,7 @@ double  mslope, *wave, *wcumR, *prevR, *cummR, *modlR, *prevE, *cummE;
 			       / (  wave[kwave_file+1]  - wave[kwave_file] );
 
 			spcalib->modl_resp_spec[kwave] = modlR[kwave_file]  +  mslope * (spcalib->wavelength_nm[kwave] - wave[kwave_file] );
+
 
 
 		    mslope = ( prevE[kwave_file+1] - prevE[kwave_file] )
@@ -1307,14 +1307,14 @@ void  ReadElementsData( int     nwavelengths,   // number of user defined wavele
 
 		els->user_fitflag = els->init_fitflag;
 
-		nstring = strstr(els->element_filename, ".txt") - els->element_filename;
+		nstring = (int)( strstr(els->element_filename, ".txt") - els->element_filename );
 
 		strncpy(text, els->element_filename, nstring);
 
 		text[nstring + 0] = '\0';
 		text[nstring + 1] = '\0';
 
-		nstring = strstr(els->element_filename, "-") - els->element_filename;
+		nstring = (int)( strstr(els->element_filename, "-") - els->element_filename );
 
 		if (nstring == 1)  strcpy(els->element_string, " ");  // add a leading blank if element acronym is one letter long
 		else                strcpy(els->element_string, "");
@@ -1444,7 +1444,7 @@ void  ReadElementsData( int     nwavelengths,   // number of user defined wavele
 					els->gf013divw3[kline] = gf * 0.013248 / pow(wvac, 3.0);
 					els->Eupdiv8[kline] = -Eupper / 8.617343e-5;
 
-				};
+				}
 
 
 			}
@@ -1461,7 +1461,7 @@ void  ReadElementsData( int     nwavelengths,   // number of user defined wavele
 					els->gf013divw3[kline] = specvalue;
 					els->Eupdiv8[kline] = 0.0;
 
-				};
+				}
 
 
 			}
@@ -1480,7 +1480,7 @@ void  ReadElementsData( int     nwavelengths,   // number of user defined wavele
 
 				}
 
-			};
+			}
 
 
 		} //... end of if any lines in file
@@ -1551,13 +1551,39 @@ void  ReadElementsData( int     nwavelengths,   // number of user defined wavele
 		}
 
 
-		//........ If this is a molecule, there is no corresponding ion at this time
+		//........ If this is an neutral molecule, find its corresponding ion molecule
 
 		if (els->ioncode == 51) {
+			// printf("This is an neutral molecule. Finding corresponding ion...\n");
+			for (jelem = 0; jelem < elemdata->nelements; jelem++) {
 
-			els->ionindex = -1;
+				if (fabs(elemdata->els[jelem].elementcode - (els->elementcode + 0.01)) < 1.0e-3) {
+
+					els->ionindex = jelem;
+					// printf("%d\n", els->ionindex);
+					break;
+				}
+			}
 
 		}
+
+
+		//........ If this is an ion molecule, find its corresponding neutral molecule
+
+		if (els->ioncode == 52) {
+			// printf("This is an ion molecule. Finding corresponding neutral molecule...\n");
+			for (jelem = 0; jelem < elemdata->nelements; jelem++) {
+
+				if (fabs(elemdata->els[jelem].elementcode - (els->elementcode - 0.01)) < 1.0e-3) {
+
+					els->neuindex = jelem;
+					// printf("%d\n", els->neuindex);
+					break;
+				}
+			}
+
+		}
+
 
 
 	} //... end of loop over all elements and ions
@@ -1716,9 +1742,9 @@ void  ReadStarSpectra(char *pathname, struct StarSpectraInfo *starspectra)
 //  If the spectral type is not found, returns -1.
 //-----------------------------------------------------------------------------------------
 
-int  GetStarIndexFromSPType(struct StarSpectraInfo *starspectra, char *specType)
+int   GetStarIndexFromSPType(struct StarSpectraInfo *starspectra, char *specType)
 {
-	int   ks;
+	long   ks;
 
 	for (ks = 0; ks < starspectra->nstars; ks++) {
 
@@ -1740,7 +1766,7 @@ int  GetStarIndexFromSPType(struct StarSpectraInfo *starspectra, char *specType)
 //  If the userID is not found, returns -1.
 //-----------------------------------------------------------------------------------------
 
-int  GetStarIndexFromUserID(struct StarSpectraInfo *starspectra, int userID )
+int   GetStarIndexFromUserID(struct StarSpectraInfo *starspectra, int userID )
 {
 	int   ks;
 
@@ -1761,9 +1787,9 @@ int  GetStarIndexFromUserID(struct StarSpectraInfo *starspectra, int userID )
 //  If the Hipparcos number is not found, returns -1.
 //-----------------------------------------------------------------------------------------
 
-long  GetStarIndexFromHIP(struct StarSpectraInfo *starspectra, long hip)
+int   GetStarIndexFromHIP(struct StarSpectraInfo *starspectra, int hip)
 {
-	long   ks;
+	int   ks;
 
 	for (ks = 0; ks < starspectra->nstars; ks++) {
 
@@ -1782,7 +1808,7 @@ long  GetStarIndexFromHIP(struct StarSpectraInfo *starspectra, long hip)
 //  monotonically increasing order.
 //-----------------------------------------------------------------------------------------
 
-void  InterpolateStarSpectrum(struct StarSpectraInfo *starspectra, long kstar, int nwave_desired, double *wavelengths_desired, double *spectrum_desired)
+void  InterpolateStarSpectrum(struct StarSpectraInfo *starspectra, int kstar, int nwave_desired, double *wavelengths_desired, double *spectrum_desired)
 {
 	int     kwave, kcurr;
 	double  mslope;
@@ -2318,6 +2344,7 @@ int      AllocMemorySpectrum( int                       nwavelengths,
 	                          struct meas_fit_spectra  *meteor_spec )
 {
 
+	
 	meteor_spec->meas_spectrum  = (double*)malloc(nwavelengths * sizeof(double));
 	meteor_spec->fit_spectrum   = (double*)malloc(nwavelengths * sizeof(double));
 	meteor_spec->columndensity  = (double*)malloc(   nelements * sizeof(double));
@@ -2486,6 +2513,38 @@ int   GetPrimaryNeutralElement(struct elements_data *elemdata)
 
 }
 
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//   User selects the primary neutral element index to the elemdata structure given the
+//   atomic number and that is also actively being fit. If either condition fails, returns
+//   -1.
+//-----------------------------------------------------------------------------------------
+
+int   SetPrimaryNeutralElement(int atomicNumber, struct elements_data *elemdata )
+{
+	int    kelem;
+
+
+	//========== First test for neutral Mg as an active element
+
+	for (kelem = 0; kelem < elemdata->nelements; kelem++) {
+
+		if (elemdata->els[kelem].elementcode == (double)atomicNumber  &&  elemdata->els[kelem].user_fitflag != FITLESS)
+		{
+			printf("Primary element is %s \n", elemdata->els[kelem].element_string);
+			return(kelem);
+		}
+
+	}
+
+
+	//========== Error condition reporting
+
+	printf("\a No active element for atomic number %d, or element not available\n", atomicNumber);
+
+	return(-1);
+
+}
+
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 //   Compute the Jones electron density given the primary neutral element
@@ -2609,6 +2668,12 @@ double    IterativeElectronDensity(struct elements_data *elemdata, int kneutral_
 				* elemdata->els[kion].partfuncTlo / elemdata->els[kelem].partfuncTlo / ne;
 
 
+			//....... Update the element's beta for this latest iteration
+
+			elemdata->els[kelem].beta_ne_iter = nratio / (1.0 + nratio);
+			elemdata->els[kion ].beta_ne_iter = nratio / (1.0 + nratio);
+
+
 			//....... EITHER the element was fit and has a known neutral column density, in which
 			//                case divide by the column depth for number density and scale by   
 			//                the Saha ratio to get the number of ions for this element,
@@ -2669,7 +2734,7 @@ double    IterativeElectronDensity(struct elements_data *elemdata, int kneutral_
 //   Compute the column densities and number of atoms from a given fit.
 //-----------------------------------------------------------------------------------------
 
-void    ColumnDensities_NumberAtoms(struct elements_data *elemdata, double ne)
+void    ColumnDensities_NumberAtoms(struct elements_data *elemdata, double ne, long beta_flag)
 {
 	int     kneutral, kelem, kion, kneu;
 	double  N_hot_total, number_density;
@@ -2722,10 +2787,12 @@ void    ColumnDensities_NumberAtoms(struct elements_data *elemdata, double ne)
 							* elemdata->els[kion].partfuncTlo / elemdata->els[kneu].partfuncTlo
 							/ ne;
 
-						elemdata->els[kneu].ions2neut_hot = elemdata->els[kneu].beta_jones / (1.0 - elemdata->els[kneu].beta_jones);
+
+						if(beta_flag == 1) elemdata->els[kneu].ions2neut_hot = elemdata->els[kneu].beta_jones   / (1.0 - elemdata->els[kneu].beta_jones  );
+						else               elemdata->els[kneu].ions2neut_hot = elemdata->els[kneu].beta_ne_iter / (1.0 - elemdata->els[kneu].beta_ne_iter);
 
 						//printf("%le %le %le %le %le %le\n", elemdata->els[kneu].ions2neut_warm, elemdata->Tlo, elemdata->els[kneu].ionenergy, elemdata->els[kion].partfuncTlo, elemdata->els[kneu].partfuncTlo, ne);
-						//printf("%le %le %le\n", elemdata->els[kneu].ions2neut_hot, elemdata->els[kneu].beta_jones, elemdata->els[kneu].beta_jones);
+						//printf("%le %le %le\n", elemdata->els[kneu].ions2neut_hot, elemdata->els[kneu].beta_jones, elemdata->els[kneu].beta_ne_iter);
 
 					}
 
@@ -2826,7 +2893,7 @@ void  ResetOneElementAbundance( int kelem, double Vinfinity, struct elements_dat
 	//========== Initialize the Jones' beta value
 
 	cvterm = elemdata->els[kelem].c * pow(Vinfinity - elemdata->els[kelem].Vo, 2) * pow(Vinfinity, 0.8);
-	// printf("CVTERM = %e\n", cvterm);
+	printf("CVTERM = %e\n", cvterm);
 	elemdata->els[kelem].beta_jones = cvterm / (1.0 + cvterm);
 	//printf("Reset single element abundance...");
 
@@ -2897,7 +2964,7 @@ struct  element_lines_spectrum  *els_neu, *els_ref;
 
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-//   Compute the model spectrum due to Fe only.
+//   Compute the model spectrum due to Fe only for neutral low temperature only.
 //   Needs to be called if sigma0 or T (Tlo) changes from last Fe only spectrum calculation.
 //-----------------------------------------------------------------------------------------
 
@@ -3061,7 +3128,7 @@ struct  element_lines_spectrum  *els;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 //   Compute the model spectrum at the Tlo temperature for the active elements to be used
-//   in a fit. Needs to be called if sigma0, Thi or any user_fitflag changes from the last 
+//   in a fit. Needs to be called if sigma0, Tlo or any user_fitflag changes from the last 
 //   model spectrum calculation.
 //-----------------------------------------------------------------------------------------
 
@@ -3079,13 +3146,17 @@ double  sigma, sigmahalf, dlimit, dlambda, expterm, pf;
 double  maxspec, sumterm, RespExtn, solid_angle;
 struct  element_lines_spectrum  *els;
 
+
 	printf("\n*** Computing model spectrum at Tlo... \n");
+
     //========== Compute broadening terms
 
     sigma = elemdata->sigma0 / 2.3548;
+
     printf("Sigma... %f\n", elemdata->sigma0);
 
 	sigmahalf = sigma / 2.0;
+
 	printf("Sigmahalf... %f\n", sigmahalf);
 
     invsigmasq_1st = -0.5 /  ( sigma * sigma );
@@ -3100,9 +3171,11 @@ struct  element_lines_spectrum  *els;
 	//========== Compute lambda cutoff range when contribution = 10^-6
 
 	dlimit = sigma * sqrt( -2.0 * log( 1.0e-6 ) );
+
 	printf("dlimit... %f\n", dlimit);
 
 	kmin = (int)( elemdata->wave[0] / ( elemdata->wave[1] - elemdata->wave[0] ) );
+
 	printf("kmin... %d\n", kmin);
 
 	//========== Set the compute model flag for low temperature
@@ -3129,7 +3202,7 @@ struct  element_lines_spectrum  *els;
 	}
 
 
-    //========== Loop through each element and build spectra
+    //========== Loop through each element and build spectra for neutrals and ions (separately)
 
 	for( kelem=0; kelem<elemdata->nelements; kelem++ )  {
 
@@ -3283,6 +3356,7 @@ struct  element_lines_spectrum  *els;
 
 
 	printf("\n*** Computing the model spectrum at Thi...\n");
+
     //========== Compute broadening terms
 
     sigma = elemdata->sigma0 / 2.3548;
@@ -3334,7 +3408,7 @@ struct  element_lines_spectrum  *els;
 	}
 
 
-	//========== Loop through each element and build spectra
+	//========== Loop through each element and build spectra for neutrals and ions (separately)
 
 	for( kelem=0; kelem<elemdata->nelements; kelem++ )  {
 
@@ -3436,7 +3510,7 @@ struct  element_lines_spectrum  *els;
 
 		 solid_angle = 3.141592654 * elemdata->plasma_radius_meters * elemdata->plasma_radius_meters / elemdata->range_meteor_meters / elemdata->range_meteor_meters;
 
-		 for( kwave=0; kwave<elemdata->nwave; kwave++ )  els->spechi[kwave] *= solid_angle * grating_area_scaling / pf;
+		 for (kwave = 0; kwave < elemdata->nwave; kwave++)  els->spechi[kwave] *= solid_angle * grating_area_scaling / pf;
 
 
 		 //------- Find the peak spectral value
@@ -3473,22 +3547,22 @@ void  FitSpectralCoefficients( double                     nwavelengths,
 							   struct  specconfiguration *spconfig )
 {
 int      nfit, kfit, jfit, kelem, jelem, kwave, k, kwlo, kwhi, allzero;
-double   sum, spec_kelem, spec_jelem; 
+double   sum, spec_kelem, spec_jelem, resnorm; 
 double   maxSpectrum, maxspec_kelem, maxspec_jelem;
 double   Qts1, QtQ1;
 
 double   *Qts;
-double   *Ssq;  // squared singular values
-double   *work;
+double   *soln;
 double  **QtQ;  // svd of QtQ = USV'
-double  **US;
-double  **V;
+
 
    printf("\n*** FitSpectralCoefficients ***\n");
 
    //========== Determine number of active elements to be used in the fit 
    //              by checking for the FITTING flag but not fit locked (FITLOCK)
+
    printf("*** Determining the number of active elements...\n");
+
    printf("%d\n", elemdata->nelements);
 
    kfit = 0;
@@ -3608,24 +3682,13 @@ double  **V;
        //-------- Allocate memory for 1D and 2D arrays where Q
        //         respresents the user desired element spectra to fit.
        //                  Qts[nfit]
-       //                  Ssq[nfit];
-       //                  work[nfit];
        //                  QtQ[nfit][nfit]
-       //                  US[nfit][nfit]
-       //                  V[nfit][nfit]
-
+ 
        Qts  = (double*) malloc( nfit * sizeof(double) );
-       Ssq  = (double*) malloc( nfit * sizeof(double) );
-       work = (double*) malloc( nfit * sizeof(double) );
+ 	   soln = (double*) malloc( nfit * sizeof(double) );
 
        QtQ = (double**) malloc( (nfit * sizeof(double*)) + (nfit * nfit * sizeof(double)) );
        for( k=0; k<nfit; ++k )  QtQ[k] = (double*)(QtQ + nfit) + k*nfit;
-
-       US = (double**) malloc( (nfit * sizeof(double*)) + (nfit * nfit * sizeof(double)) );
-       for( k=0; k<nfit; ++k )  US[k] = (double*)(US + nfit) + k*nfit;
-
-       V = (double**) malloc( (nfit * sizeof(double*)) + (nfit * nfit * sizeof(double)) );
-       for( k=0; k<nfit; ++k )  V[k] = (double*)(V + nfit) + k*nfit;
 
 
        //-------- Fill the Q-transpose * spectrum vector
@@ -3649,16 +3712,12 @@ double  **V;
 
 		    Qts[kfit] = sum / maxspec_kelem / maxSpectrum;
 
-	        ////printf( "Fitting %d Qts=%lf\n", kfit, Qts[kfit] );
-
        }
 
 
        //-------- Fill the QtQ matrix
 
        for( jfit=0; jfit<nfit; jfit++ )  {
-
-	        ////printf( "Fitting  %d  QtQ=", kfit );
 	    
 		    jelem = elemdata->fit_element_index[jfit];
 
@@ -3689,45 +3748,28 @@ double  **V;
 			     QtQ[jfit][kfit] = sum;
 			     QtQ[kfit][jfit] = sum;
 
-	             ////printf( "  %lf", QtQ[jfit][kfit] );
 		    }
 
-		    ////printf("\n");
-
        }
 
+	   //-------- Compute solution:  SVD_inverse(Q-transpose * Q) * Qt * s
 
-       //-------- Compute SVD of Q-transpose * Q = USV'
+	   //// svd_NxN_solver(QtQ, Qts, soln, nfit, nfit);
 
-       svd_NxN( *QtQ, *US, Ssq, *V, nfit, nfit );
+	   NonNegativeLeastSquares(nfit, nfit, QtQ, Qts, soln, &resnorm);
 
 
-       //-------- Obtain solution flux = V * US' * (Qt * spectrum)
-
-       for( kfit=0; kfit<nfit; kfit++ )  {
-	   
-	        sum = 0.0;
-
-		    for( jfit=0; jfit<nfit; jfit++ )  sum += US[jfit][kfit] * Qts[jfit];
-		
-		    if( Ssq[kfit] > 0.0 )  work[kfit] = sum  / Ssq[kfit];
-		    else                   work[kfit] = 0.0;
-       }
-
+	   //-------- Update the warm column density based on LMS fit solution for each active element
 
        for( kfit=0; kfit<nfit; kfit++ )  {
 
 		    kelem = elemdata->fit_element_index[kfit];
 		 
-	        sum = 0.0;
-
-		    for( jfit=0; jfit<nfit; jfit++ )  sum += V[kfit][jfit] * work[jfit];
-
 		    maxspec_kelem = elemdata->els[kelem].maxspeclo + elemdata->els[kelem].maxspechi;
 
-		    elemdata->els[kelem].N_warm = sum * maxSpectrum / maxspec_kelem;
+		    elemdata->els[kelem].N_warm = soln[kfit] * maxSpectrum / maxspec_kelem;
 
-		    ////printf( "Fitting  %d  flux=%lf\n", kfit, elemdata->els[kelem].flux );
+		    // printf( "Fitting  %d  flux=%lf\n", kfit, elemdata->els[kelem].flux );
 
 			if( elemdata->els[kelem].N_warm < 0.0 )   elemdata->els[kelem].N_warm = 0.0;
 
@@ -3739,15 +3781,14 @@ double  **V;
        //-------- Free memory
 
        free( Qts  );
-       free( Ssq  );
-       free( work );
-       free( QtQ  );
-       free( US   );
-       free( V    );
+ 	   free( soln );
+	   free( QtQ  );
+ 
 
    }  //... end of fit more than one element
   
 }
+
 
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3861,13 +3902,16 @@ int      kneutral, kelem, kwave, kneu, kion;
 double   sum; 
 
 	printf("\n*** Computing spectrum for 'fitting' and 'locked' elements...\n");
+
    //========== loop over all output wavelengths
-	sum = 1.0e-99;
+   ////	sum = 1.0e-99; // this must be inside the wavelength loop
+
 
    for( kwave=0; kwave<elemdata->nwave; kwave++ )  {
    	// for( kwave=0; kwave<1001; kwave++ )  {
 
-	    //sum = 1.0e-99;
+	    sum = 1.0e-99;
+
 	    //printf("%d %d\n", elemdata->nwave, kwave);
 
         //-------- Loop over all NEUTRAL elements to get column densities
@@ -3885,12 +3929,19 @@ double   sum;
 
 				 kneu = kelem;
 			     kion = elemdata->els[kelem].ionindex;
+
 			     //printf("Sum: %e\n", sum);
-			     sum = sum + elemdata->els[kneu].N_warm * elemdata->els[kneu].speclo[kwave]
-					 +  elemdata->els[kion].N_warm * elemdata->els[kion].speclo[kwave]
-			         +  elemdata->els[kneu].N_hot  * elemdata->els[kneu].spechi[kwave]
-					 +  elemdata->els[kion].N_hot  * elemdata->els[kion].spechi[kwave];
-				
+
+				 if (kneu != -1) {
+					 sum += elemdata->els[kneu].N_warm * elemdata->els[kneu].speclo[kwave]
+						 +  elemdata->els[kneu].N_hot  * elemdata->els[kneu].spechi[kwave];
+				 }
+
+				 if (kion != -1) {
+					 sum += elemdata->els[kion].N_warm * elemdata->els[kion].speclo[kwave]
+						 +  elemdata->els[kion].N_hot  * elemdata->els[kion].spechi[kwave];
+				 }
+
 				 //printf("Sum: %e\n", sum);
 				 //printf("%e %e\n", elemdata->els[kneu].N_warm, elemdata->els[kneu].speclo[kwave]);
 				 //printf("%e %e\n", elemdata->els[kion].N_warm, elemdata->els[kneu].speclo[kwave]);
@@ -3969,7 +4020,7 @@ double   sum;
 			     if( neutral_ion_display != 2  &&  warm_hot_display != 2 )  {
 
 					 sum += elemdata->els[kneu].N_warm * elemdata->els[kneu].speclo[kwave];
-					 printf("4 N_warm %le   speclo %le    sum %le\n", elemdata->els[kneu].N_warm, elemdata->els[kneu].speclo[kwave], sum);
+					 ////printf("4 N_warm %le   speclo %le    sum %le\n", elemdata->els[kneu].N_warm, elemdata->els[kneu].speclo[kwave], sum);
 				 }
 
 				 //.... Add in the ION WARM contribution for this element
@@ -4017,7 +4068,7 @@ void    FitFeSpectrum( double                     nwavelengths,
 					   double                    *Fe_coef,
 					   double                    *Fe_residual )
 {
-int      kelem, kwave, kwlo = 0, kwhi = 0;
+int      kelem, kwave, kwlo, kwhi;
 double   sum, spec_kelem, maxspec_kelem;
 double   Qts, QtQ;
 
@@ -4039,6 +4090,9 @@ double   Qts, QtQ;
 
 
    //========== Check if wavelengths match
+
+   kwlo = 0;
+   kwhi = 0;
    
    for( kwave=0; kwave<nwavelengths; kwave++ )  {
 
@@ -4100,6 +4154,8 @@ double   Qts, QtQ;
 }
 
 
+
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 /*
  * Perform a singular value decomposition on A = USV' of a nxn square matrix.
@@ -4108,72 +4164,525 @@ double   Qts, QtQ;
  *
  * This routine was originally adapted from a Pascal implementation
  * (c) 1988 J. C. Nash, "Compact numerical methods for computers", Hilger 1990.
- * The A, US, V matrices must be pre-allocated with minimum n rows and n columns. 
- * Upon calling, the matrix to be decomposed is contained in the first n rows 
+ * The A, US, V matrices must be pre-allocated with minimum n rows and n columns.
+ * Upon calling, the matrix to be decomposed is contained in the first n rows
  * of A. On return, the US matrix contains the product U * sqrt(S2) and the V
  * matrix contains V (not V'). The S2 vector returns the square of the singular
  * values. Note that maxn is the max column dimension of A, US, and V.
 */
 //-------------------------------------------------------------------------------
 
-void svd_NxN( double *A, double *US, double *S2, double *V, int n, int maxn )
+void svd_NxN(double *A, double *US, double *S2, double *V, int n, int maxn)
 {
-  int     i, j, k, EstColRank = n, RotCount = n; 
-  int     SweepCount = 0, slimit = (n<120) ? 30 : n/4;
-  double  eps = 1e-15, e2 = 10.0*n*eps*eps, tol = 0.1*eps;
-  double  vt, p, x0, y0, q, r, c0, s0, d1, d2;
+	int     i, j, k, EstColRank = n, RotCount = n;
+	int     SweepCount = 0, slimit = (n < 120) ? 30 : n / 4;
+	double  eps = 1e-15, e2 = 10.0*n*eps*eps, tol = 0.1*eps;
+	double  vt, p, x0, y0, q, r, c0, s0, d1, d2;
 
-  for (i=0; i<n; i++) { for (j=0; j<n; j++) *(US+i*maxn+j) = *(A+i*maxn+j); }
+	if (n == 1) {
+		S2[0] = A[0] * A[0];
+		US[0] = A[0];
+		V[0] = 1.0;
+		return;
+	}
 
-  for (i=0; i<n; i++) { for (j=0; j<n; j++) *(V+i*maxn+j) = 0.0; *(V+i*maxn+i) = 1.0; }
-  while (RotCount != 0 && SweepCount++ <= slimit) {
-    RotCount = EstColRank*(EstColRank-1)/2;
-    for (j=0; j<EstColRank-1; j++) 
-      for (k=j+1; k<EstColRank; k++) {
-        p = q = r = 0.0;
-        for (i=0; i<n; i++) {
-          x0 = *(US+i*maxn+j); y0 = *(US+i*maxn+k);
-          p += x0*y0; q += x0*x0; r += y0*y0;
-        }
-        S2[j] = q; S2[k] = r;
-        if (q >= r) {
-          if (q<=e2*S2[0] || fabs(p)<=tol*q)
-            RotCount--;
-          else {
-            p /= q; r = 1.0-r/q; vt = sqrt(4.0*p*p+r*r);
-            c0 = sqrt(0.5*(1.0+r/vt)); s0 = p/(vt*c0);
-            for (i=0; i<n; i++) {
-              d1 = *(US+i*maxn+j); d2 = *(US+i*maxn+k);
-              *(US+i*maxn+j) = d1*c0+d2*s0; *(US+i*maxn+k) = -d1*s0+d2*c0;
-            }
-            for (i=0; i<n; i++) {
-              d1 = *(V+i*maxn+j); d2 = *(V+i*maxn+k);
-              *(V+i*maxn+j) = d1*c0+d2*s0; *(V+i*maxn+k) = -d1*s0+d2*c0;
-            }
-          }
-        } else {
-          p /= r; q = q/r-1.0; vt = sqrt(4.0*p*p+q*q);
-          s0 = sqrt(0.5*(1.0-q/vt));
-          if (p<0.0) s0 = -s0;
-          c0 = p/(vt*s0);
-          for (i=0; i<n; i++) {
-            d1 = *(US+i*maxn+j); d2 = *(US+i*maxn+k);
-            *(US+i*maxn+j) = d1*c0+d2*s0; *(US+i*maxn+k) = -d1*s0+d2*c0;
-          }
-          for (i=0; i<n; i++) {
-            d1 = *(V+i*maxn+j); d2 = *(V+i*maxn+k);
-            *(V+i*maxn+j) = d1*c0+d2*s0; *(V+i*maxn+k) = -d1*s0+d2*c0;
-          }
-        }
-      }
-    while (EstColRank>2 && S2[EstColRank-1]<=S2[0]*tol+tol*tol) EstColRank--;
-  }
-  if (SweepCount > slimit)
-    printf("Warning: Reached maximum number of sweeps (%d) in SVD routine...\n"
-	   ,slimit);
+	for (i = 0; i < n; i++) { for (j = 0; j < n; j++) *(US + i * maxn + j) = *(A + i * maxn + j); }
+
+	for (i = 0; i < n; i++) { for (j = 0; j < n; j++) *(V + i * maxn + j) = 0.0; *(V + i * maxn + i) = 1.0; }
+	while (RotCount != 0 && SweepCount++ <= slimit) {
+		RotCount = EstColRank * (EstColRank - 1) / 2;
+		for (j = 0; j < EstColRank - 1; j++)
+			for (k = j + 1; k < EstColRank; k++) {
+				p = q = r = 0.0;
+				for (i = 0; i < n; i++) {
+					x0 = *(US + i * maxn + j); y0 = *(US + i * maxn + k);
+					p += x0 * y0; q += x0 * x0; r += y0 * y0;
+				}
+				S2[j] = q; S2[k] = r;
+				if (q >= r) {
+					if (q <= e2 * S2[0] || fabs(p) <= tol * q)
+						RotCount--;
+					else {
+						p /= q; r = 1.0 - r / q; vt = sqrt(4.0*p*p + r * r);
+						c0 = sqrt(0.5*(1.0 + r / vt)); s0 = p / (vt*c0);
+						for (i = 0; i < n; i++) {
+							d1 = *(US + i * maxn + j); d2 = *(US + i * maxn + k);
+							*(US + i * maxn + j) = d1 * c0 + d2 * s0; *(US + i * maxn + k) = -d1 * s0 + d2 * c0;
+						}
+						for (i = 0; i < n; i++) {
+							d1 = *(V + i * maxn + j); d2 = *(V + i * maxn + k);
+							*(V + i * maxn + j) = d1 * c0 + d2 * s0; *(V + i * maxn + k) = -d1 * s0 + d2 * c0;
+						}
+					}
+				}
+				else {
+					p /= r; q = q / r - 1.0; vt = sqrt(4.0*p*p + q * q);
+					s0 = sqrt(0.5*(1.0 - q / vt));
+					if (p < 0.0) s0 = -s0;
+					c0 = p / (vt*s0);
+					for (i = 0; i < n; i++) {
+						d1 = *(US + i * maxn + j); d2 = *(US + i * maxn + k);
+						*(US + i * maxn + j) = d1 * c0 + d2 * s0; *(US + i * maxn + k) = -d1 * s0 + d2 * c0;
+					}
+					for (i = 0; i < n; i++) {
+						d1 = *(V + i * maxn + j); d2 = *(V + i * maxn + k);
+						*(V + i * maxn + j) = d1 * c0 + d2 * s0; *(V + i * maxn + k) = -d1 * s0 + d2 * c0;
+					}
+				}
+			}
+		while (EstColRank > 2 && S2[EstColRank - 1] <= S2[0] * tol + tol * tol) EstColRank--;
+	}
+	if (SweepCount > slimit)
+		printf("Warning: Reached maximum number of sweeps (%d) in SVD routine...\n"
+			, slimit);
 }
 //                                                             svd_NxN
 //====================================================================
+
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//  This function solves the equation Q * x = s by having the calling function first
+//  generate Qt*Q and Qt*s and pass those in as arguments to this solver function, such
+//  that an NxN SVD solver can be employed. The "QtQ" is actually a 2D matrix passed in 
+//  containing N x N elements in column order and "Nmaxcol" column dimension for the matrix.
+//  The Q-transpose matrix multiplied by s vector is the "Qts" vector and that product is
+//  also computed outside this function and passed in as a vector argument. 
+//  The returned solution vector "x" = pseudo_inverse(QtQ) * Qts must be pre-allocated
+//  to at least the correct length N.
+//-----------------------------------------------------------------------------------------
+
+void   svd_NxN_solver(double **QtQ, double *Qts, double *x, int n, int maxn)
+{
+	int       k, j;
+	double  **US, **V, *Ssq, *work, sum;
+
+
+	//-------- Allocate memory for working arrays and vectors. Dimensions of the
+	//            2D work arrays US and V must be same size n x maxn as QtQ.
+
+	Ssq = (double*)malloc(n * sizeof(double));
+	work = (double*)malloc(n * sizeof(double));
+
+	US = (double**)malloc((n * sizeof(double*)) + (n * maxn * sizeof(double)));
+	for (k = 0; k < n; ++k)  US[k] = (double*)(US + n) + k * maxn;
+
+	V = (double**)malloc((n * sizeof(double*)) + (n * maxn * sizeof(double)));
+	for (k = 0; k < n; ++k)  V[k] = (double*)(V + n) + k * maxn;
+
+
+	//-------- Compute the SVD of Q-transpose * Q = USV'
+
+	svd_NxN(*QtQ, *US, Ssq, *V, n, maxn);
+
+
+	//-------- Obtain solution flux = V * US' * (Qt * spectrum)
+
+	for (k = 0; k < n; k++) {
+
+		sum = 0.0;
+
+		for (j = 0; j < n; j++)  sum += US[j][k] * Qts[j];
+
+		if (Ssq[k] > 0.0)  work[k] = sum / Ssq[k];
+		else               work[k] = 0.0;
+	}
+
+
+
+	for (k = 0; k < n; k++) {
+
+		sum = 0.0;
+
+		for (j = 0; j < n; j++)  sum += V[k][j] * work[j];
+
+		x[k] = sum;
+
+	}
+
+
+	//-------- Free memory
+
+	free(Ssq);
+	free(work);
+	free(US);
+	free(V);
+
+
+
+}
+
+
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//  Function to perform the NNLS = Non-Negative Least Squares solution to
+//  the equation C * x = d  given a nrows x ncols matrix C and nrows length
+//  vector d. The resultant solution for the ncols elements of x will be 
+//  constrained to have either zero or positive values. You must pre-allocate
+//  the output vector x to at least ncols length. Also returns the residual
+//  norm of the solution error.
+//
+//  Follows the book section by:
+//    Lawson & Hanson (1995) "Solving Linear Least Squares Problems", p. 161
+//  
+//  With the modification (SVD pre-multiply method) from the paper by:
+//    Rasmus Bro & Sijmen De Jong (1997)
+//    Journal of Chemometrics, VOL. 11, 393?401
+//
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+void  NonNegativeLeastSquares(int nrows, int ncols, double **C, double *d, double *x, double *resnorm)
+{
+	int      krow, kcol, kprow, kpcol, k, npcols;
+	int      outer_iter, iter, itmax, anyflag1, anyflag2, tindex;
+	int     *Pset, *Zset, *Qset;
+	double   sum, themax, alpha, tol;
+	double  *wz, *w, *resid, *soln, *xnew, **CtC, *Ctd;
+
+
+	//======== Allocate memory for working vectors and SVD components
+
+	Pset = (int*)malloc(ncols * sizeof(int));
+	Qset = (int*)malloc(ncols * sizeof(int));
+	Zset = (int*)malloc(ncols * sizeof(int));
+
+	wz = (double*)malloc(ncols * sizeof(double));
+	w = (double*)malloc(ncols * sizeof(double));
+	xnew = (double*)malloc(ncols * sizeof(double));
+	resid = (double*)malloc(ncols * sizeof(double));
+	soln = (double*)malloc(ncols * sizeof(double));
+
+	CtC = (double**)malloc((ncols * sizeof(double*)) + (ncols * ncols * sizeof(double)));
+	for (k = 0; k < ncols; ++k)  CtC[k] = (double*)(CtC + ncols) + k * ncols;
+
+	Ctd = (double*)malloc(ncols * sizeof(double));
+
+
+	//======== Initialize the working vectors to zero 
+	//         Set the initial solution to all zeros
+	//         Initialize the set of non-active columns Pset to all zeros
+	//         Initialize the set of active columns Zset to all ones
+
+	for (kcol = 0; kcol < ncols; kcol++) {
+		wz[kcol] = 0.0;
+		x[kcol] = 0.0;
+		Pset[kcol] = 0;   //... positive set all FALSE
+		Zset[kcol] = 1;   //...     zero set all TRUE
+	}
+
+
+	//======== Compute the initial iteration residual and weight vector.
+	//         Note x = 0 at this stage, so the second term in the residual
+	//            from the papers, does not contribute in the equation below.
+	//                    w = C' * (d - C * x) = C' * d (for x=0)
+
+	for (kcol = 0; kcol < ncols; kcol++) {
+
+		sum = 0.0;
+
+		for (krow = 0; krow < nrows; krow++) sum += C[krow][kcol] * d[krow];
+
+		w[kcol] = sum;
+
+	}
+
+
+	//======== Set up iteration criterion
+
+	outer_iter = 0;
+	iter = 0;
+	itmax = 3 * ncols;
+
+
+	//======== Compute the tolerance based on how matlab defaults
+
+	themax = 0.0;
+
+	for (kcol = 0; kcol < ncols; kcol++) {
+
+		sum = 0.0;
+
+		for (krow = 0; krow < nrows; krow++) sum += fabs(C[krow][kcol]);
+
+		if (sum > themax) themax = sum;
+
+	}
+
+	tol = 2.22e-15 * (double)ncols * themax;
+
+
+	//======== Outer loop to put variables into a set to hold positive coefficients
+
+	while (1) {
+
+		anyflag1 = 0;
+		anyflag2 = 0;
+
+		for (kcol = 0; kcol < ncols; kcol++) {
+			if (Zset[kcol] == 1) {
+				anyflag1 = 1;
+				if (w[kcol] > tol) anyflag2 = 1;
+			}
+		}
+
+		if (anyflag1 == 0 || anyflag2 == 0) break;
+
+		outer_iter = outer_iter + 1;
+
+
+		//-------- Reset intermediate solution xnew
+
+		for (kcol = 0; kcol < ncols; kcol++) xnew[kcol] = 0.0;
+
+
+		//-------- Create wz, a Lagrange multiplier vector of variables in the zero set.
+		//         Note: wz must be the same size as w to preserve the correct indices, 
+		//            so set multipliers to -Inf for variables outside of the zero set.
+
+		themax = -1.0e+99;
+		tindex = 0;
+
+		for (kcol = 0; kcol < ncols; kcol++) {
+			if (Zset[kcol] == 1) wz[kcol] = w[kcol];
+			else                 wz[kcol] = -1.0e+99;
+
+			if (wz[kcol] > themax) {
+				themax = wz[kcol];
+				tindex = kcol;
+			}
+		}
+
+
+		//-------- Move the tindex element from the zero set to the positive set
+
+		Pset[tindex] = 1;
+		Zset[tindex] = 0;
+
+
+		//-------- Compute the intermediate solution using only variables in the positive set
+		//            by first compressing the matrix by including only those rows in C' when
+		//            pre-multiplying both sides by C', then applying the SVD solver on the 
+		//            resultant square matrix CtC and solution vector Ctd.
+		//                            (C' * C)**-1 * (C' * d)
+
+		kpcol = 0;
+		for (kcol = 0; kcol < ncols; kcol++) {
+			if (Pset[kcol] == 1) {
+				sum = 0.0;
+				for (krow = 0; krow < nrows; krow++) {
+					sum += C[krow][kcol] * d[krow];
+				}
+				Ctd[kpcol] = sum;
+				kpcol++;
+			}
+		}
+		npcols = kpcol;
+
+
+		kpcol = 0;
+		for (kcol = 0; kcol < ncols; kcol++) {
+			if (Pset[kcol] == 1) {
+				kprow = 0;
+				for (krow = 0; krow < ncols; krow++) {
+					if (Pset[krow] == 1) {
+						sum = 0.0;
+						for (k = 0; k < nrows; k++) {
+							sum += C[k][krow] * C[k][kcol];
+						}
+						CtC[kprow][kpcol] = sum;
+						kprow++;
+					}
+				} //... end of krow loop
+				kpcol++;
+			}
+		} //... end of kcol loop
+
+
+		//-------- Apply the SVD solver:   soln = (C' * C)**-1 * (C' * d)
+
+		svd_NxN_solver(CtC, Ctd, soln, npcols, ncols);
+
+
+		//-------- Expand out solution to the full vector length
+
+		kpcol = 0;
+		for (kcol = 0; kcol < ncols; kcol++) {
+			if (Pset[kcol] == 1) {
+				xnew[kcol] = soln[kpcol];
+				kpcol++;
+			}
+		}
+
+
+		//-------- Inner loop to remove elements from the positive set which no longer belong
+
+		while (1) {
+
+			anyflag1 = 0;
+
+			for (kcol = 0; kcol < ncols; kcol++) {
+				if (Pset[kcol] > 0) {
+					if (xnew[kcol] <= 0) anyflag1 = 1;
+				}
+			}
+
+			if (anyflag1 == 0) break;
+
+
+			//........ Try another iteration
+
+			iter = iter + 1;
+
+			if (iter > itmax) {
+				printf("ERROR ====> lsqnonneg: IterationCountExceeded\n");
+				break;
+			}
+
+
+			//........ Find indices where intermediate solution xnew is approximately negative
+
+			for (kcol = 0; kcol < ncols; kcol++) {
+				if (xnew[kcol] <= 0.0  &&  Pset[kcol] == 1)  Qset[kcol] = 1;
+				else                                         Qset[kcol] = 0;
+			}
+
+
+			//........ Choose a new x subject to keeping the new x nonnegative
+
+			alpha = +1.0e+99;
+
+			for (kcol = 0; kcol < ncols; kcol++) {
+
+				if (Qset[kcol] > 0 && x[kcol] / (x[kcol] - xnew[kcol]) < alpha)  alpha = x[kcol] / (x[kcol] - xnew[kcol]);
+
+			}
+
+			for (kcol = 0; kcol < ncols; kcol++)  x[kcol] = x[kcol] + alpha * (xnew[kcol] - x[kcol]);
+
+
+			//........ Reset Zset and Pset given intermediate values of x
+
+			for (kcol = 0; kcol < ncols; kcol++) {
+				if ((fabs(x[kcol]) < tol  &&  Pset[kcol] == 1) || Zset[kcol] == 1) Zset[kcol] = 1;
+				else                                                               Zset[kcol] = 0;
+			}
+
+			for (kcol = 0; kcol < ncols; kcol++) {
+				Pset[kcol] = 1 - Zset[kcol];
+				xnew[kcol] = 0.0;
+			}
+
+
+			//........ Compress the products CT * C  and  Ct * d
+
+			kpcol = 0;
+			for (kcol = 0; kcol < ncols; kcol++) {
+				if (Pset[kcol] == 1) {
+					sum = 0.0;
+					for (krow = 0; krow < nrows; krow++) {
+						sum += C[krow][kcol] * d[krow];
+					}
+					Ctd[kpcol] = sum;
+					kpcol++;
+				}
+			}
+			npcols = kpcol;
+
+
+			kpcol = 0;
+			for (kcol = 0; kcol < ncols; kcol++) {
+				if (Pset[kcol] == 1) {
+					kprow = 0;
+					for (krow = 0; krow < ncols; krow++) {
+						if (Pset[krow] == 1) {
+							sum = 0.0;
+							for (k = 0; k < nrows; k++) {
+								sum += C[k][krow] * C[k][kcol];
+							}
+							CtC[kprow][kpcol] = sum;
+							kprow++;
+						}
+					} //... end of krow loop
+					kpcol++;
+				}
+			} //... end of kcol loop
+
+
+			//........ Apply the SVD solver:   xnew = (C' * C)**-1 * (C' * d)
+
+			svd_NxN_solver(CtC, Ctd, soln, npcols, ncols);
+
+
+			//........ Expand out solution to the full vector length
+
+			kpcol = 0;
+			for (kcol = 0; kcol < ncols; kcol++) {
+				if (Pset[kcol] == 1) {
+					xnew[kcol] = soln[kpcol];
+					kpcol++;
+				}
+			}
+
+
+		} //... end of inner while xnew<0 loop
+
+
+		for (kcol = 0; kcol < ncols; kcol++)  x[kcol] = xnew[kcol];
+
+		if (iter > itmax) break;
+
+
+		//-------- Compute the residual d - C * x, and the weight vector w.
+		//                w = C' * (d - C * x)
+
+		for (krow = 0; krow < nrows; krow++) {
+
+			sum = 0.0;
+
+			for (kcol = 0; kcol < ncols; kcol++) sum += C[krow][kcol] * x[kcol];
+
+			resid[krow] = d[krow] - sum;
+
+		}
+
+
+		for (kcol = 0; kcol < ncols; kcol++) {
+
+			sum = 0.0;
+
+			for (krow = 0; krow < nrows; krow++) sum += C[krow][kcol] * resid[krow];
+
+			w[kcol] = sum;
+
+		}
+
+
+	} //... end of outer while loop
+
+
+	//======== Residual norm via dot product of residual vector
+
+	*resnorm = 0.0;
+
+	for (krow = 0; krow < nrows; krow++) *resnorm += resid[krow] * resid[krow];
+
+
+	//======== Free memory
+
+	free(CtC);
+	free(Ctd);
+	free(soln);
+
+	free(wz);
+	free(w);
+	free(xnew);
+	free(resid);
+
+	free(Pset);
+	free(Qset);
+	free(Zset);
+
+
+}
 
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,35 @@
+Version                             =    1.00
+Spectral Order m for Resp/Extn      =      +1
+Plus/Minus # Integration Rows       =       4
+Min Calib Wavelength (nm)           =   350.0  
+Max Calib Wavelength (nm)           =   1100.0
+Step Wavelength (nm)                =     0.6
+Min Fitting Wavelength (nm)         =   350.0  
+Max Fitting Wavelength (nm)         =   1100.0
+Min Bandwidth to use Spectrum (nm)  =   200.0
+Gauss Smoothing Kernel sigma (nm)   =    20.0
+Faintest Star to process (mV)       =     4.5
+Airmass Break Pt Respons/Extinct    =     1.5
+Fading memory coef                  =    16.0
+Coincidence time tolerance (sec)    =    60.0
+Min low excitation temperature (K)  =  3000.0
+Max low excitation temperature (K)  =  6500.0
+Step low excitation temperature (K) =    10.0
+Nominal low excitation temp (K)     =  4500.0
+Nominal high excitation temp (K)    = 10000.0
+Nominal broadening sigma (nm)       =     1.5
+Grating normal to look angle (deg)  =     8.0
+Default grating roll (deg)          =     0.0
+Default grating pitch (deg)         =     0.0
+Default grating yaw (deg)           =     0.0
+Default electron density (m^-3)     = 1.0e+13
+Default hot to warm plasma ratio    = 1.0e-04
+Number of Grating Cameras           =       1
+----  --------
+Cam#  Lines/mm
+----  --------
+101    150.00
+
+
+
+Step (nm) ~ pixel_resolution(arcmin) / 60 / 57.296 / 1.0e-6 / lines_per_mm

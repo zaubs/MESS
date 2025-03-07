@@ -31,7 +31,7 @@ def adjustableParametersDefaults(self):
 	self.spectral_lib.AdjustableParametersDefaults(self.spconfig, self.elemdata)
 
 def loadSpectralLibrary(self):
-	"""
+	"""can you
 	Loads the SPCAL folder with necessary calibration  files.
 	"""
 
@@ -60,8 +60,7 @@ def readSpectralConfig(self):
 	spectral_config_path = os.path.join("spectral_library", "DriverInputFiles", "SpectralConfig.txt")
 
 	# Read spectral configuration file
-	self.spectral_lib.ReadSpectralConfigfile(os.path.join(os.path.dirname(__file__), \
-			spectral_config_path).encode('ascii'), self.spconfig)
+	self.spectral_lib.ReadSpectralConfigfile(os.path.join(os.path.dirname(__file__), spectral_config_path).encode('ascii'), self.spconfig)
 
 	self.ncameras = 1
 	self.nwave = 1 + int(((self.spconfig.max_cal_wavelength_nm - self.spconfig.min_cal_wavelength_nm) / self.spconfig.del_wavelength_nm))
@@ -77,8 +76,28 @@ def allocMemory(self):
 	# Allocate memory for the spectral calibration wavelengths
 	self.spectral_lib.AllocMemorySpectralCalWavelengths(self.spcalib, self.ncameras, self.nwave, self.startwave, self.deltawave)
 
+
 	# Allocate memory for the spectrum
 	self.spectral_lib.AllocMemorySpectrum(self.spcalib.nwavelengths, self.elemdata.nelements, self.spectra) 
+
+	ct.memset(self.spectra.meas_spectrum, 0, self.spcalib.nwavelengths * ct.sizeof(ct.c_double))
+	ct.memset(self.spectra.fit_spectrum, 0, self.spcalib.nwavelengths * ct.sizeof(ct.c_double))
+	ct.memset(self.spectra.columndensity, 0, self.elemdata.nelements * ct.sizeof(ct.c_double))
+
+    # Debugging prints to verify zero initialization
+	print("[DEBUG] Alloc Memory")
+	print(f"[DEBUG] wavelengths in nm: {self.spcalib.nwavelengths} nm")
+	print(f"[DEBUG] elemental data for n element: {self.elemdata.nelements} nm")
+
+    # Convert the now zeroed-out memory into readable NumPy arrays
+	meas_spec_array = np.ctypeslib.as_array(self.spectra.meas_spectrum, shape=(self.spcalib.nwavelengths,))
+	fit_spec_array = np.ctypeslib.as_array(self.spectra.fit_spectrum, shape=(self.spcalib.nwavelengths,))
+	col_density_array = np.ctypeslib.as_array(self.spectra.columndensity, shape=(self.elemdata.nelements,))
+
+	print(f"[DEBUG] spectra object measured spec (after init): {meas_spec_array[:10]}")
+	print(f"[DEBUG] spectra object fitted spectrum (after init): {fit_spec_array[:10]}")
+	print(f"[DEBUG] spectra object columndensity (after init): {col_density_array}")
+
 
 
 def readSpectralCALFile(self):
@@ -87,7 +106,6 @@ def readSpectralCALFile(self):
 	"""
 
 	# Read in the spectral calibration file
-	# self.spectral_lib.ReadSpectralCALfile("spectral_library/SPCAL/SPCAL_20130421_080000.txt".encode('ascii'), self.spconfig, self.spcalib)
 	self.spectral_lib.ReadSpectralCALfile("spectral_library/SPCAL/SPCAL_20240608_080000.txt".encode('ascii'), self.spconfig, self.spcalib)
 
 
@@ -624,7 +642,7 @@ class ElementsData(STRUCTURE):
 		# Number of neutral only elements
 		("nneutrals", INT),          
 
-		# Index to the neutral elements
+		# Index to the neutral elements 
 		("neutral_index", ct.POINTER(INT)),      
 
 		# Number of fitted elements
@@ -1296,11 +1314,6 @@ class GuralSpectral(object):
 
 	def writeFullSpectrum2(self, out_file):
 		with open(out_file, 'w') as f:
-			### Write file header
-			# file_id / name
-			# 
-			#
-			#
 			for w in range(self.spcalib.nwavelengths):
 				f.write('%f %f %f\n' % (w, self.spcalib.wavelength_nm[w], self.spectra.fit_spectrum[w]))
 
@@ -1403,9 +1416,10 @@ class GuralSpectral(object):
 		"""
 
 		# Compute extinction model
-		self.spectral_lib.ExtinctionModel(self.spcalib.nwavelengths, self.spcalib.wavelength_nm, \
+		print("the extinction is:" ,self.spectral_lib.ExtinctionModel(self.spcalib.nwavelengths, self.spcalib.wavelength_nm, \
 			self.spcalib.modl_extn_spec, self.elemdata.Xfactor * self.altitude_deg, \
-				self.earth_radius_km + self.site_height_km, self.spcalib)
+				self.earth_radius_km + self.site_height_km, self.spcalib))
+		
 
 	
 	def resetAllElementalAbundances(self):
@@ -1612,16 +1626,16 @@ class GuralSpectral(object):
 
 		# Normally get col density from a fit (see later)
 		self.elemdata.els[elem1].N_warm = 3.0e+9 # Check this...
-		# print("** %s" % self.elemdata.els[elem1].N_warm)
+		#print("** %s" % self.elemdata.els[elem1].N_warm)
 
 		# Normally get col density from a fit (see later)
-		self.elemdata.els[elem2].N_warm = 1.2e+09 # Check this... MJM
-		# print("** %s" % self.elemdata.els[elem2].N_warm)
+		self.elemdata.els[elem2].N_warm = 1.2e+9 # Check this... MJM
+		#print("** %s" % self.elemdata.els[elem2].N_warm)
 
 		if elem3 != None:
 			# self.elemdata.els[elem3].N_warm = 1.0e+09
-			self.elemdata.els[elem3].N_warm = 3.0e+10
-			# print("Elem3 n_warm: %s" % self.elemdata.els[elem3].N_warm)
+			self.elemdata.els[elem3].N_warm = 3.0e+12
+			#print("Elem3 n_warm: %s" % self.elemdata.els[elem3].N_warm)
 
 		# Sets ne_jones
 		ne_guess = self.spectral_lib.JonesElectronDensity(self.elemdata, self.elemdata.kelem_ref)
@@ -1635,13 +1649,34 @@ class GuralSpectral(object):
 		self.spectral_lib.ColumnDensities_NumberAtoms(self.elemdata, self.ne)
 		print("Column density #1 = %s" % self.elemdata.els[elem1].N_warm)
 		print("Column density #2 = %s" % self.elemdata.els[elem2].N_warm)
+		if elem3!=None: 
+			print("Column density #3 = %s" % self.elemdata.els[elem3].N_warm)
 
 		# Calculate the  spectrum, given all coefficients previously calculated
-		print('ComputeFullSpec')
-		self.spectral_lib.SpectrumGivenAllCoefs(self.elemdata, self.spectra.fit_spectrum)
-		print('ComputeFullSpec')
+##		n = self.spcalib.nwavelengths  # Ensure this is the correct number of wavelengths
+##
+##		aaa = ct.cast(self.spectra.fit_spectrum, ct.POINTER(ct.c_double * n))
+##		aaaaa = np.frombuffer(aaa.contents, dtype=np.float64)
+##		print ("before bullshits happen",aaaaa)
+##		
+##		self.spectral_lib.SpectrumGivenAllCoefs(self.elemdata, self.spectra.fit_spectrum)
+##
+##		fit_spectrum_ptr = ct.cast(self.spectra.fit_spectrum, ct.POINTER(ct.c_double * n))
+##		fit_spectrum_array = np.frombuffer(fit_spectrum_ptr.contents, dtype=np.float64)
+##		print("fit_spectrum_ptr:",fit_spectrum_array)
+		if not bool(self.spectra.fit_spectrum):
+			print("ERROR: fit_spectrum pointer is NULL. Allocating memory.")
+			self.spectra.fit_spectrum = (ct.c_double * self.spcalib.nwavelengths)()
 
-	
+		fit_spectrum_array = np.ctypeslib.as_array(self.spectra.fit_spectrum, shape=(self.spcalib.nwavelengths,))
+		print("DEBUG: fit_spectrum BEFORE call:", fit_spectrum_array[:10])
+		
+		# Call SpectrumGivenAllCoefs correctly
+		self.spectral_lib.SpectrumGivenAllCoefs(self.elemdata, self.spectra.fit_spectrum)
+		
+		# Debug after function call
+		print("DEBUG: fit_spectrum AFTER call:", fit_spectrum_array[:10])
+		
 	def fitMeasSpec(self, elem1, elem2, elem3=None):
 		"""
 		Fit the measured spectrum to the active elements.
@@ -1666,6 +1701,11 @@ class GuralSpectral(object):
 			# self.elemdata.els[elem3].N_warm = 1.0e+09
 			self.elemdata.els[elem3].N_warm = 3.0e+10
 
+		print(f"Checking elemdata.els[{elem1}] before setting N_warm:", self.elemdata.els[elem1])
+		print(f"Checking elemdata.els[{elem2}] before setting N_warm:", self.elemdata.els[elem2])
+		if elem3 is not None:
+			print(f"Checking elemdata.els[{elem3}] before setting N_warm:", self.elemdata.els[elem3])
+		
 		# Sets ne_jones
 		ne_guess = self.spectral_lib.JonesElectronDensity(self.elemdata, self.elemdata.kelem_ref)   
 		print('Calculated ne_guess: %e' % ne_guess)      
@@ -1688,9 +1728,11 @@ class GuralSpectral(object):
 		print('--- Calculating model spectrum...')
 		self.spectral_lib.SpectrumGivenAllCoefs(self.elemdata, self.spectra.fit_spectrum)
 		print('FitMeasuredSpec')
-	
+
 		print("Num warm element 1 (%s): %e" % (elem1, self.elemdata.els[elem1].N_warm))
 		print("Num warm element 2 (%s): %e" % (elem2, self.elemdata.els[elem2].N_warm))
+		if elem3!=None: 
+			print("Num warm element 3 (%s): %e" % (elem3, self.elemdata.els[elem3].N_warm))
 	
 	def scaleWarmColumnDensity(self, elem, scale_factor):
 		"""

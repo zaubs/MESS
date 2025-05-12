@@ -606,8 +606,6 @@ class Ui(QtWidgets.QMainWindow):
         # if flat_name != '':
         #     self.flat_structure  = loadFlat(flat_path, flat_name)
 
-        # initialize the GuralSpectral object
-        self.spectral = spectral_library.GuralSpectral(10000, 4500, None, None, None, None)        
 
         ###########################################################################################
         ################################# /// BUTTON TRIGGERS /// #################################
@@ -784,9 +782,14 @@ class Ui(QtWidgets.QMainWindow):
 
 
         noise_multiplier = 0.0 # 0 = no noise, 0.1 = defaults
+                # initialize the GuralSpectral object
+        self.spectral = spectral_library.GuralSpectral(10000, 4500, None, None, None, None)        
 
         spectral_library.readSpectralConfig(self.spectral)
         spectral_library.allocMemory(self.spectral)
+        self.spectral.elemdata = spectral_library.ElementsData()
+    
+        
 
         # Assign camera numbers to the grating structure
         for i in range(spectral_library.MAXGRATINGS):
@@ -805,6 +808,7 @@ class Ui(QtWidgets.QMainWindow):
         # plt.show()
 
         spectral_library.loadElementsData(self.spectral)
+
 
         self.LowTemp_rollbox.setValue(int(self.spectral.spconfig.nominal_lo_exc_temp))
         self.HighTemp_rollbox.setValue(int(self.spectral.spconfig.nominal_hi_exc_temp))
@@ -1129,7 +1133,7 @@ class Ui(QtWidgets.QMainWindow):
         #self.ui.setupUi(self.window)
         #self.ui.columnDensityAccept_button.clicked.connect(self.columnDensitySet)
         #self.window.show()
-        print(":3")
+        print(":COLUMN DENSITY WINDOW DEACTIVATD")
 
     def columnDensitySet(self):
         self.spectral.elemdata.els[self.elemIndex].N_warm = float(self.ui.columnDensity_edit.text()) * (10 ** self.ui.exponent_rollbox.value())
@@ -1647,6 +1651,28 @@ class Ui(QtWidgets.QMainWindow):
             4. Column densities are then calculated with ColumnDensities_NumberAtoms
             5. The model spectrum is then calculated with SpectrumGivenAllCoefs
         """
+
+        print("=== FITTING MEASURED SPECTRUM ===")
+        neutral_on = self.Neutral_button.isChecked()
+        ion_on = self.Ions_button.isChecked()
+    
+        for i, deet in enumerate(self.elementDeets):
+            name = deet[0]
+            state = deet[1]
+            index = deet[3]
+            ioncode = self.spectral.elemdata.els[index].ioncode
+            fitflag = self.spectral.elemdata.els[index].user_fitflag
+    
+            ion_type = 'Neutral' if ioncode == 1 else 'Ion' if ioncode == 2 else 'Other'
+            toggle_allowed = (ioncode == 1 and neutral_on) or (ioncode == 2 and ion_on)
+    
+            print(f"[{i:02}] {name:<8} | Type: {ion_type:<7} | State: {state} | user_fitflag: {fitflag} | "
+                  f"Toggled ON: {toggle_allowed} | {'FITTING' if fitflag == 1 else 'LOCKED' if fitflag == 2 else 'SKIPPED'}")
+    
+        print("=================================")
+
+    # ... then proceed with fitting as usual
+
         ## density? No idea what Volume it is 
         self.kelem_ref = spectral_library.GuralSpectral.setReferenceElem(self.spectral)
 
@@ -1656,24 +1682,13 @@ class Ui(QtWidgets.QMainWindow):
             if (self.elementDeets[i][1] == 1):
                 fittingElems.append(self.elementDeets[i][3])
 
-        print("\n=== DEBUGGING fitMeasuredSpectrum ===")
         num_elements = self.spectral.elemdata.nelements
 
         for i in range(num_elements):
             if not hasattr(self.spectral.elemdata.els[i], 'N_warm'):
                 continue  # Skip if the attribute doesn't exist
 
-            N_warm_value = self.spectral.elemdata.els[i].N_warm
 
-            # Print raw values before scaling
-            print(f"Raw N_warm for element {i} ({self.spectral.elemdata.els[i].elementcode}): {N_warm_value:e}")
-
-            # If the value is abnormally high, check if it's being scaled incorrectly
-            if N_warm_value > 1e50:
-                print(f"[ERROR] Unreasonably high N_warm detected for element {i} ({self.spectral.elemdata.els[i].elementcode}): {N_warm_value:e}")
-                print("    - Possible cause: Incorrect memory allocation, missing scaling factor, or data corruption.")
-
-        print("=== END DEBUGGING ===\n")
         if len(fittingElems) == 2:
             try:               
                 print('Element 1: %s   Element 2: %s' % (self.elementDeets[0][0], self.elementDeets[1][0]))
@@ -1691,22 +1706,6 @@ class Ui(QtWidgets.QMainWindow):
         self.kelem_ref = spectral_library.GuralSpectral.setReferenceElem(self.spectral)
         print('Reference Element: %s' % self.kelem_ref)
 
-        fittingElems = []
-
-        for i in range(self.spectral.elemdata.nelements):
-            if (self.elementDeets[i][1] == 1):
-                fittingElems.append(self.elementDeets[i][3])
-
-        print('%s elements being fit...' % len(fittingElems))
-        print(fittingElems)
-
-        if len(fittingElems) == 2:
-            spectral_library.GuralSpectral.computeFullSpec(self.spectral, fittingElems[0], fittingElems[1])
-        elif len(fittingElems) == 3:
-            spectral_library.GuralSpectral.computeFullSpec(self.spectral, fittingElems[0], fittingElems[1], fittingElems[2])
-        else:
-            print('Not enough fitting elements')
-            pass
 
         self.fullspec_array = np.zeros((self.spectral.spcalib.nwavelengths,2))
 
@@ -1714,8 +1713,15 @@ class Ui(QtWidgets.QMainWindow):
             self.fullspec_array[i][0] = self.spectral.spcalib.wavelength_nm[i]
             self.fullspec_array[i][1] = self.spectral.spectra.fit_spectrum[i]
 
-        #plt.plot(self.fullspec_array[:,1])
-        #plt.show()
+##        plt.figure(figsize=(10, 5))
+##        plt.plot(self.spectral.spcalib.wavelength_nm[:self.spectral.spcalib.nwavelengths], 
+##		         self.spectral.spectra.fit_spectrum[:self.spectral.spcalib.nwavelengths], 
+##		        color="blue", linewidth=1.5)
+##        plt.xlabel("Wavelength (nm)")
+##        plt.ylabel("Intensity")
+##        plt.title("fitted Spectrum after Fitting")
+##        plt.grid(True)
+##        plt.show()
 
         try:
             self.fullSpecScaler = self.plotMax / np.max(self.fullspec_array[:,1])
@@ -1725,21 +1731,23 @@ class Ui(QtWidgets.QMainWindow):
 
         self.plotFullSpectrum()
 
-        spectral_library.GuralSpectral.writeFullSpectrum2(self.spectral, './FullSpectrumTest.txt')
-
     def plotFullSpectrum(self):
 
         plotName = 'Full Spectrum'
 
-        try:
-            globals()[plotName]
-        except KeyError:
-            globals()[plotName] = None
-
-        if globals()[plotName] is None:
+        if plotName not in globals() or globals()[plotName] is None:
             self.Plot.addLegend()
-        globals()[plotName] = self.Plot.plot(self.fullspec_array[:,0], self.fullspec_array[:,1]*self.fullSpecScaler, pen=pg.mkPen('k', width=4), name='Full')
-    
+            globals()[plotName] = self.Plot.plot(
+                self.fullspec_array[:, 0],
+                self.fullspec_array[:, 1] * self.fullSpecScaler,
+                pen=pg.mkPen('k', width=4),
+                name='Full'
+            )
+        else:
+            globals()[plotName].setData(
+                self.fullspec_array[:, 0],
+                self.fullspec_array[:, 1] * self.fullSpecScaler
+            )
         
     def calculateElementSpectrum(self):
         print('MESS.py - calculateElementSpectrum')
@@ -1810,12 +1818,50 @@ class Ui(QtWidgets.QMainWindow):
             print('Warm and Hot are both on.')
             # spectral_library.GuralSpectral.computeWarmPlasmaSpectrum(self.spectral)
             # spectral_library.GuralSpectral.computeHotPlasmaSpectrum(self.spectral)
+            if self.spectral.elemdata.els[self.elemIndex].speclo:
+                print(f"[ERROR] speclo is NULL for element index {self.elemIndex} ({self.elemName})")
+                return
+
+            if not self.spectral.elemdata.els[self.elemIndex].spechi:
+                print(f"[ERROR] spechi is NULL for element index {self.elemIndex} ({self.elemName})")
+                return
+
             self.element_array = np.zeros((self.spectral.spcalib.nwavelengths,4))
+            print("haiii")
+            
+            speclo_ptr = self.spectral.elemdata.els[self.elemIndex].speclo
+            if not speclo_ptr:
+                print(f"[ERROR] speclo pointer is NULL for element index {self.elemIndex}")
+                return
+            try:
+                test_value = speclo_ptr[0]
+                print(f"[DEBUG] speclo[0] = {test_value}")
+            except Exception as e:
+                print(f"[ERROR] Failed to access speclo[0]: {e}")
+                return
             for i in range(self.spectral.spcalib.nwavelengths):
+                try:
+                    self.element_array[i][0] = self.spectral.spcalib.wavelength_nm[i]
+                    self.element_array[i][1] = speclo_ptr[i]
+                    self.element_array[i][2] = self.spectral.elemdata.els[self.elemIndex].spechi[i]
+                    self.element_array[i][3] = self.element_array[i][1] + self.element_array[i][2]
+                except Exception as e:
+                    print(f"[CRASH] Failed at index {i}: {e}")
+                    break
+
+            
+            for i in range(self.spectral.spcalib.nwavelengths):
+                print('1')
                 self.element_array[i][0] = self.spectral.spcalib.wavelength_nm[i]
+                print('1')
                 self.element_array[i][1] = self.spectral.elemdata.els[self.elemIndex].speclo[i]
+                print('1')
                 self.element_array[i][2] = self.spectral.elemdata.els[self.elemIndex].spechi[i]
+                print('1')
                 self.element_array[i][3] = self.element_array[i][1] + self.element_array[i][2]
+                print('1')
+                
+
 
         self.element_array[:,1] = self.element_array[:,1] * 10**self.Scale_rollbox.value()
         self.element_array[:,2] = self.element_array[:,2] * 10**self.Scale_rollbox.value()
@@ -1882,119 +1928,230 @@ class Ui(QtWidgets.QMainWindow):
                 self.clearSpec()
                 print('Shifting Down by 1')
                 self.plotMeasuredSpec(0,-1)
-
-
+        
     def elementButtonClicked(self):
-
-        # Detect whether shift key is held down
+        # Detect modifier keys
         mods = QtWidgets.QApplication.keyboardModifiers()
         isShiftPressed = mods & QtCore.Qt.ShiftModifier
-        isCtrlPressed = mods & QtCore.Qt.ControlModifier
-        isCtrlShiftPressed = mods & (QtCore.Qt.ControlModifier |
-                                        QtCore.Qt.ShiftModifier)
 
-        if mods == QtCore.Qt.ShiftModifier:
-            print('Shift+Click')
-        elif mods == QtCore.Qt.ControlModifier:
-            print('Control+Click')
-        elif mods == (QtCore.Qt.ControlModifier |
-                           QtCore.Qt.ShiftModifier):
-            print('Control+Shift+Click')
-        else:
-            print('Click')
-
+        # Get which button was clicked
         self.buttonClicked = self.sender().objectName()
-      
         self.elemName = str(self.buttonClicked).split('_')[0]
-        # print(self.elemName)
         self.buttonIndex = self.elementButtons.index(self.sender())
         self.elemNumber = self.elementDeets[self.buttonIndex][2]
         self.elemIndex = self.elementDeets[self.buttonIndex][3]
-        print(self.elemNumber, self.elemIndex, self.buttonIndex)
 
-        self.elementDeets[self.buttonIndex][1] += 1
+        # Get element and its counterpart
+        neutral_idx, ion_idx = self.get_neutral_and_ion_indices(self.elemIndex)
+        neutral_on = self.Neutral_button.isChecked()
+        ion_on = self.Ions_button.isChecked()
 
-        if bool(isShiftPressed) == True and self.elementDeets[self.buttonIndex][1] != 1:
-            if self.elementDeets[self.buttonIndex][1] == 2:
+        def applyFitFlag(flag):
+            if neutral_idx is not None:
+                self.spectral.elemdata.els[neutral_idx].user_fitflag = flag if neutral_on else spectral_library.FITLESS
+            if ion_idx is not None:
+                self.spectral.elemdata.els[ion_idx].user_fitflag = flag if ion_on else spectral_library.FITLESS
+
+        current_state = self.elementDeets[self.buttonIndex][1]
+
+        # Shift+Click = remove from model and plot
+        if bool(isShiftPressed) and current_state != 1:
+            if current_state == 2:
                 self.elementsState[1] -= 1
-            elif self.elementDeets[self.buttonIndex][1] == 3:
+            elif current_state == 3:
                 self.elementsState[2] -= 1
 
             self.elementDeets[self.buttonIndex][1] = 0
-            # self.spectral.elemdata.els[self.elemIndex].user_fitflag = 0
-            self.spectral.elemdata.els[self.elemIndex].user_fitflag = 0
-            
-            spectral_library.GuralSpectral.removeElemFromModel(self.spectral, self.elemNumber)          
-            self.statusBar.showMessage('Unlocked and %s removed from plot.' % self.elemName,2000)
-            self.Plot.removeItem(globals()[self.elemName])
-            globals()[self.elemName] = None
-        
-        if self.elementsState[1] > 2 and self.elementDeets[self.buttonIndex][1] == 2:
-            self.sender().setStyleSheet('background-color:#FFFF00;color:#000000;')
-            # spectral_library.GuralSpectral.lockElemFit(self.spectral, self.elemNumber)
-            # self.spectral.elemdata.els[self.elemIndex].user_fitflag = 2
-            self.spectral.elemdata.els[self.elemIndex].user_fitflag = 2
-            print('Locked element and added to Fit')
-            self.statusBar.showMessage('Locked %s fit' % self.elemName,2000)
-            self.elementsState[2] += 1
-            self.elementsState[1] -= 1
-            # print(self.elementsState)
+            applyFitFlag(0)
+
+            spectral_library.GuralSpectral.removeElemFromModel(self.spectral, self.elemNumber)
+            self.statusBar.showMessage('Unlocked and %s removed from plot.' % self.elemName, 2000)
+
+            if self.elemName in globals() and globals()[self.elemName]:
+                self.Plot.removeItem(globals()[self.elemName])
+                globals()[self.elemName] = None
+
+            self.sender().setStyleSheet('background-color:#FFFFFF;color:#000000;')
             return
 
-        if self.elementsState[1] > 2:
-            print('You can only have 3 elements in fitting mode at a time! Lock (left-click) or remove (shift-left-click) an element.')
-            self.elementDeets[self.buttonIndex][1] -= 1
-            self.messageBox('You can only have 3 elements in fitting mode at a time! Lock (left-click) or remove (shift-left-click) an element to proceed.')
+        # If already 3 elements in FITTING mode and trying to add another
+        if self.elementsState[1] > 2 and current_state == 0:
+            self.messageBox('You can only have 3 elements in fitting mode at a time! Lock (click again) or remove (shift-click) an element to proceed.')
             return
 
-        
-        if self.elementDeets[self.buttonIndex][1] == 1:
+        # Cycle through states
+        if current_state == 0:
+            self.elementDeets[self.buttonIndex][1] = 1
+            applyFitFlag(1)
             self.sender().setStyleSheet('background-color:#00FF00;color:#000000;')
             spectral_library.GuralSpectral.elemFitting(self.spectral, self.elemIndex)
-            print("elemNumber: %s" % self.elemNumber)
-            print("elemIndex: %s" % self.elemIndex)
-            # self.spectral.elemdata.els[self.elemIndex].user_fitflag = 1
-            self.statusBar.showMessage('Set to fitting mode. %s' % self.elemName,2000)
-            
+
             self.calculateElementSpectrum()
             self.plotElement(self)
-            # print("N warm: %s" % self.spectral.elemdata.els[self.elemIndex].N_warm)
             self.columnDensityClicked()
-            # print("N warm: %s" % self.spectral.elemdata.els[self.elemIndex].N_warm)
-
-            # print('N warm: %s' % self.spectral.elemdata.els[elemIndex].N_warm)
-
+            self.statusBar.showMessage('Set to fitting mode. %s' % self.elemName, 2000)
             self.elementsState[1] += 1
 
-            # Need to add calculated spectrum to the sum of the displayed spectra
-            # and then (re)plot the summed spectrum
-
-        elif self.elementDeets[self.buttonIndex][1] == 2:
+        elif current_state == 1:
+            self.elementDeets[self.buttonIndex][1] = 2
+            applyFitFlag(2)
             self.sender().setStyleSheet('background-color:#FFFF00;color:#000000;')
-            # spectral_library.GuralSpectral.lockElemFit(self.spectral, self.elemNumber)
-            self.spectral.elemdata.els[self.elemIndex].user_fitflag = 2
-            print('Locked element and added to Fit')
-            self.statusBar.showMessage('Locked %s fit' % self.elemName,2000)
+            self.statusBar.showMessage('Locked %s fit' % self.elemName, 2000)
             self.elementsState[2] += 1
             self.elementsState[1] -= 1
 
-        elif self.elementDeets[self.buttonIndex][1] == 3:
-            self.sender().setStyleSheet('background-color:#00FF00;color:#000000;')
+        elif current_state == 2:
             self.elementDeets[self.buttonIndex][1] = 1
-            self.spectral.elemdata.els[self.elemIndex].user_fitflag = 1
-            self.elementsState[1] += 1
+            applyFitFlag(1)
+            self.sender().setStyleSheet('background-color:#00FF00;color:#000000;')
             self.elementsState[2] -= 1
+            self.elementsState[1] += 1
 
-        else:
-            self.sender().setStyleSheet('background-color:#FFFFFF;color:#000000;')
-
-        # self.fitlessElems = []
-        # self.fittingElems = []
-        # self.lockedElems = []
-
-        i = 0
+        # Update global fitState dictionary
         for i in range(len(self.elementDeets)):
             self.fitState[self.elementDeets[i][0]] = self.elementDeets[i][1]
+
+        self.applyNeutralIonFilter()
+        
+    def get_neutral_and_ion_indices(self, index):
+        elem = self.spectral.elemdata.els[index]
+        if elem.ioncode == 1:
+            return index, elem.ionindex if elem.ionindex >= 0 else None
+        elif elem.ioncode == 2:
+            return elem.neuindex if elem.neuindex >= 0 else None, index
+        else:
+            return index, None
+
+
+
+###    def elementButtonClicked(self):
+###
+###        # Detect whether shift key is held down
+###        mods = QtWidgets.QApplication.keyboardModifiers()
+###        isShiftPressed = mods & QtCore.Qt.ShiftModifier
+###        isCtrlPressed = mods & QtCore.Qt.ControlModifier
+###        isCtrlShiftPressed = mods & (QtCore.Qt.ControlModifier |
+###                                        QtCore.Qt.ShiftModifier)
+###
+###        if mods == QtCore.Qt.ShiftModifier:
+###            print('Shift+Click')
+###        elif mods == QtCore.Qt.ControlModifier:
+###            print('Control+Click')
+###        elif mods == (QtCore.Qt.ControlModifier |
+###                           QtCore.Qt.ShiftModifier):
+###            print('Control+Shift+Click')
+###        else:
+###            print('Click')
+###
+###        self.buttonClicked = self.sender().objectName()
+###      
+###        self.elemName = str(self.buttonClicked).split('_')[0]
+###        # print(self.elemName)
+###
+###        self.buttonIndex = self.elementButtons.index(self.sender())
+###        self.elemNumber = self.elementDeets[self.buttonIndex][2]
+###        self.elemIndex = self.elementDeets[self.buttonIndex][3]
+###        print(self.elemNumber, self.elemIndex, self.buttonIndex)
+###
+###        self.elementDeets[self.buttonIndex][1] += 1
+###        if bool(isShiftPressed) == True and self.elementDeets[self.buttonIndex][1] != 1:
+###            if self.elementDeets[self.buttonIndex][1] == 2:
+###                self.elementsState[1] -= 1
+###            elif self.elementDeets[self.buttonIndex][1] == 3:
+###                self.elementsState[2] -= 1
+###
+###            self.elementDeets[self.buttonIndex][1] = 0
+###            # self.spectral.elemdata.els[self.elemIndex].user_fitflag = 0
+###            self.spectral.elemdata.els[self.elemIndex].user_fitflag = 0
+###            
+###            spectral_library.GuralSpectral.removeElemFromModel(self.spectral, self.elemNumber)          
+###            self.statusBar.showMessage('Unlocked and %s removed from plot.' % self.elemName,2000)
+###            self.Plot.removeItem(globals()[self.elemName])
+###            globals()[self.elemName] = None
+###        
+###        if self.elementsState[1] > 2 and self.elementDeets[self.buttonIndex][1] == 2:
+###            self.sender().setStyleSheet('background-color:#FFFF00;color:#000000;')
+###            # spectral_library.GuralSpectral.lockElemFit(self.spectral, self.elemNumber)
+###            # self.spectral.elemdata.els[self.elemIndex].user_fitflag = 2
+###            self.spectral.elemdata.els[self.elemIndex].user_fitflag = 2
+###            print('Locked element and added to Fit')
+###            self.statusBar.showMessage('Locked %s fit' % self.elemName,2000)
+###            self.elementsState[2] += 1
+###            self.elementsState[1] -= 1
+###            # print(self.elementsState)
+###            return
+###
+###        if self.elementsState[1] > 2:
+###            print('You can only have 3 elements in fitting mode at a time! Lock (left-click) or remove (shift-left-click) an element.')
+###            self.elementDeets[self.buttonIndex][1] -= 1
+###            self.messageBox('You can only have 3 elements in fitting mode at a time! Lock (left-click) or remove (shift-left-click) an element to proceed.')
+###            return
+###
+###        
+###        if self.elementDeets[self.buttonIndex][1] == 1:
+###            self.sender().setStyleSheet('background-color:#00FF00;color:#000000;')
+###            spectral_library.GuralSpectral.elemFitting(self.spectral, self.elemIndex)
+###            print("elemNumber: %s" % self.elemNumber)
+###            print("elemIndex: %s" % self.elemIndex)
+###            # self.spectral.elemdata.els[self.elemIndex].user_fitflag = 1
+###            self.statusBar.showMessage('Set to fitting mode. %s' % self.elemName,2000)
+###            
+###            self.calculateElementSpectrum()
+###            self.plotElement(self)
+###            # print("N warm: %s" % self.spectral.elemdata.els[self.elemIndex].N_warm)
+###            self.columnDensityClicked()
+###            # print("N warm: %s" % self.spectral.elemdata.els[self.elemIndex].N_warm)
+###
+###            # print('N warm: %s' % self.spectral.elemdata.els[elemIndex].N_warm)
+###
+###            self.elementsState[1] += 1
+###
+###            # Need to add calculated spectrum to the sum of the displayed spectra
+###            # and then (re)plot the summed spectrum
+###
+###        elif self.elementDeets[self.buttonIndex][1] == 2:
+###            self.sender().setStyleSheet('background-color:#FFFF00;color:#000000;')
+###            # spectral_library.GuralSpectral.lockElemFit(self.spectral, self.elemNumber)
+###            self.spectral.elemdata.els[self.elemIndex].user_fitflag = 2
+###            print('Locked element and added to Fit')
+###            self.statusBar.showMessage('Locked %s fit' % self.elemName,2000)
+###            self.elementsState[2] += 1
+###            self.elementsState[1] -= 1
+###
+###        elif self.elementDeets[self.buttonIndex][1] == 3:
+###            self.sender().setStyleSheet('background-color:#00FF00;color:#000000;')
+###            self.elementDeets[self.buttonIndex][1] = 1
+###            self.spectral.elemdata.els[self.elemIndex].user_fitflag = 1
+###            self.elementsState[1] += 1
+###            self.elementsState[2] -= 1
+###
+###        else:
+###            self.sender().setStyleSheet('background-color:#FFFFFF;color:#000000;')
+###
+###        # self.fitlessElems = []
+###        # self.fittingElems = []
+###        # self.lockedElems = []
+###
+###        i = 0
+###        for i in range(len(self.elementDeets)):
+###            self.fitState[self.elementDeets[i][0]] = self.elementDeets[i][1]
+###
+###        ##SEE SPECTRAL PROFILE
+        #num_wavelengths = self.spectral.spcalib.nwavelengths
+        #wavelengths = np.ctypeslib.as_array(self.spectral.spcalib.wavelength_nm, shape=(num_wavelengths,))
+        #speclo = np.ctypeslib.as_array(self.spectral.elemdata.els[self.elemIndex].speclo, shape=(num_wavelengths,))
+        #spechi = np.ctypeslib.as_array(self.spectral.elemdata.els[self.elemIndex].spechi, shape=(num_wavelengths,))
+
+        ## Plot the spectral profile
+        #plt.figure(figsize=(10, 5))
+        #plt.plot(wavelengths, speclo, label=f'{self.elemName} - Low Temp', color='b')
+        #plt.plot(wavelengths, spechi, label=f'{self.elemName} - High Temp', color='r')
+        #plt.xlabel('Wavelength (nm)')
+        #plt.ylabel('Intensity')
+        #plt.title(f'Spectral Profile of {self.elemName}')
+        #plt.legend()
+        #plt.grid(True)
+        #plt.show()
 
     ################# DIRECT FILE CONTROL FUNCTIONS #################
 
@@ -2123,7 +2280,6 @@ class Ui(QtWidgets.QMainWindow):
                     spectral_name = os.path.split(spectral_file_name[0])[1]
 
                     self.SpectralFileName_label.setText(os.path.split(spectral_file_name[0])[1])
-
                     self.spectral_vid = readVid(spectral_path, spectral_name)
                     self.spectral_currentframe = int(len(self.spectral_vid.frames)/2)
                     self.spectral_vidlength = len(self.spectral_vid.frames)
@@ -2966,10 +3122,36 @@ class Ui(QtWidgets.QMainWindow):
 
         px = 1/plt.rcParams['figure.dpi']  # pixel in inches
 
-        # Set spectral profile
-        self.BiasLevel_rollbox.setValue(self.BiasLevel_rollbox.value() - yshift)
-        spectral_profile = (np.mean(spectral_array_unzoomed, axis=1) - self.BiasLevel_rollbox.value()) * self.YScaler_rollbox.value()
+        img = self.spectral_frame_img.T
+        roi_coords = self.spectral_roi.getArraySlice(self.spectral_frame_img.T, self.spectral_image)[0]
+        y1, y2 = roi_coords[0].start, roi_coords[0].stop
+        x1, x2 = roi_coords[1].start, roi_coords[1].stop
+        pad = 5  # Number of rows to use above and below ROI
 
+
+        background_top = img[max(y1 - pad, 0):y1, x1:x2]
+        background_bottom = img[y2:min(y2 + pad, img.shape[0]), x1:x2]
+
+        background_pixels = []
+        if background_top.size > 0:
+            background_pixels.append(background_top)
+        if background_bottom.size > 0:
+            background_pixels.append(background_bottom)
+
+        # Combine and compute average intensity
+        if background_pixels:
+            print("Stacked shape:", [bp.shape for bp in background_pixels])
+            background_stack = np.vstack(background_pixels)
+            average_background_intensity = np.mean(background_stack)
+            print("Pixel values (sample):", background_stack[:5, :5])
+            print("Mean intensity:", np.mean(background_stack))
+
+        else:
+            average_background_intensity = 0 
+
+        print("average background intensity:", average_background_intensity)
+        self.BiasLevel_rollbox.setValue(self.BiasLevel_rollbox.value() - yshift)
+        spectral_profile = (np.mean(spectral_array_unzoomed, axis=1) - self.BiasLevel_rollbox.value()) * self.YScaler_rollbox.value() -100
 
         # spectral_profile = np.mean(self.spectral_array, axis=1)
         # spectral_profile = spectral_profile *100
@@ -3045,9 +3227,19 @@ class Ui(QtWidgets.QMainWindow):
 
         ##put them into meas_spec 
         import ctypes
-        spec_ptr = self.spectrumY_resp.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
-        for i in range (len(self.spectrumY_resp)):
+        #spec_ptr = self.spectrumY_resp.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+        #for i in range (len(self.spectrumY_resp)):
+        #    self.spectral.spectra.meas_spectrum[i] = spec_ptr[i]
+        wavelength_nm = np.ctypeslib.as_array(self.spectral.spcalib.wavelength_nm, shape=(1500,))  # This is the full range 0-1500
+
+        interpolated_meas = np.interp(wavelength_nm, scaled_spectral_profile_short, self.spectrumY_resp)
+
+        # Assign to self.spectral.spectra.meas_spectrum
+        spec_ptr = interpolated_meas.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+        for i in range(self.spectral.spcalib.nwavelengths):
             self.spectral.spectra.meas_spectrum[i] = spec_ptr[i]
+
+        
 
 
         # line = pg.InfiniteLine(pos=589, angle=90, pen=pen)
@@ -3291,17 +3483,34 @@ class Ui(QtWidgets.QMainWindow):
 
     def ionsToggle(self):
         """ handle the toggling of the Ions button """
-        if self.Ions_button.isChecked():
-            pass # do focus
-        else:
-            pass # do unfocus
+        neutral_on = self.Neutral_button.isChecked()
+        ion_on = self.Ions_button.isChecked()
+
+        for deet in self.elementDeets:
+            idx = deet[3]
+            ioncode = self.spectral.elemdata.els[idx].ioncode
+            is_selected = deet[1] == spectral_library.FITTING
+
+            # Apply filter
+            if ioncode == 1:  # neutral
+                self.spectral.elemdata.els[idx].user_fitflag = spectral_library.FITTING if (neutral_on and is_selected) else spectral_library.FITLESS
+            elif ioncode == 2:  # ion
+                self.spectral.elemdata.els[idx].user_fitflag = spectral_library.FITTING if (ion_on and is_selected) else spectral_library.FITLESS
 
     def neutralToggle(self):
         """ handle the toggling of the Neutral button """
-        if self.Neutral_button.isChecked():
-            pass # do focus
-        else:
-            pass # do unfocus
+        neutral_on = self.Neutral_button.isChecked()
+        ion_on = self.Ions_button.isChecked()
+
+        for deet in self.elementDeets:
+            idx = deet[3]
+            ioncode = self.spectral.elemdata.els[idx].ioncode
+            is_selected = deet[1] == spectral_library.FITTING
+
+            if ioncode == 1:  # neutral
+                self.spectral.elemdata.els[idx].user_fitflag = spectral_library.FITTING if (neutral_on and is_selected) else spectral_library.FITLESS
+            elif ioncode == 2:  # ion
+                self.spectral.elemdata.els[idx].user_fitflag = spectral_library.FITTING if (ion_on and is_selected) else spectral_library.FITLESS
 
     def responsivityToggle(self):
         """ handle the toggling of the Responsivity button """

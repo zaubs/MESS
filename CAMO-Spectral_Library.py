@@ -36,7 +36,8 @@ def loadSpectralLibrary(self):
 	"""
 
 	# Path to the spectral library
-	SPECTRAL_LIBRARY = os.path.join("spectral_library", "SpectralTest")
+	SPECTRAL_LIBRARY = os.path.abspath(os.path.join(os.path.dirname(__file__), "spectral_library", "SpectralTest"))
+
 
 	# Load the spectral library 
 	self.spectral_lib = npct.load_library(SPECTRAL_LIBRARY, os.path.dirname(__file__))
@@ -47,9 +48,23 @@ def loadElementsData(self):
 	Loads ElementsData file to extract element information.
 	"""
 
-	# Load elements data
-	self.spectral_lib.ReadElementsData(self.spcalib.nwavelengths, self.spcalib.wavelength_nm, "spectral_library/ElementsData/".encode('ascii'), self.elemdata)
 
+	print("[INFO] Loading ElementsData using ReadElementsData...")
+	self.spectral_lib.ReadElementsData(
+	    self.spcalib.nwavelengths,
+	    self.spcalib.wavelength_nm,
+	    b"spectral_library/ElementsData/",
+	    ct.byref(self.elemdata)
+	)
+
+	for i in range(self.elemdata.nelements):
+		try:
+			elem = self.elemdata.els[i]
+			name = bytes(elem.element_string).decode('ascii', errors='ignore').strip()
+			print(f"[{i:2}] {name:<10} | code={elem.elementcode:<6.2f} | ioncode={elem.ioncode:<2} | "
+	              f"nlines={elem.nlines:<6} | speclo={'OK' if elem.speclo else 'NULL'}")
+		except Exception as e:
+			print(f"[{i:2}] [CRASH] Failed to read element: {e}")
 
 def readSpectralConfig(self):
 	"""
@@ -72,6 +87,9 @@ def allocMemory(self):
 	"""
 	Allocates memeory for the calibration wavelengths and the spectrum.
 	"""
+	if self.spcalib.wavelength_nm is None:
+		print("Error: Wavelength memory not allocated!")
+		return
 
 	# Allocate memory for the spectral calibration wavelengths
 	self.spectral_lib.AllocMemorySpectralCalWavelengths(self.spcalib, self.ncameras, self.nwave, self.startwave, self.deltawave)
@@ -95,7 +113,7 @@ def allocMemory(self):
 	col_density_array = np.ctypeslib.as_array(self.spectra.columndensity, shape=(self.elemdata.nelements,))
 
 	print(f"[DEBUG] spectra object measured spec (after init): {meas_spec_array[:10]}")
-	print(f"[DEBUG] spectra object fitted spectrum (after init): {fit_spec_array[:10]}")
+	print(f"[DEBUG] spectra object fitted spectrum (after init): {fit_spec_array}")
 	print(f"[DEBUG] spectra object columndensity (after init): {col_density_array}")
 
 
@@ -427,6 +445,8 @@ class ElementLinesSpectrum(STRUCTURE):
 	Structure containing all element parameters with regards to emission lines/spectra.
 	Defines all associated variable types.
 	"""
+	def __repr__(self):
+		return f"<ElementLinesSpectrum {bytes(self)[:64]!r}>"
 
 	_fields_ = [
 	
@@ -472,7 +492,9 @@ class ElementLinesSpectrum(STRUCTURE):
 		("partfuncThi", DOUBLE),      
 
 		# Fraction ionized n+ / (n+ + no) from Jones 1997
-		("beta_jones", DOUBLE),       
+		("beta_jones", DOUBLE),   
+		#Fraction ionized n+ / (n+ + no) from ne iteration
+		("beta_ne_iter", DOUBLE),     
 
 		# Starting abundance setting
 		("init_abundance", DOUBLE),   
@@ -1379,8 +1401,6 @@ class GuralSpectral(object):
 
 		# Extract element based on atomic number
 		element_index = self.spectral_lib.GetElementIndex(atomic_mass_num, ionization_state, self.elemdata)
-		# print(element_index)
-
 		# Returns element
 		return element_index
 
@@ -1625,17 +1645,17 @@ class GuralSpectral(object):
 		"""
 
 		# Normally get col density from a fit (see later)
-		self.elemdata.els[elem1].N_warm = 3.0e+9 # Check this...
-		#print("** %s" % self.elemdata.els[elem1].N_warm)
+		self.elemdata.els[elem1].N_warm = 3.0e+09 # Check this...
+		print("** %s" % self.elemdata.els[elem1].N_warm)
 
 		# Normally get col density from a fit (see later)
-		self.elemdata.els[elem2].N_warm = 1.2e+9 # Check this... MJM
-		#print("** %s" % self.elemdata.els[elem2].N_warm)
+		self.elemdata.els[elem2].N_warm = 1.2e+09 # Check this... MJM
+		print("** %s" % self.elemdata.els[elem2].N_warm)
 
 		if elem3 != None:
 			# self.elemdata.els[elem3].N_warm = 1.0e+09
 			self.elemdata.els[elem3].N_warm = 3.0e+12
-			#print("Elem3 n_warm: %s" % self.elemdata.els[elem3].N_warm)
+			print("Elem3 n_warm: %s" % self.elemdata.els[elem3].N_warm)
 
 		# Sets ne_jones
 		ne_guess = self.spectral_lib.JonesElectronDensity(self.elemdata, self.elemdata.kelem_ref)
@@ -1652,30 +1672,8 @@ class GuralSpectral(object):
 		if elem3!=None: 
 			print("Column density #3 = %s" % self.elemdata.els[elem3].N_warm)
 
-		# Calculate the  spectrum, given all coefficients previously calculated
-##		n = self.spcalib.nwavelengths  # Ensure this is the correct number of wavelengths
-##
-##		aaa = ct.cast(self.spectra.fit_spectrum, ct.POINTER(ct.c_double * n))
-##		aaaaa = np.frombuffer(aaa.contents, dtype=np.float64)
-##		print ("before bullshits happen",aaaaa)
-##		
-##		self.spectral_lib.SpectrumGivenAllCoefs(self.elemdata, self.spectra.fit_spectrum)
-##
-##		fit_spectrum_ptr = ct.cast(self.spectra.fit_spectrum, ct.POINTER(ct.c_double * n))
-##		fit_spectrum_array = np.frombuffer(fit_spectrum_ptr.contents, dtype=np.float64)
-##		print("fit_spectrum_ptr:",fit_spectrum_array)
-		if not bool(self.spectra.fit_spectrum):
-			print("ERROR: fit_spectrum pointer is NULL. Allocating memory.")
-			self.spectra.fit_spectrum = (ct.c_double * self.spcalib.nwavelengths)()
-
-		fit_spectrum_array = np.ctypeslib.as_array(self.spectra.fit_spectrum, shape=(self.spcalib.nwavelengths,))
-		print("DEBUG: fit_spectrum BEFORE call:", fit_spectrum_array[:10])
-		
 		# Call SpectrumGivenAllCoefs correctly
 		self.spectral_lib.SpectrumGivenAllCoefs(self.elemdata, self.spectra.fit_spectrum)
-		
-		# Debug after function call
-		print("DEBUG: fit_spectrum AFTER call:", fit_spectrum_array[:10])
 		
 	def fitMeasSpec(self, elem1, elem2, elem3=None):
 		"""
@@ -1691,20 +1689,19 @@ class GuralSpectral(object):
 		print("--- fitMeasSpec ---")
 		# Normally get col density from a fit (see later)
 		self.elemdata.els[elem1].N_warm = 3.0e+9 # Check this...
-		print("Num warm element 1 (%s): %e" % (elem1, self.elemdata.els[elem1].N_warm))
 
 		# Normally get col density from a fit (see later)
 		self.elemdata.els[elem2].N_warm = 1.2e+09 # Check this... MJM
-		print("Num warm element 2 (%s): %e" % (elem2, self.elemdata.els[elem2].N_warm))
 
 		if elem3 != None:
 			# self.elemdata.els[elem3].N_warm = 1.0e+09
 			self.elemdata.els[elem3].N_warm = 3.0e+10
 
-		print(f"Checking elemdata.els[{elem1}] before setting N_warm:", self.elemdata.els[elem1])
-		print(f"Checking elemdata.els[{elem2}] before setting N_warm:", self.elemdata.els[elem2])
-		if elem3 is not None:
-			print(f"Checking elemdata.els[{elem3}] before setting N_warm:", self.elemdata.els[elem3])
+		#self.elemdata.els[46].N_warm = 0  # Fe-I
+		#self.elemdata.els[18].N_warm = 6.528175e+19  # Mg-I
+		#self.elemdata.els[16].N_warm = 3.661661e+18  
+		self.elemdata.sigma0 = 20
+
 		
 		# Sets ne_jones
 		ne_guess = self.spectral_lib.JonesElectronDensity(self.elemdata, self.elemdata.kelem_ref)   
@@ -1719,8 +1716,8 @@ class GuralSpectral(object):
 		print('--- Fitting spectral coefficients...')
 		self.spectral_lib.FitSpectralCoefficients(self.spcalib.nwavelengths, \
 			self.spcalib.wavelength_nm, self.spectra.meas_spectrum, self.elemdata, self.spconfig)
-
-		# Calculate column densities
+		
+		#Calculate column densities
 		print('--- Calculating column densities...')
 		self.spectral_lib.ColumnDensities_NumberAtoms(self.elemdata, self.ne)
 
@@ -1733,7 +1730,17 @@ class GuralSpectral(object):
 		print("Num warm element 2 (%s): %e" % (elem2, self.elemdata.els[elem2].N_warm))
 		if elem3!=None: 
 			print("Num warm element 3 (%s): %e" % (elem3, self.elemdata.els[elem3].N_warm))
-	
+
+		wavelengths = np.ctypeslib.as_array(self.spcalib.wavelength_nm, shape=(self.spcalib.nwavelengths,))
+		meas = np.ctypeslib.as_array(self.spectra.meas_spectrum, shape=(self.spcalib.nwavelengths,))
+		fit = np.ctypeslib.as_array(self.spectra.fit_spectrum, shape=(self.spcalib.nwavelengths,))
+		extn = np.ctypeslib.as_array(self.spcalib.modl_extn_spec, shape=(self.spcalib.nwavelengths,))
+		plt.plot(wavelengths, 1/extn)
+		plt.title("Gural Extinction Model")
+		plt.legend()
+		plt.show()
+		
+
 	def scaleWarmColumnDensity(self, elem, scale_factor):
 		"""
 		Scales up warm column density for a particular element by a given factor
@@ -1949,18 +1956,34 @@ class GuralSpectral(object):
 		Free all allocated memory.
 		"""
 		
-		# Free memory associated with spectra
+##		# Free memory associated with spectra
+##		self.spectral_lib.FreeMemorySpectrum(self.spectra)
+##
+##		# Free memory associated with element data
+##		self.spectral_lib.FreeElementsMemory(self.elemdata)
+##
+##		# Free memory associated with spcalib
+##		self.spectral_lib.FreeMemorySpectralCALfile(self.spcalib)
+##
+##		# Free memory associated with starspectra
+##		self.spectral_lib.FreeMemoryStarSpectra(self.starspectra)
+
+		# Free C-allocated memory
 		self.spectral_lib.FreeMemorySpectrum(self.spectra)
-
-		# Free memory associated with element data
 		self.spectral_lib.FreeElementsMemory(self.elemdata)
-
-		# Free memory associated with spcalib
 		self.spectral_lib.FreeMemorySpectralCALfile(self.spcalib)
-
-		# Free memory associated with starspectra
 		self.spectral_lib.FreeMemoryStarSpectra(self.starspectra)
-
+		# Recreate the ctypes structures
+		self.spconfig = SpecConfiguration()
+		self.spcalib = SpecCalibration()
+		self.elemdata = ElementsData()
+		self.spectra = MeasFitSpectra()
+		self.starspectra = StarSpectraInfo()
+		# Re-initialize tracking fields
+		self.ncameras = 1
+		self.nwave = 0
+		self.startwave = 0.0
+		self.deltawave = 0.0
 
 	"""
 	def run(self):

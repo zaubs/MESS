@@ -1,11 +1,11 @@
-Version                             =    1.00
+Version                             =    1.10
 Spectral Order m for Resp/Extn      =      +1
 Plus/Minus # Integration Rows       =       4
-Min Calib Wavelength (nm)           =   350.0  
-Max Calib Wavelength (nm)           =   1100.0
+Min Calib Wavelength (nm)           =	350.0  
+Max Calib Wavelength (nm)           =  1000.0
 Step Wavelength (nm)                =     0.6
 Min Fitting Wavelength (nm)         =   350.0  
-Max Fitting Wavelength (nm)         =   1100.0
+Max Fitting Wavelength (nm)         =  1000.0
 Min Bandwidth to use Spectrum (nm)  =   200.0
 Gauss Smoothing Kernel sigma (nm)   =    20.0
 Faintest Star to process (mV)       =     4.5
@@ -24,6 +24,7 @@ Default grating pitch (deg)         =     0.0
 Default grating yaw (deg)           =     0.0
 Default electron density (m^-3)     = 1.0e+13
 Default hot to warm plasma ratio    = 1.0e-04
+beta                                =       1
 Number of Grating Cameras           =       1
 ----  --------
 Cam#  Lines/mm
@@ -33,3 +34,4 @@ Cam#  Lines/mm
 
 
 Step (nm) ~ pixel_resolution(arcmin) / 60 / 57.296 / 1.0e-6 / lines_per_mm
+

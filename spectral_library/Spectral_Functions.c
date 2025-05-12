@@ -3906,7 +3906,7 @@ double   sum;
    //========== loop over all output wavelengths
    ////	sum = 1.0e-99; // this must be inside the wavelength loop
 
-
+	
    for( kwave=0; kwave<elemdata->nwave; kwave++ )  {
    	// for( kwave=0; kwave<1001; kwave++ )  {
 

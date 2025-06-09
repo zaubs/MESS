@@ -1381,6 +1381,20 @@
            </property>
           </widget>
          </item>
+        <item>
+         <widget class="QPushButton" name="AverageFe_button">
+          <property name="text">
+           <string>Average Iron Intensity</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ContinuumSubtract_button">
+          <property name="text">
+           <string>Subtract Continuum</string>
+          </property>
+         </widget>
+        </item>
          <item>
           <spacer name="verticalSpacer_2">
            <property name="orientation">
@@ -2844,6 +2858,13 @@
         <widget class="QPushButton" name="SaveData_button">
          <property name="text">
           <string>Save Data</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="SaveFittedElements_button">
+         <property name="text">
+          <string>Save Fitted Elements</string>
          </property>
         </widget>
        </item>

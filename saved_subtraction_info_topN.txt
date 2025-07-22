@@ -1,0 +1,52 @@
+Subtraction Info
+================
+Fe range (485, 514): Average intensity = 13.859747
+Fe range (521, 550): Average intensity = 33.215132
+
+Top Fe intensities (with exclusion of +/- 1.0 nm):
+  1: 111.853230
+  2: 98.651049
+  3: 55.280635
+  4: 47.618392
+  5: 45.613236
+  6: 41.056074
+  7: 34.752514
+  8: 23.212507
+  9: 19.865039
+  10: 18.096796
+  11: 13.076277
+  12: 7.038866
+  13: 4.592853
+  14: 3.988535
+  15: 3.893197
+
+Average of top 15 Fe intensities: 35.239280
+
+Bottom Fe intensities (with exclusion of +/- 1.0 nm):
+  1: 0.709433
+  2: 2.933530
+  3: 3.893197
+  4: 3.988535
+  5: 4.592853
+  6: 7.038866
+  7: 8.670014
+  8: 13.737534
+  9: 18.096796
+  10: 19.865039
+  11: 23.212507
+  12: 47.618392
+  13: 51.343090
+  14: 111.853230
+
+Average of bottom 14 Fe intensities: 22.682358
+
+Top N Fe Intensity: 35.239280
+Intensity at 518 nm (Mg): 140.118225
+Intensity at 589 nm (Na): 12.256364
+
+Sum of intensities (Mg + Na + Fe): 187.613869
+
+Normalized intensities:
+  Fe: 0.187829
+  Mg: 0.746844
+  Na: 0.065328

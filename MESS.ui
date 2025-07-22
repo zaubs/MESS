@@ -1030,7 +1030,7 @@
          </item>
         </layout>
        </item>
-       <item row="13" column="1">
+       <item row="11" column="1">
         <widget class="QPushButton" name="SetReference_button">
          <property name="enabled">
           <bool>false</bool>
@@ -1104,7 +1104,7 @@
          <item>
           <widget class="QPushButton" name="UpdateAffine_button">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -1115,7 +1115,7 @@
            <property name="font">
             <font>
              <weight>75</weight>
-             <bold>true</bold>
+             <bold>false</bold>
             </font>
            </property>
            <property name="text">
@@ -1183,7 +1183,7 @@
          </property>
         </widget>
        </item>
-       <item row="12" column="1">
+       <item row="10" column="1">
         <widget class="QPushButton" name="CalibrateSpectrum_button">
          <property name="enabled">
           <bool>true</bool>
@@ -1351,6 +1351,13 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox">
+             <property name="text">
+              <string>Continuum Models</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
          <item>
@@ -1388,6 +1395,13 @@
           </property>
          </widget>
         </item>
+        <item>
+        <widget class="QPushButton" name="ContinuumModel_button">
+         <property name="text">
+          <string>Show Continuum Model</string>
+         </property>
+        </widget>
+       </item>
         <item>
          <widget class="QPushButton" name="ContinuumSubtract_button">
           <property name="text">
@@ -2790,6 +2804,16 @@
            </property>
           </widget>
          </item>
+        <item>
+          <widget class="QCheckBox" name="ShowContinuumModel_check">
+           <property name="text">
+            <string>Show Continuum Models</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
          <item>
           <widget class="QCheckBox" name="ShowMgPlot_check">
            <property name="text">
@@ -2869,6 +2893,24 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="SaveSubtractionInfo_button">
+         <property name="text">
+          <string>Save Continuum Subtraction Info</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="AppendCSV_layout">
+          <item>
+           <widget class="QCheckBox" name="AppendToCSV_check">
+            <property name="text">
+             <string>Append to CSV</string>
+            </property>
+           </widget>
+          </item>
+        </layout>
+       </item>
+       <item>
         <spacer name="verticalSpacer_9">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -2928,7 +2970,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_7">
+            <widget class="QPushButton" name="TernaryPlot_button">
              <property name="text">
               <string>Plot</string>
              </property>
@@ -2950,6 +2992,302 @@
           </spacer>
          </item>
         </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_9">
+     <attribute name="title">
+      <string>Background Subtraction</string>
+     </attribute>
+     <widget class="QWidget" name="gridLayoutWidget_5">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>15</y>
+        <width>679</width>
+        <height>541</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0" colspan="2">
+         <widget class="QLabel" name="label_ManualContinuum">
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+            <string>- Manual Background Regions -</string>
+          </property>
+          <property name="alignment">
+            <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_ManualContinuumMgL">
+          <item>
+           <widget class="QLabel" name="label_MgLeft1">
+            <property name="text">
+             <string>Mg Left 1</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="MgLeft_spin1">
+            <property name="minimum">
+             <double>400.0</double>
+            </property>
+            <property name="maximum">
+             <double>700.0</double>
+            </property>
+            <property name="value">
+             <double>485.0</double>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_MgRight1">
+            <property name="text">
+             <string>Mg Right 1</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="MgRight_spin1">
+            <property name="minimum">
+             <double>400.0</double>
+            </property>
+            <property name="maximum">
+             <double>700.0</double>
+            </property>
+            <property name="value">
+             <double>515.0</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_ManualContinuumMgR">
+         <item>
+          <widget class="QLabel" name="label_MgLeft2">
+           <property name="text">
+            <string>Mg Left 2</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="MgLeft_spin2">
+           <property name="minimum">
+            <double>400.0</double>
+           </property>
+           <property name="maximum">
+            <double>700.0</double>
+           </property>
+           <property name="value">
+            <double>520.0</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_MgRight2">
+           <property name="text">
+            <string>Mg Right 2</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="MgRight_spin2">
+           <property name="minimum">
+            <double>400.0</double>
+           </property>
+           <property name="maximum">
+            <double>700.0</double>
+           </property>
+           <property name="value">
+            <double>550.0</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_ManualContinuumNaL">
+          <item>
+           <widget class="QLabel" name="label_NaLeft1">
+            <property name="text">
+             <string>Na Left 1</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="NaLeft_spin1">
+            <property name="minimum">
+             <double>400.0</double>
+            </property>
+            <property name="maximum">
+             <double>700.0</double>
+            </property>
+            <property name="value">
+             <double>575.0</double>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_NaRight1">
+            <property name="text">
+             <string>Na Right 1</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="NaRight_spin1">
+            <property name="minimum">
+             <double>400.0</double>
+            </property>
+            <property name="maximum">
+             <double>700.0</double>
+            </property>
+            <property name="value">
+             <double>585.0</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       <item row="2" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_ManualContinuumNaR">
+         <item>
+          <widget class="QLabel" name="label_NaLeft2">
+           <property name="text">
+            <string>Na Left 2</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="NaLeft_spin2">
+           <property name="minimum">
+            <double>400.0</double>
+           </property>
+           <property name="maximum">
+            <double>700.0</double>
+           </property>
+           <property name="value">
+            <double>593.0</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_NaRight2">
+           <property name="text">
+            <string>Na Right 2</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="NaRight_spin2">
+           <property name="minimum">
+            <double>400.0</double>
+           </property>
+           <property name="maximum">
+            <double>700.0</double>
+           </property>
+           <property name="value">
+            <double>608.0</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0" colspan="2">
+        <spacer name="verticalSpacer_bgTab">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+            <width>20</width>
+            <height>60</height> <!-- Increase height for more space -->
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="0" colspan="2">
+         <widget class="QLabel" name="label_ContinuumSubtractButtons">
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+            <string>- Subtract Background -</string>
+          </property>
+          <property name="alignment">
+            <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       <item row="5" column="0" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout_55">
+         <item>
+          <widget class="QPushButton" name="ChooseSavePath_button_bg">
+           <property name="text">
+            <string>Choose Path</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="SavePath_edit_bg">
+           <property name="text">
+            <string>.</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="6" column="0">
+         <widget class="QPushButton" name="ContinuumSubtract_button_bg">
+          <property name="text">
+           <string>Subtract Continuum</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+        <widget class="QPushButton" name="SaveSubtractionInfo_button_bg">
+         <property name="text">
+          <string>Save Continuum Subtraction Info</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0" colspan="2">
+        <layout class="QHBoxLayout" name="AppendCSV_layout">
+          <item>
+           <widget class="QCheckBox" name="AppendtoCSV_check">
+            <property name="text">
+             <string>Append to CSV</string>
+            </property>
+           </widget>
+          </item>
+        </layout>
+       </item>
+       <item row="7" column="0" colspan="2">
+        <spacer name="verticalSpacer_bgTab">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+            <width>20</width>
+            <height>60</height> <!-- Increase height for more space -->
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>

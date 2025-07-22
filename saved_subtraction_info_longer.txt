@@ -1,0 +1,15 @@
+Subtraction Info
+================
+Fe range (490, 515): Average intensity = 45.131127
+Fe range (520, 550): Average intensity = 98.182209
+
+Average Fe intensity: 95.127451
+Intensity at 518 nm (Mg): 96.753704
+Intensity at 589 nm (Na): 479.519815
+
+Sum of intensities (Mg + Na + Fe): 671.400970
+
+Normalized intensities:
+  Fe: 0.141685
+  Mg: 0.144107
+  Na: 0.714208

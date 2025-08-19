@@ -1,0 +1,3 @@
+[submodule "StellarSpectra"]
+	path = StellarSpectra
+	url = https://github.com/zaubs/MESS

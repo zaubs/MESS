@@ -43,7 +43,7 @@ from astropy.visualization import quantity_support
 
 from PyQt5 import QtWidgets, uic, QtGui, QtCore
 from PyQt5.QtWidgets import *
-from PyQt5.QtWidgets import QCheckBox, QFileDialog  # Already imported, but for clarity
+from PyQt5.QtWidgets import QCheckBox, QFileDialog, QMessageBox  # Already imported, but for clarity
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
@@ -290,7 +290,7 @@ def adjustLevels(img_array, minv, gamma, maxv, nbits=None, scaleto8bits=False):
     return img_array
 
 # Loads the image into the script
-def loadImage(img_path, flatten=-1):
+def loadImage(img_path, filename, flatten=-1):
     """ Load the given image. Handle loading it using different libraries. 
     
     Arguments:
@@ -299,7 +299,14 @@ def loadImage(img_path, flatten=-1):
         flatten: [int] Convert color image to grayscale if -1. -1 by default.
     """
 
-    img = imageio.v2.imread(img_path, mode = 'L')
+    print('testing') # here
+
+    full_path = os.path.join(img_path, filename)
+    print(f"[loadImage] Loading from: {full_path}")
+
+    img = imageio.v2.imread(full_path, pilmode = 'L') # 'pilmode' is used to read the image in grayscale mode
+    #img = imageio.v2.imread(img_path, as_gray=True)
+    # If the image is a color image, convert it to grayscale
 
     return img
 
@@ -620,7 +627,9 @@ class Ui(QtWidgets.QMainWindow):
         ################# Spectral FILE CONTROL BUTTONS #################
 
         # Upload spectral file 
-        self.UploadSpectral_button.clicked.connect(self.uploadSpectralVid)                      
+        self.UploadSpectral_button.clicked.connect(self.uploadSpectralVid)
+        #Upload spectral png
+        self.UploadSpectralPNG_button.clicked.connect(self.uploadSpectralPNG)                      
         # Next spectral frame        
         self.NextSpectral_button.clicked.connect(self.nextSpectralFrame)  
         # Jump ahead 5 frames
@@ -689,8 +698,6 @@ class Ui(QtWidgets.QMainWindow):
         self.SavePlot_button.clicked.connect(self.savePlot)
         # Save data
         self.SaveData_button.clicked.connect(self.saveData)
-        #MJM
-        self.ChooseSavePath_button.clicked.connect(self.chooseSavePath)
 
         # Save fitted elements
         self.SaveFittedElements_button.clicked.connect(self.saveFittedElements)
@@ -2340,6 +2347,7 @@ class Ui(QtWidgets.QMainWindow):
             print(SaveDirectory)
             self.SavePath_edit_bg.setText(SaveDirectory)
 
+    # For loadin spectral vid files
     def uploadSpectralVid(self, file=None):
         if file == False:
             dlg = QFileDialog()
@@ -2409,7 +2417,78 @@ class Ui(QtWidgets.QMainWindow):
                 self.AutoSpectralFlat_button.setEnabled(True)
                 self.AutoPick_button.setEnabled(True)
 
+    # For loading png files (zja)
+    def uploadSpectralPNG(self, file=None):
+        if file == False:
+            dlg = QFileDialog()
+            dlg.setFileMode(QFileDialog.AnyFile)
 
+            if dlg.exec():
+                spectral_file_name = dlg.selectedFiles()
+                print(f"Attempting to load image from: {spectral_file_name}")
+                print(f"File name: {spectral_file_name[-1]}")
+
+                if spectral_file_name[0].endswith('.png'):
+                    spectral_path = os.path.split(spectral_file_name[0])[0]
+                    spectral_name = os.path.split(spectral_file_name[0])[1]
+
+                    self.SpectralFileName_label.setText(os.path.split(spectral_file_name[0])[1])
+                    self.spectral_frame_img = loadImage(spectral_path, spectral_name)
+                    self.spectral_currentframe = 0
+                    self.spectral_vidlength = 1
+
+                    #self.updateSpectralFrames() for .vid files
+                    self.spectral_image.setImage(self.spectral_frame_img.T)
+                    
+                    ### Enable some buttons ###
+                    self.AutoPick_button.setEnabled(True)
+                    self.SelectSpectralRegion_button.setEnabled(True)
+                    self.ClearSpectralRegion_button.setEnabled(True)
+                    self.UploadSpectralFlat_button.setEnabled(True)
+                    self.AutoSpectralFlat_button.setEnabled(True)
+                    self.AutoPick_button.setEnabled(True)
+                    self.DeltaX_edit.setEnabled(True)
+                    self.DeltaY_edit.setEnabled(True)
+                    self.nm0_edit.setEnabled(True)
+
+                else:
+                    pass
+
+        else:
+            spectral_file_name = file
+
+            if spectral_file_name.endswith('.png'):
+                spectral_path = os.path.split(spectral_file_name)[0]
+                spectral_name = os.path.split(spectral_file_name)[1]
+
+                self.SpectralFileName_label.setText('Spectral camera file: ' + os.path.split(spectral_file_name)[1])
+
+                #  # Assuming you already get the spectral_path and spectral_name correctly
+                # spectral_file_path = os.path.join(spectral_path, spectral_name)
+                
+                # if not os.path.isfile(spectral_file_path):
+                #     QMessageBox.critical(self, "Error", f"The path is not a valid image file: {spectral_file_path}")
+                #     return
+
+                if not spectral_name.lower().endswith(('.png', '.jpg', '.jpeg')):
+                    QMessageBox.critical(self, "Error", f"Invalid image file type: {spectral_name}")
+                    return
+
+                self.spectral_frame_img = loadImage(spectral_path, spectral_name)
+                self.spectral_currentframe = 0
+                self.spectral_vidlength = 1
+
+                self.updateSpectralFrames()
+                ### Enable some buttons ###
+                #self.FlattenSpectral_button.setEnabled(True)
+                self.AutoPick_button.setEnabled(True)
+                self.SelectSpectralRegion_button.setEnabled(True)
+                self.ClearSpectralRegion_button.setEnabled(True)
+                #self.CheckSpectralRegion_button.setEnabled(True)
+                #self.CheckSpectralBackground_button.setEnabled(True)
+                #self.UploadSpectralBias_button.setEnabled(True)
+                self.UploadSpectralFlat_button.setEnabled(True)
+                self.AutoSpectralFlat_button.setEnabled(True)
 
     def rotateVid(self):
         print('Rotating vid file...')
@@ -2512,16 +2591,16 @@ class Ui(QtWidgets.QMainWindow):
         dlg.setFileMode(QFileDialog.AnyFile)
 
         if dlg.exec():
-            flat_file_name = dlg.selectedFiles()
+            flat_file_name = dlg.selectedFiles() # list
 
-            base_name = os.path.basename(flat_file_name)
+            base_name = os.path.basename(flat_file_name[0]) # first entry of list
             parts = base_name.split('_')
             self.event_date = parts[1] if len(parts) > 0 else ""
             self.event_time = parts[2] if len(parts) > 1 else ""
             # The 0 index has 'ev'
             
             if flat_file_name[0].endswith('.png'):
-                # print(flat_file_name[0])
+                print(flat_file_name[0])
                
                 # Load the flat image
                 flat_img = loadImage(flat_file_name[0], -1)
@@ -2543,7 +2622,9 @@ class Ui(QtWidgets.QMainWindow):
                 self.flat_structure = FlatStruct(flat_img, dark=dark)
                 self.spectral_flat_exists = True
 
-                self.spectral_frame_img = applyFlat(self.spectral_frame_img, self.flat_structure)
+                result = applyFlat(self.spectral_frame_img, self.flat_structure)
+                self.spectral_frame_img = result
+                # self.spectral_frame_img = applyFlat(self.spectral_frame_img, self.flat_structure)
 
                  # Set image levels
                 #self.minv = np.percentile(self.spectral_frame_img, 0.2)
@@ -4917,7 +4998,7 @@ class Ui(QtWidgets.QMainWindow):
             color_discrete_sequence=['magenta'],
             size_max=10
         )
-        fig.update_layout(title="Normalized Intensities from December 3rd-19th, 2023")
+        fig.update_layout(title="Normalized Intensities of Two Station CAMO-Spectral Meteor Events")
         fig.show()
 
 ###############################################################################################
